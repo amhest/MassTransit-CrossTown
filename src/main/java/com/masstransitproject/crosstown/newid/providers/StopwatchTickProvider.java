@@ -10,27 +10,15 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.NewIdProviders
-{
-    using System;
-    using System.Diagnostics;
+package com.masstransitproject.crosstown.newid.providers;
 
+import com.masstransitproject.crosstown.newid.ITickProvider;
 
-    public class StopwatchTickProvider :
-        ITickProvider
-    {
-        DateTime _start;
-        Stopwatch _stopwatch;
+public class StopwatchTickProvider implements ITickProvider {
 
-        public StopwatchTickProvider()
-        {
-            _start = DateTime.UtcNow;
-            _stopwatch = Stopwatch.StartNew();
-        }
+	@Override
+	public long getTicks() {
+		return System.nanoTime();
+	}
 
-        public long Ticks
-        {
-            get { return _start.AddTicks(_stopwatch.ElapsedTicks).Ticks; }
-        }
-    }
 }

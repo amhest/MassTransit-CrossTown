@@ -1,4 +1,17 @@
-﻿// Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
+package com.masstransitproject.crosstown.newid;
+
+import java.util.Calendar;
+import java.util.Date;
+
+import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.junit.Test;
+
+import com.masstransitproject.crosstown.newid.providers.StopwatchTickProvider;
+
+// Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,78 +23,66 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.Tests.NewId_
+
+public class NewId_Specs extends TestCase // Using_the_newid_generator
 {
-    using System;
-    using System.Diagnostics;
-    using NUnit.Framework;
-    using NewIdProviders;
+	private Log log = LogFactory.getLog(NewId_Specs.class);
 
+	@Test
+	public void Should_be_able_to_extract_timestamp() {
+		Calendar now = Calendar.getInstance();
+		NewId id = NewId.Next();
 
-    [TestFixture]
-    public class Using_the_newid_generator
-    {
-        [Test, Explicit]
-        public void Should_be_able_to_extract_timestamp()
-        {
-            DateTime now = DateTime.UtcNow;
-            NewId id = NewId.Next();
+		Date timestamp = id.getTimestamp();
 
-            DateTime timestamp = id.Timestamp;
+		log.trace(String.format("Now: {0}, Timestamp: {1}", new Object[] { now,
+				timestamp }));
 
-            Console.WriteLine("Now: {0}, Timestamp: {1}", now, timestamp);
+		long difference = now.getTimeInMillis() - timestamp.getTime();
 
-            TimeSpan difference = (timestamp - now);
-            if (difference < TimeSpan.Zero)
-                difference = difference.Negate();
+		assertTrue(difference <= 60000);
+	}
 
-            Assert.LessOrEqual(difference, TimeSpan.FromMinutes(1));
-        }
+	@Test
+	public void Should_generate_sequential_ids_quickly() {
+		NewId.SetTickProvider(new StopwatchTickProvider());
+		NewId.Next();
 
-        [Test]
-        public void Should_generate_sequential_ids_quickly()
-        {
-            NewId.SetTickProvider(new StopwatchTickProvider());
-            NewId.Next();
+		int limit = 10;
 
-            int limit = 10;
+		NewId[] ids = new NewId[limit];
+		for (int i = 0; i < limit; i++)
+			ids[i] = NewId.Next();
 
-            var ids = new NewId[limit];
-            for (int i = 0; i < limit; i++)
-                ids[i] = NewId.Next();
+		for (int i = 0; i < limit - 1; i++) {
+			assertFalse(ids[i].Equals(ids[i + 1]));
+			log.trace(ids[i]);
+		}
+	}
 
-            for (int i = 0; i < limit - 1; i++)
-            {
-                Assert.AreNotEqual(ids[i], ids[i + 1]);
-                Console.WriteLine(ids[i]);
-            }
-        }
+	@Test
+	public void Should_generate_unique_identifiers_with_each_invocation() {
+		NewId.Next();
 
-        [Test, Explicit]
-        public void Should_generate_unique_identifiers_with_each_invocation()
-        {
-            NewId.Next();
+		long start = System.currentTimeMillis();
 
-            Stopwatch timer = Stopwatch.StartNew();
+		int limit = 1024 * 1024;
 
-            int limit = 1024 * 1024;
+		NewId[] ids = new NewId[limit];
+		for (int i = 0; i < limit; i++)
+			ids[i] = NewId.Next();
 
-            var ids = new NewId[limit];
-            for (int i = 0; i < limit; i++)
-                ids[i] = NewId.Next();
+		long stop = System.currentTimeMillis();
 
-            timer.Stop();
+		for (int i = 0; i < limit - 1; i++) {
+			assertFalse(ids[i].equals(ids[i + 1]));
+			String end = ids[i].toString().substring(32, 4);
+			if (end == "0000")
+				log.trace(ids[i].toString());
+		}
 
-            for (int i = 0; i < limit - 1; i++)
-            {
-                Assert.AreNotEqual(ids[i], ids[i + 1]);
-                string end = ids[i].ToString().Substring(32, 4);
-                if (end == "0000")
-                    Console.WriteLine("{0}", ids[i].ToString());
-            }
+		log.trace(String.format("Generated {0} ids in {1}ms ({2}/ms)",
+				new Object[] { limit, stop - start, limit / (stop - start) }));
 
-            Console.WriteLine("Generated {0} ids in {1}ms ({2}/ms)", limit, timer.ElapsedMilliseconds,
-                limit / timer.ElapsedMilliseconds);
-        }
-    }
+	}
 }

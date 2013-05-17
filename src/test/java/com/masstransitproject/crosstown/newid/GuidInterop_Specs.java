@@ -1,4 +1,15 @@
-﻿// Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
+package com.masstransitproject.crosstown.newid;
+
+import java.nio.ByteBuffer;
+import java.util.UUID;
+
+import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.junit.Test;
+
+// Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,152 +21,149 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.Tests.NewId_
+
+public class GuidInterop_Specs extends TestCase // When_interoperating_with_the_UUID_type
 {
-    using System;
-    using NUnit.Framework;
 
+	private Log log = LogFactory.getLog(GuidInterop_Specs.class);
 
-    [TestFixture]
-    public class When_interoperating_with_the_guid_type
-    {
-        [Test]
-        public void Should_convert_from_a_guid_quickly()
-        {
-            Guid g = Guid.NewGuid();
+	@Test
+	public void Should_convert_from_a_UUID_quickly() {
+		UUID g = UUID.randomUUID();
 
-            NewId n = g.ToNewId();
+		// TODO check this
+		NewId n = new NewId(g.toString());
 
-            string ns = n.ToString();
-            string gs = g.ToString();
+		String ns = n.toString();
+		String gs = g.toString();
 
-            Assert.AreEqual(ns, gs);
-        }
+		assertEquals(ns, gs);
+	}
 
-        [Test]
-        public void Should_convert_to_guid_quickly()
-        {
-            NewId n = NewId.Next();
+	@Test
+	public void Should_convert_to_UUID_quickly() {
+		NewId n = NewId.Next();
 
-            Guid g = n.ToGuid();
+		UUID g = n.ToGuid();
 
-            string ns = n.ToString();
-            string gs = g.ToString();
+		String ns = n.toString();
+		String gs = g.toString();
 
-            Assert.AreEqual(ns, gs);
-        }
+		assertEquals(ns, gs);
+	}
 
-        [Test]
-        public void Should_display_sequentially_for_newid()
-        {
-            NewId id = NewId.Next();
+	@Test
+	public void Should_display_sequentially_for_newid() {
+		NewId id = NewId.Next();
 
-            Console.WriteLine(id.ToString("DS"));
-        }
+		log.trace(id.toString("DS"));
+	}
 
-        [Test]
-        public void Should_make_the_round_trip_successfully_via_bytes()
-        {
-            Guid g = Guid.NewGuid();
+	@Test
+	public void Should_make_the_round_trip_successfully_via_bytes() {
+		UUID g = UUID.randomUUID();
+		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+		bb.putLong(g.getMostSignificantBits());
+		bb.putLong(g.getLeastSignificantBits());
+		bb.array();
+		NewId n = new NewId(bb.array());
 
-            var n = new NewId(g.ToByteArray());
+		UUID gn = UUID.nameUUIDFromBytes(n.ToByteArray());
 
-            var gn = new Guid(n.ToByteArray());
+		assertEquals(g, gn);
+	}
 
-            Assert.AreEqual(g, gn);
-        }
+	@Test
+	public void Should_match_String_output_b() {
+		byte[] bytes = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+				12, 14, 15 };
 
-        [Test]
-        public void Should_match_string_output_b()
-        {
-            var bytes = new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12, 14, 15};
+		UUID g = UUID.nameUUIDFromBytes(bytes);
+		NewId n = new NewId(bytes);
 
-            var g = new Guid(bytes);
-            var n = new NewId(bytes);
+		String gs = g.toString();
+		String ns = n.toString("B");
 
-            string gs = g.ToString("B");
-            string ns = n.ToString("B");
+		assertEquals(gs, ns);
+	}
 
-            Assert.AreEqual(gs, ns);
-        }
+	@Test
+	public void Should_match_String_output_d() {
+		byte[] bytes = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+				12, 14, 15 };
 
-        [Test]
-        public void Should_match_string_output_d()
-        {
-            var bytes = new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12, 14, 15};
+		UUID g = UUID.nameUUIDFromBytes(bytes);
+		NewId n = new NewId(bytes);
 
-            var g = new Guid(bytes);
-            var n = new NewId(bytes);
+		String gs = g.toString();
+		String ns = n.toString("d");
 
-            string gs = g.ToString("d");
-            string ns = n.ToString("d");
+		assertEquals(gs, ns);
+	}
 
-            Assert.AreEqual(gs, ns);
-        }
+	@Test
+	public void Should_match_String_output_n() {
+		byte[] bytes = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+				12, 14, 15 };
 
-        [Test]
-        public void Should_match_string_output_n()
-        {
-            var bytes = new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12, 14, 15};
+		UUID g = UUID.nameUUIDFromBytes(bytes);
+		NewId n = new NewId(bytes);
 
-            var g = new Guid(bytes);
-            var n = new NewId(bytes);
+		String gs = g.toString();
+		String ns = n.toString("N");
 
-            string gs = g.ToString("N");
-            string ns = n.ToString("N");
+		assertEquals(gs, ns);
+	}
 
-            Assert.AreEqual(gs, ns);
-        }
+	@Test
+	public void Should_match_String_output_p() {
+		byte[] bytes = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
+				12, 14, 15 };
 
-        [Test]
-        public void Should_match_string_output_p()
-        {
-            var bytes = new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12, 14, 15};
+		UUID g = UUID.nameUUIDFromBytes(bytes);
+		NewId n = new NewId(bytes);
 
-            var g = new Guid(bytes);
-            var n = new NewId(bytes);
+		String gs = g.toString();
+		String ns = n.toString("P");
 
-            string gs = g.ToString("P");
-            string ns = n.ToString("P");
+		assertEquals(gs, ns);
+	}
 
-            Assert.AreEqual(gs, ns);
-        }
+	@Test
+	public void Should_properly_handle_String_passthrough() {
+		NewId n = NewId.Next();
 
-        [Test]
-        public void Should_properly_handle_string_passthrough()
-        {
-            NewId n = NewId.Next();
+		String ns = n.toString("D");
 
-            string ns = n.ToString("D");
+		UUID g = UUID.fromString(ns);
 
-            var g = new Guid(ns);
+		NewId nn = new NewId(g.toString());
 
-            var nn = new NewId(g.ToString("D"));
+		assertEquals(n, nn);
+	}
 
-            Assert.AreEqual(n, nn);
-        }
+	// @Test
+	// public void Should_support_the_same_constructor()
+	// {
+	// UUID guid = new UUID(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+	// NewId newid = new NewId(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+	//
+	// assertEquals(guid.toString(), newid.toString());
+	// }
 
-        [Test]
-        public void Should_support_the_same_constructor()
-        {
-            var guid = new Guid(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
-            var newid = new NewId(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+	@Test
+	public void Should_work_from_newid_to_UUID_to_newid() {
+		NewId n = NewId.Next();
 
-            Assert.AreEqual(guid.ToString(), newid.ToString());
-        }
+		UUID g = UUID.nameUUIDFromBytes(n.ToByteArray());
+		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+		bb.putLong(g.getMostSignificantBits());
+		bb.putLong(g.getLeastSignificantBits());
+		;
+		NewId ng = new NewId(bb.array());
 
-        [Test]
-        public void Should_work_from_newid_to_guid_to_newid()
-        {
-            NewId n = NewId.Next();
+		log.trace(g.toString());
 
-            var g = new Guid(n.ToByteArray());
-
-            var ng = new NewId(g.ToByteArray());
-
-            Console.WriteLine(g.ToString("D"));
-
-            Assert.AreEqual(n, ng);
-        }
-    }
+		assertEquals(n, ng);
+	}
 }

@@ -10,16 +10,11 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit
-{
-    using System;
+package com.masstransitproject.crosstown.newid;
 
-
-    public static class NewIdExtensions
-    {
-        public static NewId ToNewId(this Guid guid)
-        {
-            return new NewId(guid.ToByteArray());
-        }
-    }
+public class NewIdExtensions {
+	// public static NewId ToNewId( UUID guid)
+	// {
+	// return new NewId(guid.ToByteArray());
+	// }
 }

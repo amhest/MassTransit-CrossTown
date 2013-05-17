@@ -10,60 +10,65 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit
-{
-    public class NewIdGenerator
-    {
-        readonly int _c;
-        readonly int _d;
+package com.masstransitproject.crosstown.newid;
 
-        readonly object _sync = new object();
-        readonly ITickProvider _tickProvider;
-        readonly byte[] _workerId;
-        readonly int _workerIndex;
-        int _a;
-        int _b;
-        long _lastTick;
+import java.io.IOException;
 
-        ushort _sequence;
+public class NewIdGenerator {
+	final int _c;
+	final int _d;
 
+	final Object _sync = new Object();
+	final ITickProvider _tickProvider;
+	final byte[] _workerId;
+	final int _workerIndex;
+	int _a;
+	int _b;
+	long _lastTick;
 
-        public NewIdGenerator(ITickProvider tickProvider, IWorkerIdProvider workerIdProvider, int workerIndex = 0)
-        {
-            _workerIndex = workerIndex;
-            _workerId = workerIdProvider.GetWorkerId(_workerIndex);
-            _tickProvider = tickProvider;
+	int _sequence;
 
-            _c = _workerId[0] << 24 | _workerId[1] << 16 | _workerId[2] << 8 | _workerId[3];
-            _d = _workerId[4] << 24 | _workerId[5] << 16;
-        }
+	public NewIdGenerator(ITickProvider tickProvider,
+			IWorkerIdProvider workerIdProvider) throws IOException {
+		this(tickProvider, workerIdProvider, 0);
 
-        public NewId Next()
-        {
-            ushort sequence;
+	}
 
-            long ticks = _tickProvider.Ticks;
-            lock (_sync)
-            {
-                if (ticks > _lastTick)
-                    UpdateTimestamp(ticks);
+	public NewIdGenerator(ITickProvider tickProvider,
+			IWorkerIdProvider workerIdProvider, int workerIndex)
+			throws IOException {
+		_workerIndex = workerIndex;
+		_workerId = workerIdProvider.GetWorkerId(_workerIndex);
+		_tickProvider = tickProvider;
 
-                if (_sequence == 65535) // we are about to rollover, so we need to increment ticks
-                    UpdateTimestamp(_lastTick + 1);
+		_c = _workerId[0] << 24 | _workerId[1] << 16 | _workerId[2] << 8
+				| _workerId[3];
+		_d = _workerId[4] << 24 | _workerId[5] << 16;
+	}
 
-                sequence = _sequence++;
-            }
+	public NewId Next() {
+		int sequence;
 
-            return new NewId(_a, _b, _c, _d | sequence);
-        }
+		long ticks = _tickProvider.getTicks();
+		synchronized (_sync) {
+			if (ticks > _lastTick)
+				UpdateTimestamp(ticks);
 
-        void UpdateTimestamp(long tick)
-        {
-            _lastTick = tick;
-            _sequence = 0;
+			if (_sequence == 65535) // we are about to rollover, so we need to
+									// increment ticks
+				UpdateTimestamp(_lastTick + 1);
 
-            _a = (int)(tick >> 32);
-            _b = (int)(tick & 0xFFFFFFFF);
-        }
-    }
+			sequence = _sequence++;
+		}
+
+		return new NewId(_a, _b, _c, _d | sequence);
+	}
+
+	void UpdateTimestamp(long tick) {
+		_lastTick = tick;
+		_sequence = 0;
+
+		_a = (int) (tick >> 32);
+		_b = (int) (tick & 0xFFFFFFFF);
+	}
 }

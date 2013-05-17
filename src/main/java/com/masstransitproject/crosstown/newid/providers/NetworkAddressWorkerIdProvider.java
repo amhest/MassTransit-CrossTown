@@ -10,42 +10,37 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.NewIdProviders
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.NetworkInformation;
+package com.masstransitproject.crosstown.newid.providers;
 
+import java.io.IOException;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 
-    public class NetworkAddressWorkerIdProvider :
-        IWorkerIdProvider
-    {
-        public byte[] GetWorkerId(int index)
-        {
-            return GetNetworkAddress(index);
-        }
+import com.masstransitproject.crosstown.newid.IWorkerIdProvider;
 
-        static byte[] GetNetworkAddress(int index)
-        {
-            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+public class NetworkAddressWorkerIdProvider implements IWorkerIdProvider {
+	@Override
+	public byte[] GetWorkerId(int index) throws IOException {
+		return GetNetworkAddress(index);
+	}
 
-            IEnumerable<NetworkInterface> ethernet =
-                interfaces.Where(x => x.NetworkInterfaceType == NetworkInterfaceType.Ethernet);
-            IEnumerable<NetworkInterface> gigabit =
-                interfaces.Where(x => x.NetworkInterfaceType == NetworkInterfaceType.GigabitEthernet);
-            IEnumerable<NetworkInterface> wireless =
-                interfaces.Where(x => x.NetworkInterfaceType == NetworkInterfaceType.Wireless80211);
+	static byte[] GetNetworkAddress(int index) throws IOException {
+		Enumeration<NetworkInterface> interfaces = NetworkInterface
+				.getNetworkInterfaces();
 
-            NetworkInterface network = ethernet.Concat(gigabit).Concat(wireless)
-                                               .Skip(index)
-                                               .FirstOrDefault();
+		while (interfaces.hasMoreElements()) {
+			NetworkInterface nic = interfaces.nextElement();
 
-            if (network == null)
-                throw new InvalidOperationException("Unable to find usable network adapter for unique address");
+			byte[] address = nic.getHardwareAddress();
+			if (address != null && address.length > 0) {
+				return address;
+			}
 
-            byte[] address = network.GetPhysicalAddress().GetAddressBytes();
-            return address;
-        }
-    }
+		}
+
+		throw new IOException(
+				"Unable to find usable network adapter for unique address");
+
+	}
+
 }

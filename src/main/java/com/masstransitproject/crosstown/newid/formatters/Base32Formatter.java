@@ -10,65 +10,60 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.NewIdFormatters
-{
-    using System;
+package com.masstransitproject.crosstown.newid.formatters;
 
+import com.masstransitproject.crosstown.newid.INewIdFormatter;
 
-    public class Base32Formatter :
-        INewIdFormatter
-    {
-        const string LowerCaseChars = "abcdefghijklmnopqrstuvwxyz234567";
-        const string UpperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+public class Base32Formatter implements INewIdFormatter {
+	static final String LowerCaseChars = "abcdefghijklmnopqrstuvwxyz234567";
+	static final String UpperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
-        string _chars;
+	String _chars;
 
-        public Base32Formatter(bool upperCase = false)
-        {
-            _chars = upperCase ? UpperCaseChars : LowerCaseChars;
-        }
+	public Base32Formatter(boolean upperCase) {
+		_chars = upperCase ? UpperCaseChars : LowerCaseChars;
+	}
 
-        public Base32Formatter(string chars)
-        {
-            if (chars.Length != 32)
-                throw new ArgumentException("The character string must be exactly 32 characters");
+	public Base32Formatter(String chars) {
+		if (chars.length() != 32)
+			throw new IllegalArgumentException(
+					"The character String must be exactly 32 characters");
 
-            _chars = chars;
-        }
+		_chars = chars;
+	}
 
-        public string Format(byte[] bytes)
-        {
-            var result = new char[26];
+	@Override
+	public String Format(byte[] bytes) {
+		char[] result = new char[26];
 
-            int offset = 0;
-            long number;
-            for (int i = 0; i < 3; i++)
-            {
-                int indexed = i * 5;
-                number = bytes[indexed] << 12 | bytes[indexed + 1] << 4 | bytes[indexed + 2] >> 4;
-                ConvertLongToBase32(result, offset, number, 4, _chars);
+		int offset = 0;
+		long number;
+		for (int i = 0; i < 3; i++) {
+			int indexed = i * 5;
+			number = bytes[indexed] << 12 | bytes[indexed + 1] << 4
+					| bytes[indexed + 2] >> 4;
+			ConvertLongToBase32(result, offset, number, 4, _chars);
 
-                offset += 4;
+			offset += 4;
 
-                number = (bytes[indexed + 2] & 0xf) << 16 | bytes[indexed + 3] << 8 | bytes[indexed + 4];
-                ConvertLongToBase32(result, offset, number, 4, _chars);
+			number = (bytes[indexed + 2] & 0xf) << 16 | bytes[indexed + 3] << 8
+					| bytes[indexed + 4];
+			ConvertLongToBase32(result, offset, number, 4, _chars);
 
-                offset += 4;
-            }
+			offset += 4;
+		}
 
-            ConvertLongToBase32(result, offset, bytes[15], 2, _chars);
+		ConvertLongToBase32(result, offset, bytes[15], 2, _chars);
 
-            return new string(result, 0, 26);
-        }
+		return new String(result, 0, 26);
+	}
 
-        static void ConvertLongToBase32(char[] buffer, int offset, long value, int count, string chars)
-        {
-            for (int i = count - 1; i >= 0; i--)
-            {
-                var index = (int)(value % 32);
-                buffer[offset + i] = chars[index];
-                value /= 32;
-            }
-        }
-    }
+	static void ConvertLongToBase32(char[] buffer, int offset, long value,
+			int count, String chars) {
+		for (int i = count - 1; i >= 0; i--) {
+			int index = (int) (value % 32);
+			buffer[offset + i] = chars.charAt(index);
+			value /= 32;
+		}
+	}
 }

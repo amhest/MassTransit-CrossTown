@@ -1,4 +1,19 @@
-﻿// Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
+package com.masstransitproject.crosstown.newid;
+
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.TimeZone;
+import java.util.UUID;
+
+import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.junit.Test;
+
+import com.masstransitproject.crosstown.newid.providers.NetworkAddressWorkerIdProvider;
+
+// Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,57 +25,49 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.Tests.NewId_
+
+public class LongTerm_Specs extends TestCase // Generating_ids_over_time
 {
-    using System;
-    using System.Data.SqlTypes;
-    using NUnit.Framework;
-    using NewIdProviders;
+	private Log log = LogFactory.getLog(LongTerm_Specs.class);
 
+	@Test
+	public void Should_keep_them_ordered_for_sql_server() throws IOException {
+		NewIdGenerator generator = new NewIdGenerator(
+				new TimeLapseTickProvider(),
+				new NetworkAddressWorkerIdProvider());
+		generator.Next();
 
-    [TestFixture]
-    public class Generating_ids_over_time
-    {
-        [Test]
-        public void Should_keep_them_ordered_for_sql_server()
-        {
-            var generator = new NewIdGenerator(new TimeLapseTickProvider(), new NetworkAddressWorkerIdProvider());
-            generator.Next();
+		int limit = 1024;
 
-            int limit = 1024;
+		NewId[] ids = new NewId[limit];
+		for (int i = 0; i < limit; i++)
+			ids[i] = generator.Next();
 
-            var ids = new NewId[limit];
-            for (int i = 0; i < limit; i++)
-                ids[i] = generator.Next();
+		for (int i = 0; i < limit - 1; i++) {
+			assertFalse(ids[i].Equals(ids[i + 1]));
 
-            for (int i = 0; i < limit - 1; i++)
-            {
-                Assert.AreNotEqual(ids[i], ids[i + 1]);
+			UUID left = ids[i].ToGuid();
+			;
+			UUID right = ids[i + 1].ToGuid();
+			assertTrue(left.compareTo(right) < 0);
+			if (i % 128 == 0)
+				log.trace(String.format("Normal: {0} Sql: {1}", new Object[] {
+						left, ids[i].ToSequentialGuid() }));
+		}
+	}
 
-                SqlGuid left = ids[i].ToGuid();
-                SqlGuid right = ids[i + 1].ToGuid();
-                Assert.Less(left, right);
-                if (i % 128 == 0)
-                    Console.WriteLine("Normal: {0} Sql: {1}", left, ids[i].ToSequentialGuid());
-            }
-        }
+	class TimeLapseTickProvider implements ITickProvider {
+		// TimeSpan _interval = TimeSpan.FromSeconds(2);
+		int _interval = 2;
+		Calendar _previous = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
+		@Override
+		public long getTicks() {
+			_previous.roll(Calendar.SECOND, _interval);
+			_interval = _interval + 30;
+			return _previous.getTimeInMillis();
 
-        class TimeLapseTickProvider :
-            ITickProvider
-        {
-            TimeSpan _interval = TimeSpan.FromSeconds(2);
-            DateTime _previous = DateTime.UtcNow;
+		}
+	}
 
-            public long Ticks
-            {
-                get
-                {
-                    _previous = _previous + _interval;
-                    _interval = TimeSpan.FromSeconds((long)_interval.TotalSeconds + 30);
-                    return _previous.Ticks;
-                }
-            }
-        }
-    }
 }

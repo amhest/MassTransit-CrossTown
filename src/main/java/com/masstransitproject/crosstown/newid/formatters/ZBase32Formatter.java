@@ -10,18 +10,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.NewIdFormatters
-{
-    public class ZBase32Formatter :
-        Base32Formatter
-    {
-        // taken from analysis done at http://philzimmermann.com/docs/human-oriented-base-32-encoding.txt
-        const string LowerCaseChars = "ybndrfg8ejkmcpqxot1uwisza345h769";
-        const string UpperCaseChars = "YBNDRFG8EJKMCPQXOT1UWISZA345H769";
+package com.masstransitproject.crosstown.newid.formatters;
 
-        public ZBase32Formatter(bool upperCase = false)
-            : base(upperCase ? UpperCaseChars : LowerCaseChars)
-        {
-        }
-    }
+public class ZBase32Formatter extends Base32Formatter {
+	// taken from analysis done at
+	// http://philzimmermann.com/docs/human-oriented-base-32-encoding.txt
+	static final String LowerCaseChars = "ybndrfg8ejkmcpqxot1uwisza345h769";
+	static final String UpperCaseChars = "YBNDRFG8EJKMCPQXOT1UWISZA345H769";
+
+	public ZBase32Formatter(boolean upperCase) {
+		super(upperCase ? UpperCaseChars : LowerCaseChars);
+
+	}
 }

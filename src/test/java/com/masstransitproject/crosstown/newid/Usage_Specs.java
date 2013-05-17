@@ -1,4 +1,13 @@
-﻿// Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
+package com.masstransitproject.crosstown.newid;
+
+import java.nio.ByteBuffer;
+import java.util.UUID;
+
+import junit.framework.TestCase;
+
+import org.junit.Test;
+
+// Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,58 +19,51 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.Tests.NewId_
+
+public class Usage_Specs extends TestCase // Using_a_new_id
 {
-    using System;
-    using NUnit.Framework;
+	@Test
+	public void Should_format_just_like_a_default_UUID_formatter() {
+		NewId newId = new NewId();
 
+		assertEquals("00000000-0000-0000-0000-000000000000", newId.toString());
+	}
 
-    [TestFixture]
-    public class Using_a_new_id
-    {
-        [Test]
-        public void Should_format_just_like_a_default_guid_formatter()
-        {
-            var newId = new NewId();
+	@Test
+	public void Should_format_just_like_a_fancy_UUID_formatter() {
+		NewId newId = new NewId();
 
-            Assert.AreEqual("00000000-0000-0000-0000-000000000000", newId.ToString());
-        }
+		assertEquals("{00000000-0000-0000-0000-000000000000}",
+				newId.toString("B"));
+	}
 
-        [Test]
-        public void Should_format_just_like_a_fancy_guid_formatter()
-        {
-            var newId = new NewId();
+	@Test
+	public void Should_format_just_like_a_narrow_UUID_formatter() {
+		NewId newId = new NewId();
 
-            Assert.AreEqual("{00000000-0000-0000-0000-000000000000}", newId.ToString("B"));
-        }
+		assertEquals("00000000000000000000000000000000", newId.toString("N"));
+	}
 
-        [Test]
-        public void Should_format_just_like_a_narrow_guid_formatter()
-        {
-            var newId = new NewId();
+	@Test
+	public void Should_format_just_like_a_parenthesis_UUID_formatter() {
+		NewId newId = new NewId();
 
-            Assert.AreEqual("00000000000000000000000000000000", newId.ToString("N"));
-        }
+		assertEquals("(00000000-0000-0000-0000-000000000000)",
+				newId.toString("P"));
+	}
 
-        [Test]
-        public void Should_format_just_like_a_parenthesis_guid_formatter()
-        {
-            var newId = new NewId();
+	@Test
+	public void Should_work_from_UUID_to_newid_to_UUID() {
+		UUID g = UUID.randomUUID();
+		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+		bb.putLong(g.getMostSignificantBits());
+		bb.putLong(g.getLeastSignificantBits());
 
-            Assert.AreEqual("(00000000-0000-0000-0000-000000000000)", newId.ToString("P"));
-        }
+		NewId n = new NewId(bb.array());
 
-        [Test]
-        public void Should_work_from_guid_to_newid_to_guid()
-        {
-            Guid g = Guid.NewGuid();
+		String gs = g.toString();// g.toString("d");
+		String ns = n.toString("d");
 
-            var n = new NewId(g.ToByteArray());
-
-            string gs = g.ToString("d");
-            string ns = n.ToString("d");
-
-            Assert.AreEqual(gs, ns);
-        }
-    }
+		assertEquals(gs, ns);
+	}
 }

@@ -10,18 +10,20 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.NewIdParsers
-{
-    public class ZBase32Parser :
-        Base32Parser
-    {
-        const string ConvertChars = "ybndrfg8ejkmcpqxot1uwisza345h769YBNDRFG8EJKMCPQXOT1UWISZA345H769";
+package com.masstransitproject.crosstown.newid.parsers;
 
-        const string TransposeChars = "ybndrfg8ejkmcpqx0tlvwis2a345h769YBNDRFG8EJKMCPQX0TLVWIS2A345H769";
+public class ZBase32Parser extends Base32Parser {
+	static final String ConvertChars = "ybndrfg8ejkmcpqxot1uwisza345h769YBNDRFG8EJKMCPQXOT1UWISZA345H769";
 
-        public ZBase32Parser(bool handleTransposedCharacters = false)
-            : base(handleTransposedCharacters ? ConvertChars + TransposeChars : ConvertChars)
-        {
-        }
-    }
+	static final String TransposeChars = "ybndrfg8ejkmcpqx0tlvwis2a345h769YBNDRFG8EJKMCPQX0TLVWIS2A345H769";
+
+	public ZBase32Parser() {
+		this(false);
+	}
+
+	public ZBase32Parser(boolean handleTransposedCharacters) {
+		super(handleTransposedCharacters ? ConvertChars + TransposeChars
+				: ConvertChars);
+
+	}
 }

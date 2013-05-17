@@ -10,58 +10,171 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.Serialization
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+package com.masstransitproject.crosstown.serialization;
 
-	/// <summary>
-	/// The envelope in use for storing meta-data/out-of-band data and message object data.
-	/// </summary>
-    public class Envelope
-    {
-        Envelope(object message, IEnumerable<Type> messageTypes)
-        {
-            Headers = new Dictionary<string, string>();
-            MessageType = new List<string>(messageTypes.Select(type => new MessageUrn(type).ToString()));
-            Message = message;
-        }
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 
-        protected Envelope()
-        {
-            Headers = new Dictionary<string, string>();
-            MessageType = new List<string>();
-        }
+import com.masstransitproject.crosstown.IMessage;
+import com.masstransitproject.crosstown.MessageUrn;
 
-        public string RequestId { get; set; }
-        public string ConversationId { get; set; }
-        public string CorrelationId { get; set; }
-        public string DestinationAddress { get; set; }
-        public DateTime? ExpirationTime { get; set; }
-        public string FaultAddress { get; set; }
-        public IDictionary<string, string> Headers { get; set; }
-        public object Message { get; set; }
-        public string MessageId { get; set; }
-        public IList<string> MessageType { get; set; }
-        public string Network { get; set; }
-        public string ResponseAddress { get; set; }
-        public int RetryCount { get; set; }
-        public string SourceAddress { get; set; }
+/// <summary>
+/// The envelope in use for storing meta-data/out-of-band data and message Object data.
+/// </summary>
+public class Envelope {
+	Envelope(IMessage message) {
+		Headers = new HashMap<String, String>();
 
-		/// <summary>
-		/// Creates a new envelope using the passed send context.
-		/// </summary>
-		/// <typeparam name="T">The type of message</typeparam>
-		/// <param name="context">Context to write to the envelope</param>
-		/// <returns>The constructed envelope</returns>
-        public static Envelope Create<T>(ISendContext<T> context)
-            where T : class
-        {
-            var envelope = new Envelope(context.Message, context.Message.GetType().GetMessageTypes());
-            envelope.SetUsingContext(context);
+		Message = message;
+		MessageType = MessageUrn.GetUrn(message);
+	}
 
-            return envelope;
-        }
-    }
+	protected Envelope() {
+		Headers = new HashMap<String, String>();
+
+	}
+
+	private String RequestId;
+	private String ConversationId;
+	private String CorrelationId;
+	private String DestinationAddress;
+	private Timestamp ExpirationTime;
+	private String FaultAddress;
+	private Map<String, String> Headers;
+	private IMessage Message;
+	private String MessageId;
+	private String MessageType;
+	private String Network;
+	private String ResponseAddress;
+	private int RetryCount;
+	private String SourceAddress;
+
+	public String getRequestId() {
+		return RequestId;
+	}
+
+	public void setRequestId(String requestId) {
+		RequestId = requestId;
+	}
+
+	public String getConversationId() {
+		return ConversationId;
+	}
+
+	public void setConversationId(String conversationId) {
+		ConversationId = conversationId;
+	}
+
+	public String getCorrelationId() {
+		return CorrelationId;
+	}
+
+	public void setCorrelationId(String correlationId) {
+		CorrelationId = correlationId;
+	}
+
+	public String getDestinationAddress() {
+		return DestinationAddress;
+	}
+
+	public void setDestinationAddress(String destinationAddress) {
+		DestinationAddress = destinationAddress;
+	}
+
+	public Timestamp getExpirationTime() {
+		return ExpirationTime;
+	}
+
+	public void setExpirationTime(Timestamp expirationTime) {
+		ExpirationTime = expirationTime;
+	}
+
+	public String getFaultAddress() {
+		return FaultAddress;
+	}
+
+	public void setFaultAddress(String faultAddress) {
+		FaultAddress = faultAddress;
+	}
+
+	public Map<String, String> getHeaders() {
+		return Headers;
+	}
+
+	public void setHeaders(Map<String, String> headers) {
+		Headers = headers;
+	}
+
+	public IMessage getMessage() {
+		return Message;
+	}
+
+	public void setMessage(IMessage message) {
+		Message = message;
+	}
+
+	public String getMessageId() {
+		return MessageId;
+	}
+
+	public void setMessageId(String messageId) {
+		MessageId = messageId;
+	}
+
+	public String getMessageType() {
+		return MessageType;
+	}
+
+	public void setMessageType(String messageType) {
+		MessageType = messageType;
+	}
+
+	public String getNetwork() {
+		return Network;
+	}
+
+	public void setNetwork(String network) {
+		Network = network;
+	}
+
+	public String getResponseAddress() {
+		return ResponseAddress;
+	}
+
+	public void setResponseAddress(String responseAddress) {
+		ResponseAddress = responseAddress;
+	}
+
+	public int getRetryCount() {
+		return RetryCount;
+	}
+
+	public void setRetryCount(int retryCount) {
+		RetryCount = retryCount;
+	}
+
+	public String getSourceAddress() {
+		return SourceAddress;
+	}
+
+	public void setSourceAddress(String sourceAddress) {
+		SourceAddress = sourceAddress;
+	}
+
+	// /// <summary>
+	// /// Creates a new envelope using the passed send context.
+	// /// </summary>
+	// /// <typeparam name="T">The type of message</typeparam>
+	// /// <param name="context">Context to write to the envelope</param>
+	// /// <returns>The constructed envelope</returns>
+	// private static Envelope Create<T>(ISendContext<T> context)
+	// where T : class
+	// {
+	// var envelope = new Envelope(context.Message,
+	// context.Message.GetType().GetMessageTypes());
+	// envelope.SetUsingContext(context);
+	//
+	// return envelope;
+	// }
 }
