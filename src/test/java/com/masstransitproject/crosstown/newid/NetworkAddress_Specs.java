@@ -2,8 +2,9 @@ package com.masstransitproject.crosstown.newid;
 
 import java.io.IOException;
 
-import junit.framework.TestCase;
 
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.masstransitproject.crosstown.newid.providers.NetworkAddressWorkerIdProvider;
@@ -21,7 +22,7 @@ import com.masstransitproject.crosstown.newid.providers.NetworkAddressWorkerIdPr
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-public class NetworkAddress_Specs extends TestCase // When_getting_a_network_address_for_the_id_generator
+public class NetworkAddress_Specs  // When_getting_a_network_address_for_the_id_generator
 {
 	@Test
 	public void Should_pull_the_network_adapter_mac_address()
@@ -30,7 +31,7 @@ public class NetworkAddress_Specs extends TestCase // When_getting_a_network_add
 
 		byte[] networkId = networkIdProvider.GetWorkerId(0);
 
-		assertNotNull(networkId);
-		assertEquals(6, networkId.length);
+		Assert.assertNotNull(networkId);
+		Assert.assertEquals(6, networkId.length);
 	}
 }

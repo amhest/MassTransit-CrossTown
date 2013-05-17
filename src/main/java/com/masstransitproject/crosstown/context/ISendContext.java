@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown.context;
+package com.masstransitproject.crosstown.context;
 
 import java.io.IOException;
 import java.io.OutputStream;

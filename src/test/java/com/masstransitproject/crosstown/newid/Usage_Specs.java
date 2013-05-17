@@ -3,8 +3,9 @@ package com.masstransitproject.crosstown.newid;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
-import junit.framework.TestCase;
 
+
+import org.junit.Assert;
 import org.junit.Test;
 
 // Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
@@ -20,20 +21,20 @@ import org.junit.Test;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-public class Usage_Specs extends TestCase // Using_a_new_id
+public class Usage_Specs  // Using_a_new_id
 {
 	@Test
 	public void Should_format_just_like_a_default_UUID_formatter() {
 		NewId newId = new NewId();
 
-		assertEquals("00000000-0000-0000-0000-000000000000", newId.toString());
+		Assert.assertEquals("00000000-0000-0000-0000-000000000000", newId.toString());
 	}
 
 	@Test
 	public void Should_format_just_like_a_fancy_UUID_formatter() {
 		NewId newId = new NewId();
 
-		assertEquals("{00000000-0000-0000-0000-000000000000}",
+		Assert.assertEquals("{00000000-0000-0000-0000-000000000000}",
 				newId.toString("B"));
 	}
 
@@ -41,14 +42,14 @@ public class Usage_Specs extends TestCase // Using_a_new_id
 	public void Should_format_just_like_a_narrow_UUID_formatter() {
 		NewId newId = new NewId();
 
-		assertEquals("00000000000000000000000000000000", newId.toString("N"));
+		Assert.assertEquals("00000000000000000000000000000000", newId.toString("N"));
 	}
 
 	@Test
 	public void Should_format_just_like_a_parenthesis_UUID_formatter() {
 		NewId newId = new NewId();
 
-		assertEquals("(00000000-0000-0000-0000-000000000000)",
+		Assert.assertEquals("(00000000-0000-0000-0000-000000000000)",
 				newId.toString("P"));
 	}
 
@@ -64,6 +65,6 @@ public class Usage_Specs extends TestCase // Using_a_new_id
 		String gs = g.toString();// g.toString("d");
 		String ns = n.toString("d");
 
-		assertEquals(gs, ns);
+		Assert.assertEquals(gs, ns);
 	}
 }

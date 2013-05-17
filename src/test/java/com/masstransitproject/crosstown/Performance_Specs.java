@@ -7,10 +7,10 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 
-import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.masstransitproject.crosstown.context.ISendContext;
 import com.masstransitproject.crosstown.context.SendContext;
@@ -18,9 +18,9 @@ import com.masstransitproject.crosstown.messages.SerializationTestMessage;
 import com.masstransitproject.crosstown.serialization.IMessageSerializer;
 import com.masstransitproject.crosstown.serialization.JsonMessageSerializer;
 
-public class Performance_Specs extends TestCase {
+public class Performance_Specs  {
 
-	private Log log = LogFactory.getLog(Performance_Specs.class);
+	private Logger log = LoggerFactory.getLogger(Performance_Specs.class);
 	private IMessageSerializer _serializer = new JsonMessageSerializer();
 
 	public void TestJust_how_fast_are_you() throws Exception {

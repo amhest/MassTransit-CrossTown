@@ -4,7 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
+
+
 
 import com.masstransitproject.crosstown.context.ISendContext;
 import com.masstransitproject.crosstown.context.SendContext;
@@ -24,7 +26,7 @@ import com.masstransitproject.crosstown.serialization.JsonMessageSerializer;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-public class SerializationSpecificationBase extends TestCase {
+public class SerializationSpecificationBase  {
 	URI _sourceUri;
 	URI _responseUri;
 	URI _faultUri;
@@ -58,7 +60,7 @@ public class SerializationSpecificationBase extends TestCase {
 		ByteArrayInputStream input = new ByteArrayInputStream(data);
 		IMessage copy = serializer.Deserialize(input);
 
-		assertEquals(message, copy);
+		Assert.assertEquals(message, copy);
 
 		//
 		// Assert.AreEqual(_retryCount, context.RetryCount);

@@ -3,11 +3,12 @@ package com.masstransitproject.crosstown.newid;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
-import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
@@ -22,10 +23,10 @@ import org.junit.Test;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-public class GuidInterop_Specs extends TestCase // When_interoperating_with_the_UUID_type
+public class GuidInterop_Specs  // When_interoperating_with_the_UUID_type
 {
 
-	private Log log = LogFactory.getLog(GuidInterop_Specs.class);
+	private Logger log = LoggerFactory.getLogger(GuidInterop_Specs.class);
 
 	@Test
 	public void Should_convert_from_a_UUID_quickly() {
@@ -37,7 +38,7 @@ public class GuidInterop_Specs extends TestCase // When_interoperating_with_the_
 		String ns = n.toString();
 		String gs = g.toString();
 
-		assertEquals(ns, gs);
+		Assert.assertEquals(ns, gs);
 	}
 
 	@Test
@@ -49,7 +50,7 @@ public class GuidInterop_Specs extends TestCase // When_interoperating_with_the_
 		String ns = n.toString();
 		String gs = g.toString();
 
-		assertEquals(ns, gs);
+		Assert.assertEquals(ns, gs);
 	}
 
 	@Test
@@ -70,7 +71,7 @@ public class GuidInterop_Specs extends TestCase // When_interoperating_with_the_
 
 		UUID gn = UUID.nameUUIDFromBytes(n.ToByteArray());
 
-		assertEquals(g, gn);
+		Assert.assertEquals(g, gn);
 	}
 
 	@Test
@@ -84,7 +85,7 @@ public class GuidInterop_Specs extends TestCase // When_interoperating_with_the_
 		String gs = g.toString();
 		String ns = n.toString("B");
 
-		assertEquals(gs, ns);
+		Assert.assertEquals(gs, ns);
 	}
 
 	@Test
@@ -98,7 +99,7 @@ public class GuidInterop_Specs extends TestCase // When_interoperating_with_the_
 		String gs = g.toString();
 		String ns = n.toString("d");
 
-		assertEquals(gs, ns);
+		Assert.assertEquals(gs, ns);
 	}
 
 	@Test
@@ -112,7 +113,7 @@ public class GuidInterop_Specs extends TestCase // When_interoperating_with_the_
 		String gs = g.toString();
 		String ns = n.toString("N");
 
-		assertEquals(gs, ns);
+		Assert.assertEquals(gs, ns);
 	}
 
 	@Test
@@ -126,7 +127,7 @@ public class GuidInterop_Specs extends TestCase // When_interoperating_with_the_
 		String gs = g.toString();
 		String ns = n.toString("P");
 
-		assertEquals(gs, ns);
+		Assert.assertEquals(gs, ns);
 	}
 
 	@Test
@@ -139,7 +140,7 @@ public class GuidInterop_Specs extends TestCase // When_interoperating_with_the_
 
 		NewId nn = new NewId(g.toString());
 
-		assertEquals(n, nn);
+		Assert.assertEquals(n, nn);
 	}
 
 	// @Test
@@ -148,7 +149,7 @@ public class GuidInterop_Specs extends TestCase // When_interoperating_with_the_
 	// UUID guid = new UUID(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 	// NewId newid = new NewId(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 	//
-	// assertEquals(guid.toString(), newid.toString());
+	// Assert.assertEquals(guid.toString(), newid.toString());
 	// }
 
 	@Test
@@ -164,6 +165,6 @@ public class GuidInterop_Specs extends TestCase // When_interoperating_with_the_
 
 		log.trace(g.toString());
 
-		assertEquals(n, ng);
+		Assert.assertEquals(n, ng);
 	}
 }

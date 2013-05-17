@@ -5,11 +5,12 @@ import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.masstransitproject.crosstown.newid.providers.NetworkAddressWorkerIdProvider;
 
@@ -26,9 +27,9 @@ import com.masstransitproject.crosstown.newid.providers.NetworkAddressWorkerIdPr
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-public class LongTerm_Specs extends TestCase // Generating_ids_over_time
+public class LongTerm_Specs  // Generating_ids_over_time
 {
-	private Log log = LogFactory.getLog(LongTerm_Specs.class);
+	private Logger log = LoggerFactory.getLogger(LongTerm_Specs.class);
 
 	@Test
 	public void Should_keep_them_ordered_for_sql_server() throws IOException {
@@ -44,12 +45,12 @@ public class LongTerm_Specs extends TestCase // Generating_ids_over_time
 			ids[i] = generator.Next();
 
 		for (int i = 0; i < limit - 1; i++) {
-			assertFalse(ids[i].Equals(ids[i + 1]));
+			Assert.assertFalse(ids[i].Equals(ids[i + 1]));
 
 			UUID left = ids[i].ToGuid();
 			;
 			UUID right = ids[i + 1].ToGuid();
-			assertTrue(left.compareTo(right) < 0);
+			Assert.assertTrue(left.compareTo(right) < 0);
 			if (i % 128 == 0)
 				log.trace(String.format("Normal: {0} Sql: {1}", new Object[] {
 						left, ids[i].ToSequentialGuid() }));

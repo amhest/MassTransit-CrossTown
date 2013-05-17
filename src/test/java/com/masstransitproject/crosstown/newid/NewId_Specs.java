@@ -3,11 +3,12 @@ package com.masstransitproject.crosstown.newid;
 import java.util.Calendar;
 import java.util.Date;
 
-import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.masstransitproject.crosstown.newid.providers.StopwatchTickProvider;
 
@@ -24,9 +25,9 @@ import com.masstransitproject.crosstown.newid.providers.StopwatchTickProvider;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-public class NewId_Specs extends TestCase // Using_the_newid_generator
+public class NewId_Specs  // Using_the_newid_generator
 {
-	private Log log = LogFactory.getLog(NewId_Specs.class);
+	private Logger log = LoggerFactory.getLogger(NewId_Specs.class);
 
 	@Test
 	public void Should_be_able_to_extract_timestamp() {
@@ -40,7 +41,7 @@ public class NewId_Specs extends TestCase // Using_the_newid_generator
 
 		long difference = now.getTimeInMillis() - timestamp.getTime();
 
-		assertTrue(difference <= 60000);
+		Assert.assertTrue(difference <= 60000);
 	}
 
 	@Test
@@ -55,8 +56,8 @@ public class NewId_Specs extends TestCase // Using_the_newid_generator
 			ids[i] = NewId.Next();
 
 		for (int i = 0; i < limit - 1; i++) {
-			assertFalse(ids[i].Equals(ids[i + 1]));
-			log.trace(ids[i]);
+			Assert.assertFalse(ids[i].Equals(ids[i + 1]));
+			log.trace(ids[i].toString());
 		}
 	}
 
@@ -75,7 +76,7 @@ public class NewId_Specs extends TestCase // Using_the_newid_generator
 		long stop = System.currentTimeMillis();
 
 		for (int i = 0; i < limit - 1; i++) {
-			assertFalse(ids[i].equals(ids[i + 1]));
+			Assert.assertFalse(ids[i].equals(ids[i + 1]));
 			String end = ids[i].toString().substring(32, 4);
 			if (end == "0000")
 				log.trace(ids[i].toString());

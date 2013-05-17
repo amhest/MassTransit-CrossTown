@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown.messages;
+package com.masstransitproject.crosstown.messages;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

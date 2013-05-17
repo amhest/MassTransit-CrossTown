@@ -1,7 +1,7 @@
 package com.masstransitproject.crosstown.newid;
 
-import junit.framework.TestCase;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.masstransitproject.crosstown.newid.formatters.Base32Formatter;
@@ -22,7 +22,7 @@ import com.masstransitproject.crosstown.newid.parsers.ZBase32Parser;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-public class Formatter_Specs extends TestCase // Using_the_newid_formatters
+public class Formatter_Specs  // Using_the_newid_formatters
 {
 	@Test
 	public void Should_convert_back_using_parser() {
@@ -35,7 +35,7 @@ public class Formatter_Specs extends TestCase // Using_the_newid_formatters
 		INewIdParser parser = new ZBase32Parser();
 		NewId newId = parser.Parse(ns);
 
-		assertEquals(n, newId);
+		Assert.assertEquals(n, newId);
 	}
 
 	@Test
@@ -49,7 +49,7 @@ public class Formatter_Specs extends TestCase // Using_the_newid_formatters
 		INewIdParser parser = new Base32Parser();
 		NewId newId = parser.Parse(ns);
 
-		assertEquals(n, newId);
+		Assert.assertEquals(n, newId);
 	}
 
 	@Test
@@ -61,7 +61,7 @@ public class Formatter_Specs extends TestCase // Using_the_newid_formatters
 
 		String ns = n.toString(formatter, false);
 
-		assertEquals("UQP7OV4AN129HB4N79GGF8GJ10", ns);
+		Assert.assertEquals("UQP7OV4AN129HB4N79GGF8GJ10", ns);
 	}
 
 	@Test
@@ -72,7 +72,7 @@ public class Formatter_Specs extends TestCase // Using_the_newid_formatters
 
 		String ns = n.toString(formatter, false);
 
-		assertEquals("62ZHY7EKXBCJRLEXHJQQPIQTBA", ns);
+		Assert.assertEquals("62ZHY7EKXBCJRLEXHJQQPIQTBA", ns);
 	}
 
 	@Test
@@ -83,7 +83,7 @@ public class Formatter_Specs extends TestCase // Using_the_newid_formatters
 
 		String ns = n.toString(formatter, false);
 
-		assertEquals("6438A9RKZBNJTMRZ8JOOXEOUBY", ns);
+		Assert.assertEquals("6438A9RKZBNJTMRZ8JOOXEOUBY", ns);
 	}
 
 	@Test
@@ -95,7 +95,7 @@ public class Formatter_Specs extends TestCase // Using_the_newid_formatters
 		INewIdParser parser = new ZBase32Parser(true);
 		NewId newId = parser.Parse(ns);
 
-		assertEquals(n, newId);
+		Assert.assertEquals(n, newId);
 	}
 
 }

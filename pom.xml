@@ -15,28 +15,40 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+	 <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.10</version>
+				<configuration>
+			<includes>
+			 <include>**/*Test*.java</include>
+			 <include>**/*Test.java</include>
+			 <include>**/*TestCase.java</include>
+			 <include>**/*_Specs.java</include>
+			</includes>
+			<failIfNoTests>true</failIfNoTests>
+				</configuration>
+      </plugin>
 		</plugins>
 	</build>
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 			<version>2.2.0</version>
-		</dependency>
-		<dependency>
-	<groupId>commons-logging</groupId>
-	<artifactId>commons-logging</artifactId>
-	<version>1.1.1</version>
+		</dependency><dependency> 
+  <groupId>org.slf4j</groupId>
+  <artifactId>slf4j-log4j12</artifactId>
+  <version>1.7.5</version>
 </dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-jcl</artifactId>
+			<artifactId>log4j-core</artifactId>
 			<version>2.0-beta6</version>
 		</dependency>
 	</dependencies>

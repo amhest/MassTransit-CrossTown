@@ -4,7 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+
+
 
 import com.masstransitproject.crosstown.context.ISendContext;
 import com.masstransitproject.crosstown.serialization.IMessageSerializer;
@@ -22,10 +24,10 @@ import com.masstransitproject.crosstown.serialization.IMessageSerializer;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-public abstract class SerializationTest extends TestCase {
+public abstract class SerializationTest  {
 	protected abstract IMessageSerializer getSerializer();
 
-	@Override
+	@Before
 	public void setUp() {
 		// _serializer = new TSerializer();
 	}

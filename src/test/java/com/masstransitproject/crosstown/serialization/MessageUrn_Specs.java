@@ -1,15 +1,17 @@
 package com.masstransitproject.crosstown.serialization;
 
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 import com.masstransitproject.crosstown.MessageUrn;
 import com.masstransitproject.crosstown.messages.PingMessage;
 
-public class MessageUrnSpecs extends TestCase {
+public class MessageUrn_Specs {
 
+	@Test
 	public void TestSimpleMessage() {
 		String urn = MessageUrn.GetUrn(new PingMessage());
-		assertEquals(urn,
+		Assert.assertEquals(urn,
 				"message:MassTransit.TestFramework.Examples.Messages:Ping");
 	}
 
