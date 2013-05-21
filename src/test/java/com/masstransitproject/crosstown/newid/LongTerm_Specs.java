@@ -1,6 +1,7 @@
 package com.masstransitproject.crosstown.newid;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -12,7 +13,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.uuid.UUIDComparator; //UUID's don't do time-based comparisons natively
 import com.masstransitproject.crosstown.newid.providers.NetworkAddressWorkerIdProvider;
+import com.masstransitproject.crosstown.util.FineGrainTimestamp;
 
 // Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
@@ -30,6 +33,8 @@ import com.masstransitproject.crosstown.newid.providers.NetworkAddressWorkerIdPr
 public class LongTerm_Specs  // Generating_ids_over_time
 {
 	private Logger log = LoggerFactory.getLogger(LongTerm_Specs.class);
+	
+	
 
 	@Test
 	public void Should_keep_them_ordered_for_sql_server() throws IOException {
@@ -47,10 +52,13 @@ public class LongTerm_Specs  // Generating_ids_over_time
 		for (int i = 0; i < limit - 1; i++) {
 			Assert.assertFalse(ids[i].Equals(ids[i + 1]));
 
-			UUID left = ids[i].ToGuid();
-			;
-			UUID right = ids[i + 1].ToGuid();
-			Assert.assertTrue(left.compareTo(right) < 0);
+			UUID left = ids[i].ToSequentialGuid();
+			UUID right = ids[i + 1].ToSequentialGuid();
+
+			Assert.assertTrue(ids[i].getTimestamp() + " timestamp should be smaller than " + ids[i+1].getTimestamp(),ids[i].getTimestamp().compareTo(ids[i+1].getTimestamp()) < 0);
+			Assert.assertTrue(ids[i] + " should be smaller than " + ids[i+1],ids[i].compareTo(ids[i+1]) < 0);
+			Assert.assertTrue(left + " should be smaller than " + right,left.compareTo(right) < 0);
+			//Assert.assertTrue(left + " should be smaller than " + right,UUIDComparator.staticCompare(left,right) < 0);
 			if (i % 128 == 0)
 				log.trace(String.format("Normal: {0} Sql: {1}", new Object[] {
 						left, ids[i].ToSequentialGuid() }));
@@ -63,10 +71,13 @@ public class LongTerm_Specs  // Generating_ids_over_time
 		Calendar _previous = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
 		@Override
+		//This must return a ticks value, not milliseconds
 		public long getTicks() {
-			_previous.roll(Calendar.SECOND, _interval);
+			_previous.add(Calendar.SECOND, _interval);
 			_interval = _interval + 30;
-			return _previous.getTimeInMillis();
+			FineGrainTimestamp t =  FineGrainTimestamp.fromMillis(_previous.getTimeInMillis());
+			System.out.println(t);
+			return t.getTotalNanos();
 
 		}
 	}

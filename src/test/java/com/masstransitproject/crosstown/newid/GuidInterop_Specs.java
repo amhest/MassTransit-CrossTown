@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.uuid.impl.UUIDUtil;
+
 // Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -156,11 +158,10 @@ public class GuidInterop_Specs  // When_interoperating_with_the_UUID_type
 	public void Should_work_from_newid_to_UUID_to_newid() {
 		NewId n = NewId.Next();
 
-		UUID g = UUID.nameUUIDFromBytes(n.ToByteArray());
+		UUID g = UUIDUtil.uuid(n.ToByteArray());
 		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
 		bb.putLong(g.getMostSignificantBits());
 		bb.putLong(g.getLeastSignificantBits());
-		;
 		NewId ng = new NewId(bb.array());
 
 		log.trace(g.toString());

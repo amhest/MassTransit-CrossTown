@@ -17,6 +17,7 @@ import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.util.UUID;
 
+import com.fasterxml.uuid.impl.UUIDUtil;
 import com.masstransitproject.crosstown.newid.formatters.DashedHexFormatter;
 import com.masstransitproject.crosstown.newid.formatters.HexFormatter;
 import com.masstransitproject.crosstown.newid.providers.NetworkAddressWorkerIdProvider;
@@ -44,10 +45,10 @@ Comparable<NewId> {
 	static ITickProvider _tickProvider;
 	static IWorkerIdProvider _workerIdProvider;
 
-	private final int _a;
-	private final int _b;
-	private final int _c;
-	private final int _d;
+	private final long _a;
+	private final long _b;
+	private final long _c;
+	private final long _d;
 
 	// / <summary>
 	// / Creates a NewId using the specified byte array.
@@ -85,13 +86,14 @@ Comparable<NewId> {
 	}
 
 	private byte[] convertToBytes(UUID uuid) {
-		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
-		bb.putLong(uuid.getMostSignificantBits());
-		bb.putLong(uuid.getLeastSignificantBits());
-		return bb.array();
+//		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+//		bb.putLong(uuid.getMostSignificantBits());
+//		bb.putLong(uuid.getLeastSignificantBits());
+//		return bb.array();
+		
+		return  UUIDUtil.asByteArray(uuid);
 	}
-
-	public NewId(int a, int b, int c, int d) {
+	public NewId(long a, long b, long c, long d) {
 		_a = a;
 		_b = b;
 		_c = c;
@@ -136,9 +138,8 @@ Comparable<NewId> {
 
 	public Timestamp getTimestamp() {
 
-		long ticks = ((long) _a) << 32 | _b;
-
-		return new FineGrainTimestamp();
+		long ticks = (((long)_a)  << 32) | ((long)_b);
+		return  FineGrainTimestamp.fromNanos(ticks);
 
 	}
 
@@ -252,7 +253,7 @@ Comparable<NewId> {
 
 	public UUID ToGuid() {
 		ByteBuffer bb = ByteBuffer.allocate(16);
-		bb.putInt(_d);
+		bb.putInt((int)_d);
 		bb.putShort((short) _c);
 		bb.putShort((short) (_c >> 16));
 		bb.put((byte) (_b >> 8));
@@ -273,7 +274,7 @@ Comparable<NewId> {
 
 	public UUID ToSequentialGuid() {
 		ByteBuffer bb = ByteBuffer.allocate(16);
-		bb.putInt(_a);
+		bb.putInt((int)_a);
 		bb.putShort((short) (_b >> 16));
 		bb.putShort((short) _b);
 		bb.put((byte) (_c >> 24));
@@ -327,12 +328,12 @@ Comparable<NewId> {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		long result = 1;
 		result = prime * result + _a;
 		result = prime * result + _b;
 		result = prime * result + _c;
 		result = prime * result + _d;
-		return result;
+		return (int) result;
 	}
 
 	@Override

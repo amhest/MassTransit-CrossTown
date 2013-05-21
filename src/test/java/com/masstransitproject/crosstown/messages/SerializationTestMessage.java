@@ -37,7 +37,7 @@ public class SerializationTestMessage implements Serializable, IMessage {
 
 	@Override
 	public String getDotNetNamespace() {
-		return "MassTransit.Tests.Messages";
+		return "MassTransit.TestFramework.Examples.Messages";
 	}
 
 	public UUID getUUIDValue() {

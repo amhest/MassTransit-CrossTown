@@ -29,7 +29,7 @@ public class Timestamp_Specs  {
 	}
 
 	@Test
-	public void testtoString() {
+	public void testToString() {
 
 		long currentNanos = System.nanoTime();
 		Timestamp ts = new FineGrainTimestamp(currentNanos);

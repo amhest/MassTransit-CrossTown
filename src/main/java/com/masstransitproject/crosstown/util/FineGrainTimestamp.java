@@ -7,13 +7,19 @@ import java.text.SimpleDateFormat;
 public class FineGrainTimestamp extends Timestamp {
 
 	private static final int conversionFactor;
+	
+	//These are used to ensure millis are not supplied as nanos or vice versa
+	private static final long millisCheck;
+	private static final long nanosCheck;
 
 	static { // This really just ensures that the JVM is internally
 				// consistent
 
 		// Need to do some machinations to not double-count nanos
 		long nanos = System.nanoTime();
+		nanosCheck = nanos/10;
 		long millis = System.currentTimeMillis();
+		millisCheck = millis/10000;
 		long secs = (millis / 1000);
 
 		// Calculate this in case the granularity of nanos drifts
@@ -24,9 +30,8 @@ public class FineGrainTimestamp extends Timestamp {
 	private ThreadLocal<DateFormat> defaultFormatter = new ThreadLocal<DateFormat>();
 
 	private static long getWithZeroMillins(long currentTimeInNanos) {
-		long nanosMask = (currentTimeInNanos / conversionFactor)
-				* conversionFactor;
-		int nanosOnly = (int) (currentTimeInNanos - nanosMask);
+//		long nanosMask = (currentTimeInNanos / conversionFactor)
+//				* conversionFactor;
 		long currentTimeZeroMillis = currentTimeInNanos / conversionFactor
 				* 1000;
 
@@ -40,11 +45,33 @@ public class FineGrainTimestamp extends Timestamp {
 		return nanosOnly;
 	}
 
-	public FineGrainTimestamp(long currentTimeInNanos) {
+	protected FineGrainTimestamp(long currentTimeInNanos) {
 
 		super(getWithZeroMillins(currentTimeInNanos));
 		this.setNanos(getNanosOnly(currentTimeInNanos));
 
+	}
+	
+	public static FineGrainTimestamp fromNanos(long timeInNanos) {
+		
+		if (nanosCheck > timeInNanos) 
+			throw new IllegalArgumentException(timeInNanos + " should be a highly granular value greater than " + nanosCheck + 
+					". Should you call fromMillis() instead?" );
+		
+		return new FineGrainTimestamp( timeInNanos);
+	}
+	public static FineGrainTimestamp fromMillis(long timeInMillis) {
+		
+
+		if (timeInMillis > nanosCheck) 
+			throw new IllegalArgumentException(timeInMillis + " appears to be a highly granular value greater than " + nanosCheck + 
+					". Should you call fromNanos() instead?" );
+
+		if (timeInMillis > nanosCheck) 
+			throw new IllegalArgumentException(timeInMillis + " is too small to be a reasonable value for a recent time. ( < " + millisCheck + ")" );
+
+		
+		return new FineGrainTimestamp( timeInMillis * (conversionFactor / 1000) );
 	}
 
 	public long getTotalNanos() {

@@ -15,15 +15,15 @@ package com.masstransitproject.crosstown.newid;
 import java.io.IOException;
 
 public class NewIdGenerator {
-	final int _c;
-	final int _d;
+	final long _c;
+	final long _d;
 
 	final Object _sync = new Object();
 	final ITickProvider _tickProvider;
 	final byte[] _workerId;
 	final int _workerIndex;
-	int _a;
-	int _b;
+	long _a;
+	long _b;
 	long _lastTick;
 
 	int _sequence;
@@ -68,7 +68,10 @@ public class NewIdGenerator {
 		_lastTick = tick;
 		_sequence = 0;
 
-		_a = (int) (tick >> 32);
-		_b = (int) (tick & 0xFFFFFFFF);
+		 //Java requires this be an unsigned shift in order to be consistent with the c#
+		 _a = (long) (tick >>> 32);
+		 
+		 //Java requires this be stored as a long so the shifting isn't lossy
+		 _b = (long) (tick & 0xFFFFFFFFl) ; 
 	}
 }
