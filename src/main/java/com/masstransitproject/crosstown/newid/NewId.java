@@ -426,14 +426,14 @@ Comparable<NewId> {
 
     static ABCD FromByteArray(byte[] bytes) {
 		ABCD holder = new ABCD();
-		holder.a = bytesToLong(bytes[10],bytes[11],bytes[12] ,bytes[13]);
-		holder.b = bytesToLong(bytes[14],bytes[15],bytes[8],bytes[9]);
-		holder.c = bytesToLong(bytes[7],bytes[6],bytes[5],bytes[4]);
-		holder.d = bytesToLong(bytes[3],bytes[2],bytes[1],bytes[0]);
+		holder.a = bytesToInt(bytes[10],bytes[11],bytes[12] ,bytes[13]);
+		holder.b = bytesToInt(bytes[14],bytes[15],bytes[8],bytes[9]);
+		holder.c = bytesToInt(bytes[7],bytes[6],bytes[5],bytes[4]);
+		holder.d = bytesToInt(bytes[3],bytes[2],bytes[1],bytes[0]);
 		
 		return holder;
 	}
-	public static long bytesToLong(byte f, byte g, byte h, byte i ) {
+    static int bytesToInt(byte f, byte g, byte h, byte i ) {
 	    ByteBuffer buffer = ByteBuffer.allocate(4);
 	    buffer.put(f);
 	    buffer.put(g);
@@ -443,7 +443,7 @@ Comparable<NewId> {
 	    return buffer.getInt();
 	}
 
-	private static byte[] longToBytes(long x) {
+    static byte[] longToBytes(long x) {
 	    ByteBuffer buffer = ByteBuffer.allocate(8);
 	    buffer.putLong(x);
 	    return buffer.array();

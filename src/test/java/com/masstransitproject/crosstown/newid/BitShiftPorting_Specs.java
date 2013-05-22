@@ -111,10 +111,10 @@ public class BitShiftPorting_Specs {
 	private byte[] ToByteArray(ABCD abcd) {
 		byte[] bytes = new byte[16];
 
-		byte[] td = longToBytes(abcd.d);
-		byte[] tc = longToBytes(abcd.c);
-		byte[] tb = longToBytes(abcd.b);
-		byte[] ta = longToBytes(abcd.a);
+		byte[] td = NewId.longToBytes(abcd.d);
+		byte[] tc = NewId.longToBytes(abcd.c);
+		byte[] tb = NewId.longToBytes(abcd.b);
+		byte[] ta = NewId.longToBytes(abcd.a);
 		bytes[0] = td[7];
 		bytes[1] = td[6];
 		bytes[2] = td[5];
@@ -149,10 +149,10 @@ public class BitShiftPorting_Specs {
 	}
     ABCD FromByteArray(byte[] bytes) {
 		ABCD holder = new ABCD();
-		holder.a = bytesToLong(bytes[10],bytes[11],bytes[12] ,bytes[13]);
-		holder.b = bytesToLong(bytes[14],bytes[15],bytes[8],bytes[9]);
-		holder.c = bytesToLong(bytes[7],bytes[6],bytes[5],bytes[4]);
-		holder.d = bytesToLong(bytes[3],bytes[2],bytes[1],bytes[0]);
+		holder.a = NewId.bytesToInt(bytes[10],bytes[11],bytes[12] ,bytes[13]);
+		holder.b = NewId.bytesToInt(bytes[14],bytes[15],bytes[8],bytes[9]);
+		holder.c = NewId.bytesToInt(bytes[7],bytes[6],bytes[5],bytes[4]);
+		holder.d = NewId.bytesToInt(bytes[3],bytes[2],bytes[1],bytes[0]);
 		
 		return holder;
 	}
@@ -169,21 +169,6 @@ public class BitShiftPorting_Specs {
 //		return holder;
 //	}
 	
-	private static long bytesToLong(byte f, byte g, byte h, byte i ) {
-	    ByteBuffer buffer = ByteBuffer.allocate(4);
-	    buffer.put(f);
-	    buffer.put(g);
-	    buffer.put(h);
-	    buffer.put(i);
-	    buffer.flip();//need flip 
-	    return buffer.getInt();
-	}
-	
-	private static byte[] longToBytes(long x) {
-	    ByteBuffer buffer = ByteBuffer.allocate(8);
-	    buffer.putLong(x);
-	    return buffer.array();
-	}
 	
 	@Test
 	public void should_convert_from_four_longs_to_four_bytes_and_back() {
