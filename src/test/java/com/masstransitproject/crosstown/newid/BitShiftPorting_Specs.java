@@ -108,32 +108,27 @@ public class BitShiftPorting_Specs {
 //		return bytes;
 //	}
 
-	private byte[] ToByteArray(ABCD abcd) {
-		byte[] bytes = new byte[16];
-
-		byte[] td = NewId.longToBytes(abcd.d);
-		byte[] tc = NewId.longToBytes(abcd.c);
-		byte[] tb = NewId.longToBytes(abcd.b);
-		byte[] ta = NewId.longToBytes(abcd.a);
-		bytes[0] = td[7];
-		bytes[1] = td[6];
-		bytes[2] = td[5];
-		bytes[3] = td[4];
-		bytes[4] = tc[7];
-		bytes[5] = tc[6];
-		bytes[6] = tc[5];
-		bytes[7] = tc[4];
-		bytes[8] = tb[6];
-		bytes[9] = tb[7];
-		bytes[10] = ta[4];
-		bytes[11] = ta[5];
-		bytes[12] = ta[6];
-		bytes[13] = ta[7];
-		bytes[14] = tb[4];
-		bytes[15] = tb[5];
-
-		return bytes;
+    public byte[] ToByteArray(ABCD abcd) {
+		
+	    ByteBuffer buffer = ByteBuffer.allocate(16);
+	    buffer.order(ByteOrder.LITTLE_ENDIAN);
+	    buffer.putInt((int) abcd.d);
+	    buffer.putInt((int) abcd.c);
+	    
+	    ByteBuffer bb = ByteBuffer.allocate(4);
+	    bb.putInt((int)abcd.b);
+	    bb.flip();
+	    byte[] b = bb.array();
+	    buffer.order(ByteOrder.BIG_ENDIAN);
+	    buffer.put(b[2]);
+	    buffer.put(b[3]);
+	    buffer.putInt((int) abcd.a);
+	    buffer.put(b[0]);
+	    buffer.put(b[1]);
+	    
+	    return buffer.array();
 	}
+	
 	
 	private static class ABCD {
 

@@ -322,55 +322,53 @@ Comparable<NewId> {
 		return new UUID(bb.getLong(), bb.getLong());
 	}
 
-//	public byte[] ToByteArray() {
+	
+
+
+//	private byte[] ToByteArray(ABCD abcd) {
 //		byte[] bytes = new byte[16];
 //
-//		bytes[0] = (byte) (_d);
-//		bytes[1] = (byte) (_d >> 8);
-//		bytes[2] = (byte) (_d >> 16);
-//		bytes[3] = (byte) (_d >> 24);
-//		bytes[4] = (byte) (_c);
-//		bytes[5] = (byte) (_c >> 8);
-//		bytes[6] = (byte) (_c >> 16);
-//		bytes[7] = (byte) (_c >> 24);
-//		bytes[8] = (byte) (_b >> 8);
-//		bytes[9] = (byte) (_b);
-//		bytes[10] = (byte) (_a >> 24);
-//		bytes[11] = (byte) (_a >> 16);
-//		bytes[12] = (byte) (_a >> 8);
-//		bytes[13] = (byte) (_a);
-//		bytes[14] = (byte) (_b >> 24);
-//		bytes[15] = (byte) (_b >> 16);
+//		bytes[0] = (byte) (abcd.d);
+//		bytes[1] = (byte) (abcd.d >> 8);
+//		bytes[2] = (byte) (abcd.d >> 16);
+//		bytes[3] = (byte) (abcd.d >> 24);
+//		bytes[4] = (byte) (abcd.c);
+//		bytes[5] = (byte) (abcd.c >> 8);
+//		bytes[6] = (byte) (abcd.c >> 16);
+//		bytes[7] = (byte) (abcd.c >> 24);
+//		bytes[8] = (byte) (abcd.b >> 8);
+//		bytes[9] = (byte) (abcd.b);
+//		bytes[10] = (byte) (abcd.a >> 24);
+//		bytes[11] = (byte) (abcd.a >> 16);
+//		bytes[12] = (byte) (abcd.a >> 8);
+//		bytes[13] = (byte) (abcd.a);
+//		bytes[14] = (byte) (abcd.b >> 24);
+//		bytes[15] = (byte) (abcd.b >> 16);
 //
 //		return bytes;
 //	}
 
 	public byte[] ToByteArray() {
-		byte[] bytes = new byte[16];
-
-		byte[] td = longToBytes(_d);
-		byte[] tc = longToBytes(_c);
-		byte[] tb = longToBytes(_b);
-		byte[] ta = longToBytes(_a);
-		bytes[0] = td[7];
-		bytes[1] = td[6];
-		bytes[2] = td[5];
-		bytes[3] = td[4];
-		bytes[4] = tc[7];
-		bytes[5] = tc[6];
-		bytes[6] = tc[5];
-		bytes[7] = tc[4];
-		bytes[8] = tb[6];
-		bytes[9] = tb[7];
-		bytes[10] = ta[4];
-		bytes[11] = ta[5];
-		bytes[12] = ta[6];
-		bytes[13] = ta[7];
-		bytes[14] = tb[4];
-		bytes[15] = tb[5];
-
-		return bytes;
+		
+	    ByteBuffer buffer = ByteBuffer.allocate(16);
+	    buffer.order(ByteOrder.LITTLE_ENDIAN);
+	    buffer.putInt((int) _d);
+	    buffer.putInt((int) _c);
+	    
+	    ByteBuffer bb = ByteBuffer.allocate(4);
+	    bb.putInt((int)_b);
+	    bb.flip();
+	    byte[] b = bb.array();
+	    buffer.order(ByteOrder.BIG_ENDIAN);
+	    buffer.put(b[2]);
+	    buffer.put(b[3]);
+	    buffer.putInt((int) _a);
+	    buffer.put(b[0]);
+	    buffer.put(b[1]);
+	    
+	    return buffer.array();
 	}
+	
 	@Override
 	public String toString() {
 		return toString("D", null);
@@ -439,15 +437,10 @@ Comparable<NewId> {
 	    buffer.put(g);
 	    buffer.put(h);
 	    buffer.put(i);
-	    buffer.flip();//need flip 
+	    buffer.flip();//need flip before we read back
 	    return buffer.getInt();
 	}
 
-    static byte[] longToBytes(long x) {
-	    ByteBuffer buffer = ByteBuffer.allocate(8);
-	    buffer.putLong(x);
-	    return buffer.array();
-	}
 	
 	private static class ABCD {
 
