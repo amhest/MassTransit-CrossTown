@@ -12,7 +12,7 @@ public class MessageUrn_Specs {
 	public void TestSimpleMessage() {
 		String urn = MessageUrn.GetUrn(new PingMessage());
 		Assert.assertEquals(urn,
-				"message:MassTransit.TestFramework.Examples.Messages:Ping");
+				"urn:message:MassTransit.TestFramework.Examples.Messages:PingMessage");
 	}
 
 }

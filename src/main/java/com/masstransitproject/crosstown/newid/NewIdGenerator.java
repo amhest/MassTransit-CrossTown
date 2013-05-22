@@ -13,6 +13,7 @@
 package com.masstransitproject.crosstown.newid;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class NewIdGenerator {
 	final long _c;
@@ -47,7 +48,7 @@ public class NewIdGenerator {
 	}
 
 	public NewId Next() {
-		int sequence;
+		long sequence;
 
 		long ticks = _tickProvider.getTicks();
 		synchronized (_sync) {
@@ -61,17 +62,28 @@ public class NewIdGenerator {
 			sequence = _sequence++;
 		}
 
-		return new NewId(_a, _b, _c, _d | sequence);
+		return new NewId(_a, _b,  _c,(_d | sequence));
 	}
 
 	void UpdateTimestamp(long tick) {
+		
+//		ByteBuffer buffer = ByteBuffer.allocate(8);
+//	    buffer.putLong(tick);
+//	    
+//	    buffer.flip();
+//
+//
+//	    _a = buffer.getInt();
+//	    _b = buffer.getInt();
+	    
+
 		_lastTick = tick;
 		_sequence = 0;
-
+		
 		 //Java requires this be an unsigned shift in order to be consistent with the c#
 		 _a = (long) (tick >>> 32);
 		 
 		 //Java requires this be stored as a long so the shifting isn't lossy
-		 _b = (long) (tick & 0xFFFFFFFFl) ; 
+		 _b = (long) (tick << 32 >>> 32) ; 
 	}
 }

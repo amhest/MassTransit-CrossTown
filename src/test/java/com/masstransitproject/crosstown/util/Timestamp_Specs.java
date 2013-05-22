@@ -37,7 +37,7 @@ public class Timestamp_Specs  {
 		Timestamp coarseTs = new Timestamp(new Date().getTime());
 
 		String fine = ts.toString();
-		String course = coarseTs.toString();
+		String course = coarseTs.toString().replace(" ", "T");
 
 		// prevent serious weirdness
 		Assert.assertEquals(

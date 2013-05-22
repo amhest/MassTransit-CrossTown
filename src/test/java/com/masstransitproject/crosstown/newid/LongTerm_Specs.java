@@ -50,7 +50,7 @@ public class LongTerm_Specs  // Generating_ids_over_time
 			ids[i] = generator.Next();
 
 		for (int i = 0; i < limit - 1; i++) {
-			Assert.assertFalse(ids[i].Equals(ids[i + 1]));
+			Assert.assertFalse(ids[i].equals(ids[i + 1]));
 
 			UUID left = ids[i].ToSequentialGuid();
 			UUID right = ids[i + 1].ToSequentialGuid();

@@ -14,10 +14,11 @@ package com.masstransitproject.crosstown.newid;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.UUID;
 
-import com.fasterxml.uuid.impl.UUIDUtil;
 import com.masstransitproject.crosstown.newid.formatters.DashedHexFormatter;
 import com.masstransitproject.crosstown.newid.formatters.HexFormatter;
 import com.masstransitproject.crosstown.newid.providers.NetworkAddressWorkerIdProvider;
@@ -71,27 +72,47 @@ Comparable<NewId> {
 	}
 
 	public NewId(String value) {
-		if (value == null || value.length() == 0)
-			throw new IllegalArgumentException(
-					"value must not be null or empty");
+		this(UUID.fromString(value));
+	}
+	
+	public NewId(UUID guid) {
+		
 
-		UUID guid = UUID.fromString(value);
-
-		byte[] bytes = convertToBytes(guid);
+		byte[] bytes = convertToNewIdBytes(guid);
+		
 		ABCD holder = FromByteArray(bytes);
 		_a = holder.a;
 		_b = holder.b;
 		_c = holder.c;
 		_d = holder.d;
 	}
+	
 
-	private byte[] convertToBytes(UUID uuid) {
-//		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
-//		bb.putLong(uuid.getMostSignificantBits());
-//		bb.putLong(uuid.getLeastSignificantBits());
-//		return bb.array();
+	private byte[] convertToNewIdBytes(UUID uuid) {
+		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
+		bb.putLong(uuid.getMostSignificantBits());
+		bb.putLong(uuid.getLeastSignificantBits());
+		bb.flip();
+		byte[] guidBytes = bb.array();
+		byte[] newIdBytes = Arrays.copyOf(guidBytes, guidBytes.length);
 		
-		return  UUIDUtil.asByteArray(uuid);
+		//
+		//if (uuid.variant() == 2) 
+		{
+			//System.out.println("Swapping for variant " + uuid.variant());
+		//Reverse part a
+			newIdBytes[0] = guidBytes[3];
+			newIdBytes[1] = guidBytes[2];
+			newIdBytes[2] = guidBytes[1];
+			newIdBytes[3] = guidBytes[0];
+			
+			//Flip each int in b
+				newIdBytes[4] = guidBytes[5];
+				newIdBytes[5] = guidBytes[4];
+				newIdBytes[6] = guidBytes[7];
+				newIdBytes[7] = guidBytes[6];
+		}
+		return newIdBytes;
 	}
 	public NewId(long a, long b, long c, long d) {
 		_a = a;
@@ -100,13 +121,13 @@ Comparable<NewId> {
 		_d = d;
 	}
 
-	public NewId(int a, short b, short c, byte d, byte e, byte f, byte g,
-			byte h, byte i, byte j, byte k) {
-		_a = (f << 24) | (g << 16) | (h << 8) | i;
-		_b = (j << 24) | (k << 16) | (d << 8) | e;
-		_c = (c << 16) | b;
-		_d = a;
-	}
+//	public NewId(int a, short b, short c, byte d, byte e, byte f, byte g,
+//			byte h, byte i, byte j, byte k) {
+//		_a = (f << 24) | (g << 16) | (h << 8) | i;
+//		_b = (j << 24) | (k << 16) | (d << 8) | e;
+//		_c = (c << 16) | b;
+//		_d = (int) a;
+//	}
 
 	static NewIdGenerator getGenerator() {
 		if (_generator == null) {
@@ -167,9 +188,17 @@ Comparable<NewId> {
 		return 0;
 	}
 
-	public boolean Equals(NewId other) {
-		return other._a == _a && other._b == _b && other._c == _c
-				&& other._d == _d;
+	public boolean equals(NewId other) {
+		return ((int) other._a) == ((int)_a) && ((int)other._b) == ((int)_b) && ((int)other._c) == ((int)_c)
+				&& ((int)other._d) == ((int)_d);
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof NewId) {
+			return this.equals((NewId) other); 
+		}
+		return false;
 	}
 
 	public String toString(String format, Object formatProvider) {
@@ -293,29 +322,55 @@ Comparable<NewId> {
 		return new UUID(bb.getLong(), bb.getLong());
 	}
 
+//	public byte[] ToByteArray() {
+//		byte[] bytes = new byte[16];
+//
+//		bytes[0] = (byte) (_d);
+//		bytes[1] = (byte) (_d >> 8);
+//		bytes[2] = (byte) (_d >> 16);
+//		bytes[3] = (byte) (_d >> 24);
+//		bytes[4] = (byte) (_c);
+//		bytes[5] = (byte) (_c >> 8);
+//		bytes[6] = (byte) (_c >> 16);
+//		bytes[7] = (byte) (_c >> 24);
+//		bytes[8] = (byte) (_b >> 8);
+//		bytes[9] = (byte) (_b);
+//		bytes[10] = (byte) (_a >> 24);
+//		bytes[11] = (byte) (_a >> 16);
+//		bytes[12] = (byte) (_a >> 8);
+//		bytes[13] = (byte) (_a);
+//		bytes[14] = (byte) (_b >> 24);
+//		bytes[15] = (byte) (_b >> 16);
+//
+//		return bytes;
+//	}
+
 	public byte[] ToByteArray() {
 		byte[] bytes = new byte[16];
 
-		bytes[0] = (byte) (_d);
-		bytes[1] = (byte) (_d >> 8);
-		bytes[2] = (byte) (_d >> 16);
-		bytes[3] = (byte) (_d >> 24);
-		bytes[4] = (byte) (_c);
-		bytes[5] = (byte) (_c >> 8);
-		bytes[6] = (byte) (_c >> 16);
-		bytes[7] = (byte) (_c >> 24);
-		bytes[8] = (byte) (_b >> 8);
-		bytes[9] = (byte) (_b);
-		bytes[10] = (byte) (_a >> 24);
-		bytes[11] = (byte) (_a >> 16);
-		bytes[12] = (byte) (_a >> 8);
-		bytes[13] = (byte) (_a);
-		bytes[14] = (byte) (_b >> 24);
-		bytes[15] = (byte) (_b >> 16);
+		byte[] td = longToBytes(_d);
+		byte[] tc = longToBytes(_c);
+		byte[] tb = longToBytes(_b);
+		byte[] ta = longToBytes(_a);
+		bytes[0] = td[7];
+		bytes[1] = td[6];
+		bytes[2] = td[5];
+		bytes[3] = td[4];
+		bytes[4] = tc[7];
+		bytes[5] = tc[6];
+		bytes[6] = tc[5];
+		bytes[7] = tc[4];
+		bytes[8] = tb[6];
+		bytes[9] = tb[7];
+		bytes[10] = ta[4];
+		bytes[11] = ta[5];
+		bytes[12] = ta[6];
+		bytes[13] = ta[7];
+		bytes[14] = tb[4];
+		bytes[15] = tb[5];
 
 		return bytes;
 	}
-
 	@Override
 	public String toString() {
 		return toString("D", null);
@@ -328,33 +383,14 @@ Comparable<NewId> {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		long result = 1;
-		result = prime * result + _a;
-		result = prime * result + _b;
-		result = prime * result + _c;
-		result = prime * result + _d;
-		return (int) result;
+		int result = 1;
+		result = prime * result + (int) _a;
+		result = prime * result + (int)_b;
+		result = prime * result + (int)_c;
+		result = prime * result + (int)_d;
+		return result;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		NewId other = (NewId) obj;
-		if (_a != other._a)
-			return false;
-		if (_b != other._b)
-			return false;
-		if (_c != other._c)
-			return false;
-		if (_d != other._d)
-			return false;
-		return true;
-	}
 
 	public static void SetGenerator(NewIdGenerator generator) {
 		_generator = generator;
@@ -376,23 +412,49 @@ Comparable<NewId> {
 		return getGenerator().Next().ToGuid();
 	}
 
-	static ABCD FromByteArray(byte[] bytes) {
-		ABCD holder = new ABCD();
-		holder.a = bytes[10] << 24 | bytes[11] << 16 | bytes[12] << 8
-				| bytes[13];
-		holder.b = bytes[14] << 24 | bytes[15] << 16 | bytes[8] << 8 | bytes[9];
-		holder.c = bytes[7] << 24 | bytes[6] << 16 | bytes[5] << 8 | bytes[4];
-		holder.d = bytes[3] << 24 | bytes[2] << 16 | bytes[1] << 8 | bytes[0];
+//	static ABCD FromByteArray(byte[] bytes) {
+//		ABCD holder = new ABCD();
+//		holder.a = bytes[10] << 24 | bytes[11] << 16 | bytes[12] << 8
+//				| bytes[13];
+//		holder.b = bytes[14] << 24 | bytes[15] << 16 | bytes[8] << 8 | bytes[9];
+//		holder.c = bytes[7] << 24 | bytes[6] << 16 | bytes[5] << 8 | bytes[4];
+//		holder.d = bytes[3] << 24 | bytes[2] << 16 | bytes[1] << 8 | bytes[0];
+//		
+//		return holder;
+//	}
+	
 
+    static ABCD FromByteArray(byte[] bytes) {
+		ABCD holder = new ABCD();
+		holder.a = bytesToLong(bytes[10],bytes[11],bytes[12] ,bytes[13]);
+		holder.b = bytesToLong(bytes[14],bytes[15],bytes[8],bytes[9]);
+		holder.c = bytesToLong(bytes[7],bytes[6],bytes[5],bytes[4]);
+		holder.d = bytesToLong(bytes[3],bytes[2],bytes[1],bytes[0]);
+		
 		return holder;
 	}
+	public static long bytesToLong(byte f, byte g, byte h, byte i ) {
+	    ByteBuffer buffer = ByteBuffer.allocate(4);
+	    buffer.put(f);
+	    buffer.put(g);
+	    buffer.put(h);
+	    buffer.put(i);
+	    buffer.flip();//need flip 
+	    return buffer.getInt();
+	}
 
+	private static byte[] longToBytes(long x) {
+	    ByteBuffer buffer = ByteBuffer.allocate(8);
+	    buffer.putLong(x);
+	    return buffer.array();
+	}
+	
 	private static class ABCD {
 
-		public int a;
-		public int b;
-		public int c;
-		public int d;
+		public long a;
+		public long b;
+		public long c;
+		public long d;
 
 	}
 }

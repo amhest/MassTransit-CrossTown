@@ -56,15 +56,12 @@ public class Usage_Specs  // Using_a_new_id
 	@Test
 	public void Should_work_from_UUID_to_newid_to_UUID() {
 		UUID g = UUID.randomUUID();
-		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
-		bb.putLong(g.getMostSignificantBits());
-		bb.putLong(g.getLeastSignificantBits());
+		
+		NewId n = new NewId(g);
 
-		NewId n = new NewId(bb.array());
 
-		String gs = g.toString();// g.toString("d");
-		String ns = n.toString("d");
-
-		Assert.assertEquals(gs, ns);
+		Assert.assertEquals(g, n.ToGuid());
+	
+		
 	}
 }

@@ -56,7 +56,7 @@ public class NewId_Specs  // Using_the_newid_generator
 			ids[i] = NewId.Next();
 
 		for (int i = 0; i < limit - 1; i++) {
-			Assert.assertFalse(ids[i].Equals(ids[i + 1]));
+			Assert.assertFalse(ids[i].equals(ids[i + 1]));
 			log.trace(ids[i].toString());
 		}
 	}
