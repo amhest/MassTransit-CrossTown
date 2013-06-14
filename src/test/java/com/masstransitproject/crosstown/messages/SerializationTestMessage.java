@@ -68,8 +68,8 @@ public class SerializationTestMessage implements Serializable, IMessage {
 		return StringValue;
 	}
 
-	public void setStringValue(String stringValue) {
-		StringValue = stringValue;
+	public void setStringValue(String StringValue) {
+		StringValue = StringValue;
 	}
 
 	public int getIntValue() {

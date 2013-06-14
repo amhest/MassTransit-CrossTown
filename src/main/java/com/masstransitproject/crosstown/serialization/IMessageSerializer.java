@@ -22,10 +22,10 @@ import com.masstransitproject.crosstown.context.ISendContext;
 
 /// <summary>
 /// Message Serialization implementors should handle the nitty-gritty
-/// details of writing object instances to streams and reading them back
+/// details of writing Object instances to streams and reading them back
 /// up from streams.
 /// </summary>
-public interface IMessageSerializer {
+public interface IMessageSerializer<T> {
 	// / <summary>
 	// / The content type that identifies the message serializer
 	// / </summary>
@@ -38,14 +38,14 @@ public interface IMessageSerializer {
 	// serialize</typeparam>
 	// / <param name="stream">The stream to write the context to</param>
 	// / <param name="context">The context to send</param>
-	public void Serialize(OutputStream stream, IMessage message,
+	public void Serialize(OutputStream stream, T message,
 			ISendContext ctx) throws IOException;
 
 	// / <summary>
 	// / Deserialize a message from the stream by reading the
 	// / </summary>
 	// / <param name="context">The context to deserialize</param>
-	// / <returns>An object that was deserialized</returns>
+	// / <returns>An Object that was deserialized</returns>
 
 	/**
 	 * Since we don't receive messages I short-circuited the original signature
@@ -54,5 +54,5 @@ public interface IMessageSerializer {
 	 * @return
 	 * @throws IOException
 	 */
-	IMessage Deserialize(InputStream stream) throws IOException;
+	T Deserialize(InputStream stream) throws IOException;
 }

@@ -1,3 +1,9 @@
+package com.masstransitproject.crosstown.serialization;
+
+import java.util.*;
+
+import com.masstransitproject.crosstown.context.ISendContext;
+
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -10,171 +16,206 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-package com.masstransitproject.crosstown.serialization;
 
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
 
-import com.masstransitproject.crosstown.IMessage;
-import com.masstransitproject.crosstown.MessageUrn;
+	/// <summary>
+	/// The envelope in use for storing meta-data/out-of-band data and message object data.
+	/// </summary>
+    public class Envelope
+    {
+        Envelope(Object message, List<Class> messageTypes)
+        {
+            Headers = new HashMap<String, String>();
+            MessageType = convertMessageTypeClassesToUrns(messageTypes);
+            Message = message;
+        }
+        
+        private List<String> convertMessageTypeClassesToUrns(List<Class> messageTypes) {
+        	new List<String>(messageTypes.Select(type => new MessageUrn(type).ToString()));
+            
+        
+        }
 
-/// <summary>
-/// The envelope in use for storing meta-data/out-of-band data and message Object data.
-/// </summary>
-public class Envelope {
-	Envelope(IMessage message) {
-		Headers = new HashMap<String, String>();
+        protected Envelope()
+        {
+            Headers = new HashMap<String, String>();
+            MessageType = new ArrayList<String>();
+        }
 
-		Message = message;
-		MessageType = MessageUrn.GetUrn(message);
-	}
+        private String RequestId;
+        private String ConversationId;
+        private String CorrelationId;
+        private String DestinationAddress;
+        private Date ExpirationTime;
+        private String FaultAddress;
+        private Map<String, String> Headers;
+        private Object Message;
+        private String MessageId;
+        private List<String> MessageType;
+        private String Network;
+        private String ResponseAddress;
+        private int RetryCount;
+        private String SourceAddress;
 
-	protected Envelope() {
-		Headers = new HashMap<String, String>();
+        
+		public String getRequestId() {
+			return RequestId;
+		}
 
-	}
+		public void setRequestId(String requestId) {
+			RequestId = requestId;
+		}
 
-	private String RequestId;
-	private String ConversationId;
-	private String CorrelationId;
-	private String DestinationAddress;
-	private Timestamp ExpirationTime;
-	private String FaultAddress;
-	private Map<String, String> Headers;
-	private IMessage Message;
-	private String MessageId;
-	private String MessageType;
-	private String Network;
-	private String ResponseAddress;
-	private int RetryCount;
-	private String SourceAddress;
+		public String getConversationId() {
+			return ConversationId;
+		}
 
-	public String getRequestId() {
-		return RequestId;
-	}
+		public void setConversationId(String conversationId) {
+			ConversationId = conversationId;
+		}
 
-	public void setRequestId(String requestId) {
-		RequestId = requestId;
-	}
+		public String getCorrelationId() {
+			return CorrelationId;
+		}
 
-	public String getConversationId() {
-		return ConversationId;
-	}
+		public void setCorrelationId(String correlationId) {
+			CorrelationId = correlationId;
+		}
 
-	public void setConversationId(String conversationId) {
-		ConversationId = conversationId;
-	}
+		public String getDestinationAddress() {
+			return DestinationAddress;
+		}
 
-	public String getCorrelationId() {
-		return CorrelationId;
-	}
+		public void setDestinationAddress(String destinationAddress) {
+			DestinationAddress = destinationAddress;
+		}
 
-	public void setCorrelationId(String correlationId) {
-		CorrelationId = correlationId;
-	}
+		public Date getExpirationTime() {
+			return ExpirationTime;
+		}
 
-	public String getDestinationAddress() {
-		return DestinationAddress;
-	}
+		public void setExpirationTime(Date expirationTime) {
+			ExpirationTime = expirationTime;
+		}
 
-	public void setDestinationAddress(String destinationAddress) {
-		DestinationAddress = destinationAddress;
-	}
+		public String getFaultAddress() {
+			return FaultAddress;
+		}
 
-	public Timestamp getExpirationTime() {
-		return ExpirationTime;
-	}
+		public void setFaultAddress(String faultAddress) {
+			FaultAddress = faultAddress;
+		}
 
-	public void setExpirationTime(Timestamp expirationTime) {
-		ExpirationTime = expirationTime;
-	}
+		public Map<String, String> getHeaders() {
+			return Headers;
+		}
 
-	public String getFaultAddress() {
-		return FaultAddress;
-	}
+		public void setHeaders(Map<String, String> headers) {
+			Headers = headers;
+		}
 
-	public void setFaultAddress(String faultAddress) {
-		FaultAddress = faultAddress;
-	}
+		public Object getMessage() {
+			return Message;
+		}
 
-	public Map<String, String> getHeaders() {
-		return Headers;
-	}
+		public void setMessage(Object message) {
+			Message = message;
+		}
 
-	public void setHeaders(Map<String, String> headers) {
-		Headers = headers;
-	}
+		public String getMessageId() {
+			return MessageId;
+		}
 
-	public IMessage getMessage() {
-		return Message;
-	}
+		public void setMessageId(String messageId) {
+			MessageId = messageId;
+		}
 
-	public void setMessage(IMessage message) {
-		Message = message;
-	}
+		public List<String> getMessageType() {
+			return MessageType;
+		}
 
-	public String getMessageId() {
-		return MessageId;
-	}
+		public void setMessageType(List<String> messageType) {
+			MessageType = messageType;
+		}
 
-	public void setMessageId(String messageId) {
-		MessageId = messageId;
-	}
+		public String getNetwork() {
+			return Network;
+		}
 
-	public String getMessageType() {
-		return MessageType;
-	}
+		public void setNetwork(String network) {
+			Network = network;
+		}
 
-	public void setMessageType(String messageType) {
-		MessageType = messageType;
-	}
+		public String getResponseAddress() {
+			return ResponseAddress;
+		}
 
-	public String getNetwork() {
-		return Network;
-	}
+		public void setResponseAddress(String responseAddress) {
+			ResponseAddress = responseAddress;
+		}
 
-	public void setNetwork(String network) {
-		Network = network;
-	}
+		public int getRetryCount() {
+			return RetryCount;
+		}
 
-	public String getResponseAddress() {
-		return ResponseAddress;
-	}
+		public void setRetryCount(int retryCount) {
+			RetryCount = retryCount;
+		}
 
-	public void setResponseAddress(String responseAddress) {
-		ResponseAddress = responseAddress;
-	}
+		public String getSourceAddress() {
+			return SourceAddress;
+		}
 
-	public int getRetryCount() {
-		return RetryCount;
-	}
+		public void setSourceAddress(String sourceAddress) {
+			SourceAddress = sourceAddress;
+		}
 
-	public void setRetryCount(int retryCount) {
-		RetryCount = retryCount;
-	}
+		/// <summary>
+		/// Creates a new envelope using the passed send context.
+		/// </summary>
+		/// <typeparam name="T">The type of message</typeparam>
+		/// <param name="context">Context to write to the envelope</param>
+		/// <returns>The constructed envelope</returns>
+        public static <T> Envelope Create(ISendContext<T> context)
+        {
+        	Envelope envelope = new Envelope(context.getMessage(), 
+        			
+        			
+        			context.GetMessageTypes());
+            envelope.SetUsingContext(context);
 
-	public String getSourceAddress() {
-		return SourceAddress;
-	}
+            return envelope;
+        }
+        
+    	
 
-	public void setSourceAddress(String sourceAddress) {
-		SourceAddress = sourceAddress;
-	}
+		/// <summary>
+		/// Transfers all contextual data to the envelop. 
+		/// As such it 'sets the envelope data to that of the context'. Used by the outbound
+		/// transports as the envelope needs to be hydrated from the meta-data and message object
+		/// that is being passed down the outbound pipeline to the transport.
+		/// </summary>
+		/// <param name="envelope">Envelope instance to hydrate with context data.</param>
+		/// <param name="context">The context to take the contextual data from.</param>
+        public static void SetUsingContext(ISendContext context)
+        {
+        	Envelope envelope = new Envelope();
+            envelope.setRequestId(context.getRequestId());
+            envelope.setConversationId(context.getConversationId());
+            envelope.setCorrelationId(context.getCorrelationId());
+            envelope.setSourceAddress(context.getSourceAddress());
+            envelope.setDestinationAddress(context.getDestinationAddress.ToStringOrNull() ?? envelope.setDestinationAddress);
+            envelope.setResponseAddress(context.getResponseAddress.ToStringOrNull() ?? envelope.setResponseAddress);
+            envelope.setFaultAddress(context.getFaultAddress.ToStringOrNull() ?? envelope.setFaultAddress);
+            envelope.setNetwork(context.getNetwork);
+            envelope.setRetryCount(context.getRetryCount);
+            if (context.getExpirationTime.HasValue)
+                envelope.setExpirationTime(context.getExpirationTime.Value);
 
-	// /// <summary>
-	// /// Creates a new envelope using the passed send context.
-	// /// </summary>
-	// /// <typeparam name="T">The type of message</typeparam>
-	// /// <param name="context">Context to write to the envelope</param>
-	// /// <returns>The constructed envelope</returns>
-	// private static Envelope Create<T>(ISendContext<T> context)
-	// where T : class
-	// {
-	// var envelope = new Envelope(context.Message,
-	// context.Message.GetType().GetMessageTypes());
-	// envelope.SetUsingContext(context);
-	//
-	// return envelope;
-	// }
+            foreach (var header in context.Headers)
+            {
+                envelope.Headers[header.Key] = header.Value;
+            }
+        }
+    }
 }

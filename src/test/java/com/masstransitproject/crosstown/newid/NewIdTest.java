@@ -90,7 +90,7 @@ public class NewIdTest {
 		for (int i = 0; i < limit - 1; i++) {
 			Assert.assertFalse(ids[i] + " equals " + ids[i + 1],
 					ids[i].equals(ids[i + 1]));
-			String end = ids[i].toString("d",true).substring(32, 32+4);
+			String end = ids[i].toString("d",true).subString(32, 32+4);
 			if (end == "0000")
 				System.out.println(ids[i].toString());
 		}

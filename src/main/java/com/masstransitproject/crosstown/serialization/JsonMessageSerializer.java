@@ -21,10 +21,9 @@ import java.io.OutputStream;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.masstransitproject.crosstown.IMessage;
 import com.masstransitproject.crosstown.context.ISendContext;
 
-public class JsonMessageSerializer implements IMessageSerializer {
+public class JsonMessageSerializer<T> implements IMessageSerializer<T> {
 	private static final String ContentTypeHeaderValue = "application/vnd.masstransit+json";
 
 	@Override
@@ -33,27 +32,27 @@ public class JsonMessageSerializer implements IMessageSerializer {
 	}
 
 	@Override
-	public void Serialize(OutputStream stream, IMessage message,
+	public void Serialize(OutputStream stream, T message,
 			ISendContext ctx) throws IOException {
 
 		Envelope evp = new Envelope(message);
 		evp.setMessageId(ctx.getMessageId());
 
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setSerializationInclusion(Include.NON_NULL);
-		objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+		ObjectMapper ObjectMapper = new ObjectMapper();
+		ObjectMapper.setSerializationInclusion(Include.NON_NULL);
+		ObjectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
 
-		objectMapper.writeValue(stream, evp);
+		ObjectMapper.writeValue(stream, evp);
 
 	}
 
 	@Override
-	public IMessage Deserialize(InputStream stream) throws IOException {
+	public T Deserialize(InputStream stream) throws IOException {
 
-		ObjectMapper objectMapper = new ObjectMapper();
-		Envelope evp = objectMapper.readValue(new InputStreamReader(stream),
+		ObjectMapper ObjectMapper = new ObjectMapper();
+		Envelope evp = ObjectMapper.readValue(new InputStreamReader(stream),
 				Envelope.class);
-		return evp.getMessage();
+		return (T) evp.getMessage();
 	}
 
 	// public static JsonSerializer Deserializer

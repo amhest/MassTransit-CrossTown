@@ -200,7 +200,7 @@ public class GuidInterop_Specs  // When_interoperating_with_the_UUID_type
 	}
 
 	@Test
-	public void Should_new_and_from_string_yield_same_bytes() {
+	public void Should_new_and_from_String_yield_same_bytes() {
 		NewId n = NewId.Next();
 
 		String s = n.toString();
