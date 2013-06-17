@@ -1,4 +1,4 @@
-package com.masstransitproject.crosstown;
+package com.masstransitproject.crosstown.handlers;
 
 
 public class FaultHandler{

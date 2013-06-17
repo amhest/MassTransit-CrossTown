@@ -7,10 +7,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 
-import com.masstransitproject.crosstown.FaultHandler;
 import com.masstransitproject.crosstown.IEndpoint;
 import com.masstransitproject.crosstown.IEndpointAddress;
 import com.masstransitproject.crosstown.IServiceBus;
+import com.masstransitproject.crosstown.handlers.FaultHandler;
 import com.masstransitproject.crosstown.serialization.IMessageTypeConverter;
 
 // Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.

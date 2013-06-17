@@ -12,6 +12,12 @@
 // specific language governing permissions and limitations under the License.
 package com.masstransitproject.crosstown;
 
+import com.masstransitproject.crosstown.context.ISendContext;
+import com.masstransitproject.crosstown.handlers.ReceiveHandler;
+import com.masstransitproject.crosstown.handlers.SendCallback;
+import com.masstransitproject.crosstown.serialization.IMessageSerializer;
+import com.masstransitproject.crosstown.transports.IOutboundTransport;
+
 
     /// <summary>
     /// <para>IEndpoint is implemented by an endpoint. An endpoint is an addressable location on the network.</para>
@@ -47,7 +53,7 @@ package com.masstransitproject.crosstown;
         /// <summary>
         /// The message serializer being used by the endpoint
         /// </summary>
-        IMessageSerializer getSerializer();
+        IMessageSerializer<T> getSerializer();
 
         /// <summary>
         /// Send to the endpoint
@@ -56,14 +62,14 @@ package com.masstransitproject.crosstown;
         /// <param name="context">Send context to generate the in-transport message from. Contains
         /// out-of-band data such as message ids, correlation ids, headers, and in-band data
         /// such as the actual data of the message to send.</param>
-        void Send<T>(ISendContext<T> context);
+        <T> void Send(ISendContext<T> context);
 
         /// <summary>
         /// Send a message to an endpoint
         /// </summary>
         /// <typeparam name="T">The message type</typeparam>
         /// <param name="message">The message to send</param>
-        void Send<T>(T message);
+        <T> void Send(T message);
 
         /// <summary>
         /// Send a message to an endpoint
@@ -71,30 +77,30 @@ package com.masstransitproject.crosstown;
         /// <typeparam name="T">The message type</typeparam>
         /// <param name="message">The message to send</param>
         /// <param name="contextCallback">A callback method to modify the send context for the message</param>
-        void Send<T>(T message, SendCallback contextCallback);
+        <T> void Send(T message, SendCallback contextCallback);
 
-        /// <summary>
-        /// Sends an Object as a message, using the message type specified. If the Object cannot be cast
-        /// to the specified message type, an exception will be thrown.
-        /// </summary>
-        /// <param name="message">The message Object</param>
-        void Send(Object message);
-
-        /// <summary>
-        /// Sends an Object as a message, using the message type specified. If the Object cannot be cast
-        /// to the specified message type, an exception will be thrown.
-        /// </summary>
-        /// <param name="message">The message Object</param>
-        /// <param name="messageType">The type of the message (use message.GetType() if desired)</param>
-        void Send(Object message, Class messageType);
-
-        /// <summary>
-        /// Sends an Object as a message, using the message type specified. If the Object cannot be cast
-        /// to the specified message type, an exception will be thrown.
-        /// </summary>
-        /// <param name="message">The message Object</param>
-        /// <param name="contextCallback">Allows the context values to be specified</param>
-        void Send(Object message, SendCallback contextCallback);
+//        /// <summary>
+//        /// Sends an Object as a message, using the message type specified. If the Object cannot be cast
+//        /// to the specified message type, an exception will be thrown.
+//        /// </summary>
+//        /// <param name="message">The message Object</param>
+//        void Send(Object message);
+//
+//        /// <summary>
+//        /// Sends an Object as a message, using the message type specified. If the Object cannot be cast
+//        /// to the specified message type, an exception will be thrown.
+//        /// </summary>
+//        /// <param name="message">The message Object</param>
+//        /// <param name="messageType">The type of the message (use message.GetType() if desired)</param>
+//        void Send(Object message, Class messageType);
+//
+//        /// <summary>
+//        /// Sends an Object as a message, using the message type specified. If the Object cannot be cast
+//        /// to the specified message type, an exception will be thrown.
+//        /// </summary>
+//        /// <param name="message">The message Object</param>
+//        /// <param name="contextCallback">Allows the context values to be specified</param>
+//        void Send(Object message, SendCallback contextCallback);
 
         /// <summary>
         /// Sends an Object as a message, using the message type specified. If the Object cannot be cast
@@ -132,6 +138,5 @@ package com.masstransitproject.crosstown;
         /// </summary>
         /// <param name="receiver">The function to preview/consume the message</param>
         /// <param name="timeout">The time to wait for a message to be available</param>
-        void Receive(Func<IReceiveContext, Action<IReceiveContext>> receiver, TimeSpan timeout);
+        void Receive(ReceiveHandler receiver, long timeout);
     }
-}

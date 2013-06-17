@@ -1,5 +1,7 @@
 package com.masstransitproject.crosstown;
 
+import java.net.URI;
+
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -17,9 +19,7 @@ package com.masstransitproject.crosstown;
     /// <summary>
     /// The endpoint factory methods used to retrieve Objects implementing IEndpoint from Uris.
     /// </summary>
-    public interface IEndpointCache :
-        DiagnosticsSource,
-        IDisposable
+    public interface IEndpointCache 
     {
         /// <summary>
         /// Returns an IEndpoint for the Uri specified. If the endpoint has not yet been created,
@@ -32,7 +32,6 @@ package com.masstransitproject.crosstown;
         /// <exception cref="ConfigurationException">The scheme in the uri didn't have a corresponding
         /// <see cref="ITransportFactory"/> configured in the bus; the bus doesn't know how to
         /// send over such a scheme/transport protocol.</exception>
-        [NotNull]
-        IEndpoint GetEndpoint(Uri uri);
+      
+        IEndpoint GetEndpoint(URI uri);
     }
-}

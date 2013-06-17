@@ -1,7 +1,7 @@
 ﻿package com.masstransitproject.crosstown.context;
 
 import com.masstransitproject.crosstown.IEndpointAddress;
-import com.masstransitproject.crosstown.SendCallback;
+import com.masstransitproject.crosstown.handlers.SendCallback;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  

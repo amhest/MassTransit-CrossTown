@@ -1,5 +1,12 @@
 package com.masstransitproject.crosstown;
 
+import java.net.URI;
+
+import com.masstransitproject.crosstown.handlers.SendCallback;
+import com.masstransitproject.crosstown.handlers.UnsubscribeAction;
+import com.masstransitproject.crosstown.handlers.UnsubscribeHandler;
+import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
+
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -34,7 +41,7 @@ package com.masstransitproject.crosstown;
         /// <summary>
         ///   The endpoint from which messages are received
         /// </summary>
-        IEndpoint Endpoint getEndpoint();
+        IEndpoint getEndpoint();
 
         /// <summary>
         /// Gets the inbound message pipeline.
@@ -44,7 +51,7 @@ package com.masstransitproject.crosstown;
         /// <summary>
         /// Gets the outbound message pipeline.
         /// </summary>
-        IOutboundMessagePipeline OutboundPipeline { get; }
+        IOutboundMessagePipeline getOutboundPipeline();
 
         /// <summary>
         /// Gets the control bus that can be used 
@@ -52,7 +59,7 @@ package com.masstransitproject.crosstown;
         /// handlers around and tap runtime metrics
         /// from the service bus.
         /// </summary>
-        IServiceBus getControlBus()
+        IServiceBus getControlBus();
 
         /// <summary>
         /// Gets the endpoint cache. This property is used
@@ -76,7 +83,7 @@ package com.masstransitproject.crosstown;
         /// </summary>
         /// <typeparam name = "T">The type of the message</typeparam>
         /// <param name = "message">The messages to be published</param>
-        void Publish<T extends object>(T message);
+        <T> void Publish(T message);
 
         /// <summary>
         /// <para>Publishes a message to all subscribed consumers for the message type as specified
@@ -91,78 +98,75 @@ package com.masstransitproject.crosstown;
         /// <param name = "message">The messages to be published</param>
         /// <param name = "contextCallback">A callback that gives the caller
         /// access to the publish context.</param>
-        void Publish<T>(T message, Action<IPublishContext<T>> contextCallback)
-            where T : class;
+        <T> void Publish(T message, SendCallback contextCallback);
+
+//        /// <summary>
+//        /// Publishes an Object as a message, using the message type specified. If the Object cannot be cast
+//        /// to the specified message type, an exception will be thrown.
+//        /// </summary>
+//        /// <param name="message">The message Object</param>
+//        void Publish(Object message);
+
+//        /// <summary>
+//        /// Publishes an Object as a message, using the message type specified. If the Object cannot be cast
+//        /// to the specified message type, an exception will be thrown.
+//        /// </summary>
+//        /// <param name="message">The message Object</param>
+//        /// <param name="messageType">The type of the message (use message.GetType() if desired)</param>
+//        void Publish(Object message, Class messageType);
+
+//        /// <summary>
+//        /// Publishes an Object as a message, using the message type specified. If the Object cannot be cast
+//        /// to the specified message type, an exception will be thrown.
+//        /// </summary>
+//        /// <param name="message">The message Object</param>
+//        /// <param name = "contextCallback">A callback that gives the caller
+//        /// access to the publish context.</param>
+//        void Publish(Object message, SendCallback contextCallback);
 
         /// <summary>
-        /// Publishes an object as a message, using the message type specified. If the object cannot be cast
+        /// Publishes an Object as a message, using the message type specified. If the Object cannot be cast
         /// to the specified message type, an exception will be thrown.
         /// </summary>
-        /// <param name="message">The message object</param>
-        void Publish(object message);
-
-        /// <summary>
-        /// Publishes an object as a message, using the message type specified. If the object cannot be cast
-        /// to the specified message type, an exception will be thrown.
-        /// </summary>
-        /// <param name="message">The message object</param>
+        /// <param name="message">The message Object</param>
         /// <param name="messageType">The type of the message (use message.GetType() if desired)</param>
-        void Publish(object message, Type messageType);
-
-        /// <summary>
-        /// Publishes an object as a message, using the message type specified. If the object cannot be cast
-        /// to the specified message type, an exception will be thrown.
-        /// </summary>
-        /// <param name="message">The message object</param>
         /// <param name = "contextCallback">A callback that gives the caller
         /// access to the publish context.</param>
-        void Publish(object message, Action<IPublishContext> contextCallback);
-
-        /// <summary>
-        /// Publishes an object as a message, using the message type specified. If the object cannot be cast
-        /// to the specified message type, an exception will be thrown.
-        /// </summary>
-        /// <param name="message">The message object</param>
-        /// <param name="messageType">The type of the message (use message.GetType() if desired)</param>
-        /// <param name = "contextCallback">A callback that gives the caller
-        /// access to the publish context.</param>
-        void Publish(object message, Type messageType, Action<IPublishContext> contextCallback);
+        void Publish(Object message, Class messageType, SendCallback contextCallback);
         
-        /// <summary>
-        /// <see cref="IServiceBus.Publish{T}"/>: this is a "dynamically"
-        /// typed overload - give it an interface as its type parameter,
-        /// and a loosely typed dictionary of values and the MassTransit
-        /// underlying infrastructure will populate an object instance
-        /// with the passed values. It actually does this with DynamicProxy
-        /// in the background.
-        /// </summary>
-        /// <typeparam name="T">The type of the interface or
-        /// non-sealed class with all-virtual members.</typeparam>
-        /// <param name="bus">The bus to publish on.</param>
-        /// <param name="values">The dictionary of values to place in the
-        /// object instance to implement the interface.</param>
-        void Publish<T>(object values)
-            where T : class;
+//        /// <summary>
+//        /// <see cref="IServiceBus.Publish{T}"/>: this is a "dynamically"
+//        /// typed overload - give it an interface as its type parameter,
+//        /// and a loosely typed dictionary of values and the MassTransit
+//        /// underlying infrastructure will populate an Object instance
+//        /// with the passed values. It actually does this with DynamicProxy
+//        /// in the background.
+//        /// </summary>
+//        /// <typeparam name="T">The type of the interface or
+//        /// non-sealed class with all-virtual members.</typeparam>
+//        /// <param name="bus">The bus to publish on.</param>
+//        /// <param name="values">The dictionary of values to place in the
+//        /// Object instance to implement the interface.</param>
+//        void Publish(Object values);
 
-        /// <summary>
-        /// <see cref="Publish{T}(MassTransit.IServiceBus,object)"/>: this
-        /// overload further takes an action; it allows you to set <see cref="IPublishContext"/>
-        /// meta-data. Also <see cref="IServiceBus.Publish{T}"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of the message to publish</typeparam>
-        /// <param name="bus">The bus to publish the message on.</param>
-        /// <param name="values">The dictionary of values to become hydrated and
-        /// published under the type of the interface.</param>
-        /// <param name="contextCallback">The context callback.</param>
-        void Publish<T>(object values, Action<IPublishContext<T>> contextCallback)
-            where T : class;
+//        /// <summary>
+//        /// <see cref="Publish{T}(MassTransit.IServiceBus,Object)"/>: this
+//        /// overload further takes an action; it allows you to set <see cref="IPublishContext"/>
+//        /// meta-data. Also <see cref="IServiceBus.Publish{T}"/>.
+//        /// </summary>
+//        /// <typeparam name="T">The type of the message to publish</typeparam>
+//        /// <param name="bus">The bus to publish the message on.</param>
+//        /// <param name="values">The dictionary of values to become hydrated and
+//        /// published under the type of the interface.</param>
+//        /// <param name="contextCallback">The context callback.</param>
+//        void Publish(Object values, SendCallback contextCallback);
 
         /// <summary>
         /// Looks an endpoint up by its uri.
         /// </summary>
         /// <param name="address"></param>
         /// <returns>The endpoint that corresponds to the uri passed</returns>
-        IEndpoint GetEndpoint(Uri address);
+        IEndpoint GetEndpoint(URI  address);
 
         /// <summary>
         ///   Not sure this is going to make it, but trying a new approach.
@@ -170,14 +174,14 @@ package com.masstransitproject.crosstown;
         /// <param name = "configure"></param>
         /// <returns>An unsubscribe action that can be called to unsubscribe
         /// what was configured to be subscribed with the func passed. <see cref="UnsubscribeAction"/>.</returns>
-        UnsubscribeAction Configure(Func<IInboundPipelineConfigurator, UnsubscribeAction> configure);
+        UnsubscribeAction Configure(UnsubscribeHandler configure);
 
         /// <summary>
         /// Get the first service with the matching type, throwing an InvalidOperationException if none is found.
         /// </summary>
         /// <param name="type">The type of service to get.</param>
         /// <returns>The first service of type T.</returns>
-        IBusService GetService(Type type);
+        IBusService GetService(Class type);
 
 	    /// <summary>
 	    /// Try to get the first service with the matching type.
@@ -186,5 +190,5 @@ package com.masstransitproject.crosstown;
 	    /// <param name="result">The service.</param>
 	    /// <returns>Whether the service was found.</returns>
         IBusService getService(Class type);
-    }
+    
 }

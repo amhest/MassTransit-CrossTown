@@ -13,7 +13,7 @@
 package com.masstransitproject.crosstown.context;
 
 import com.masstransitproject.crosstown.IServiceBus;
-import com.masstransitproject.crosstown.SendCallback;
+import com.masstransitproject.crosstown.handlers.SendCallback;
     public interface BusObjectPublisher
     {
         void Publish(IServiceBus bus, Object message);

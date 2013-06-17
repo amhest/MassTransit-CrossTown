@@ -15,6 +15,8 @@ package com.masstransitproject.crosstown;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.masstransitproject.crosstown.handlers.SendCallback;
+import com.masstransitproject.crosstown.handlers.UnsubscribeAction;
 import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
 
     /// <summary>
@@ -30,12 +32,12 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
         //int _consumerThreadLimit = Environment.ProcessorCount*4;
         //ServiceBusInstancePerformanceCounters _counters;
         //volatile bool _disposed;
-        //UntypedChannel _eventChannel;
+        UntypedChannel _eventChannel;
         //ChannelConnection _performanceCounterConnection;
         //int _receiveThreadLimit = 1;
-        //TimeSpan _receiveTimeout = 3.Seconds();
+        long _receiveTimeout = 3000;//.Seconds();
         //IServiceContainer _serviceContainer;
-        //volatile boolean _started;
+        boolean _started;
 
         
 
@@ -47,9 +49,9 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
         public ServiceBus(IEndpoint endpointToListenOn,
             IEndpointCache endpointCache)
         {
-            ReceiveTimeout = TimeSpan.FromSeconds(3);
-            Guard.AgainstNull(endpointToListenOn, "endpointToListenOn", "This parameter cannot be null");
-            Guard.AgainstNull(endpointCache, "endpointFactory", "This parameter cannot be null");
+            ReceiveTimeout = 3000;
+//            Guard.AgainstNull(endpointToListenOn, "endpointToListenOn", "This parameter cannot be null");
+//            Guard.AgainstNull(endpointCache, "endpointFactory", "This parameter cannot be null");
 
             Endpoint = endpointToListenOn;
             EndpointCache = endpointCache;
@@ -92,25 +94,27 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
 //            }
 //        }
 //
-//        public TimeSpan ReceiveTimeout
-//        {
-//            get { return _receiveTimeout; }
-//            set
-//            {
-//                if (_started)
-//                    throw new ConfigurationException(
-//                        "The receive timeout cannot be changed once the bus is in motion. Beep! Beep!");
-//
-//                _receiveTimeout = value;
-//            }
-//        }
+        public long getReceiveTimeout
+        {
+             return _receiveTimeout; 
+             }
+            
+        public void setReceiveTimeout(long value)
+        
+                if (_started)
+                    throw new IllegalStateException(
+                        "The receive timeout cannot be changed once the bus is in motion. Beep! Beep!");
+
+                _receiveTimeout = value;
+            }
+        }
 //
 //        public TimeSpan ShutdownTimeout { get; set; }
 //
-//        public UntypedChannel EventChannel
-//        {
-//            get { return _eventChannel; }
-//        }
+        public UntypedChannel getEventChannel
+        {
+        	return _eventChannel; }
+        }
 //
 //        [UsedImplicitly]
 //        protected String DebugDisplay

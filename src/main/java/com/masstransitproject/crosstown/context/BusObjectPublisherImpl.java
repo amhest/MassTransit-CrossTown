@@ -13,7 +13,7 @@
 package com.masstransitproject.crosstown.context;
 
 import com.masstransitproject.crosstown.IServiceBus;
-import com.masstransitproject.crosstown.SendCallback;
+import com.masstransitproject.crosstown.handlers.SendCallback;
 
     public class BusObjectPublisherImpl<TMessage> implements
         BusObjectPublisher
@@ -31,4 +31,3 @@ import com.masstransitproject.crosstown.SendCallback;
         }
 
     }
-}

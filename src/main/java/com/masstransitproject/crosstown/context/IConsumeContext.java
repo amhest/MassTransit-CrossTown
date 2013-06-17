@@ -2,7 +2,7 @@
 
 import com.masstransitproject.crosstown.IEndpoint;
 import com.masstransitproject.crosstown.IServiceBus;
-import com.masstransitproject.crosstown.SendCallback;
+import com.masstransitproject.crosstown.handlers.SendCallback;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
