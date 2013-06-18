@@ -15,9 +15,15 @@ package com.masstransitproject.crosstown;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.masstransitproject.crosstown.configuration.BusServiceLayer;
+import com.masstransitproject.crosstown.context.PublishContext;
+import com.masstransitproject.crosstown.handlers.NoContextPublishHandler;
 import com.masstransitproject.crosstown.handlers.SendCallback;
 import com.masstransitproject.crosstown.handlers.UnsubscribeAction;
 import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
+import com.masstransitproject.crosstown.stact.Channel;
+import com.masstransitproject.crosstown.stact.ChannelAdapter;
+import com.masstransitproject.crosstown.stact.UntypedChannel;
 
     /// <summary>
     /// A service bus is used to attach message handlers (services) to endpoints, as well as
@@ -31,14 +37,15 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
         //ConsumerPool _consumerPool;
         //int _consumerThreadLimit = Environment.ProcessorCount*4;
         //ServiceBusInstancePerformanceCounters _counters;
-        //volatile bool _disposed;
-        UntypedChannel _eventChannel;
+        volatile boolean _disposed;
+        Channel _eventChannel;
         //ChannelConnection _performanceCounterConnection;
         //int _receiveThreadLimit = 1;
         long _receiveTimeout = 3000;//.Seconds();
-        //IServiceContainer _serviceContainer;
+        IServiceContainer _serviceContainer;
         boolean _started;
 
+        private IEndpointCache _endpointCache;
         
 
         /// <summary>
@@ -49,19 +56,19 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
         public ServiceBus(IEndpoint endpointToListenOn,
             IEndpointCache endpointCache)
         {
-            ReceiveTimeout = 3000;
+        	_receiveTimeout = 3000;
 //            Guard.AgainstNull(endpointToListenOn, "endpointToListenOn", "This parameter cannot be null");
 //            Guard.AgainstNull(endpointCache, "endpointFactory", "This parameter cannot be null");
 
             Endpoint = endpointToListenOn;
-            EndpointCache = endpointCache;
+            _endpointCache = endpointCache;
 
             _eventChannel = new ChannelAdapter();
 
             _serviceContainer = new ServiceContainer(this);
 
             OutboundPipeline = new OutboundPipelineConfigurator(this).Pipeline;
-            InboundPipeline = InboundPipelineConfigurator.CreateDefault(this);
+            //InboundPipeline = InboundPipelineConfigurator.CreateDefault(this);
 
             ControlBus = this;
 
@@ -94,26 +101,26 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
 //            }
 //        }
 //
-        public long getReceiveTimeout
+        public long getReceiveTimeout()
         {
-             return _receiveTimeout; 
+             return _receiveTimeout;
              }
             
-        public void setReceiveTimeout(long value)
+        public void setReceiveTimeout(long value) {
         
                 if (_started)
                     throw new IllegalStateException(
                         "The receive timeout cannot be changed once the bus is in motion. Beep! Beep!");
 
                 _receiveTimeout = value;
-            }
+            
         }
 //
 //        public TimeSpan ShutdownTimeout { get; set; }
 //
-        public UntypedChannel getEventChannel
+        public Channel getEventChannel()
         {
-        	return _eventChannel; }
+        	return _eventChannel; 
         }
 //
 //        [UsedImplicitly]
@@ -122,25 +129,24 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
 //            get { return String.Format("{0}: ", Endpoint.Address); }
 //        }
 
-        private IEndpointCache endpointCache;
 
         public IEndpointCache getEndpointCache() {
-			return endpointCache;
+			return _endpointCache;
 		}
 
 		public void setEndpointCache(IEndpointCache endpointCache) {
-			this.endpointCache = endpointCache;
+			this._endpointCache = endpointCache;
 		}
 
-		public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+//		public void Dispose()
+//        {
+//            Dispose(true);
+//            GC.SuppressFinalize(this);
+//        }
 
-        public void Publish(T message)
+         public <T> void Publish(T message)
         {
-            Publish(message, NoContext);
+            Publish(message, new NoContextPublishHandler());
         }
 
         /// <summary>
@@ -149,7 +155,8 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
         /// <typeparam name="T">The type of the message</typeparam>
         /// <param name="message">The messages to be published</param>
         /// <param name="contextCallback">The callback to perform operations on the context</param>
-        public void Publish(T message, SendCallback<T> contextCallback)
+        
+        public <T> void Publish(T message, SendCallback contextCallback)
         {
             PublishContext<T> context = ContextStorage.CreatePublishContext(message);
             context.SetSourceAddress(Endpoint.Address.Uri);
@@ -169,7 +176,7 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
                 catch (Exception ex)
                 {
                     _log.Error(String.Format("'{0}' threw an exception publishing message '{1}'",
-                        consumer.GetType().FullName, message.GetType().FullName), ex);
+                        consumer.getClass().FullName, message.getClass().FullName), ex);
 
                     exceptions.Add(ex);
                 }
@@ -193,89 +200,88 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
                 throw new PublishException(typeof(T), exceptions);
         }
 
-        public void Publish(Object message)
-        {
-            if (message == null)
-                throw new IllegalArgumentException("Null message");
+//        public void Publish(Object message)
+//        {
+//            if (message == null)
+//                throw new IllegalArgumentException("Null message");
+//
+//            BusObjectPublisherCache.Instance[message.getClass()].Publish(this, message);
+//        }
+//
+//        public void Publish(Object message, Type messageType)
+//        {
+//            if (message == null)
+//                throw new IllegalArgumentException("Null message");
+//            if (messageType == null)
+//                throw new IllegalArgumentException("Null messageType");
+//
+//            BusObjectPublisherCache.Instance[messageType].Publish(this, message);
+//        }
+//
+//        public void Publish(Object message, SendCallback contextCallback)
+//        {
+//            if (message == null)
+//                throw new IllegalArgumentException("Null message");
+//            if (contextCallback == null)
+//                throw new IllegalArgumentException("Null contextCallback");
+//
+//            BusObjectPublisherCache.Instance[message.getClass()].Publish(this, message, contextCallback);
+//        }
+//
+//        public void Publish(Object message, Type messageType, SendCallback<T> contextCallback)
+//        {
+//            if (message == null)
+//                throw new IllegalArgumentException("Null message");
+//            if (messageType == null)
+//                throw new IllegalArgumentException("Null messageType");
+//            if (contextCallback == null)
+//                throw new IllegalArgumentException("Null contextCallback");
+//
+//            BusObjectPublisherCache.Instance[messageType].Publish(this, message, contextCallback);
+//        }
 
-            BusObjectPublisherCache.Instance[message.GetType()].Publish(this, message);
-        }
+//        /// <summary>
+//        /// <see cref="IServiceBus.Publish{T}"/>: this is a "dynamically"
+//        /// typed overload - give it an interface as its type parameter,
+//        /// and a loosely typed dictionary of values and the MassTransit
+//        /// underlying infrastructure will populate an Object instance
+//        /// with the passed values. It actually does this with DynamicProxy
+//        /// in the background.
+//        /// </summary>
+//        /// <typeparam name="T">The type of the interface or
+//        /// non-sealed class with all-virtual members.</typeparam>
+//        /// <param name="bus">The bus to publish on.</param>
+//        /// <param name="values">The dictionary of values to place in the
+//        /// Object instance to implement the interface.</param>
+//        public void Publish(Object values)
+//        {
+//            if (values == null)
+//                throw new IllegalArgumentException("Null values");
+//
+//            var message = InterfaceImplementationExtensions.InitializeProxy<T>(values);
+//
+//            Publish(message, x => { });
+//        }
 
-        public void Publish(Object message, Type messageType)
-        {
-            if (message == null)
-                throw new IllegalArgumentException("Null message");
-            if (messageType == null)
-                throw new IllegalArgumentException("Null messageType");
-
-            BusObjectPublisherCache.Instance[messageType].Publish(this, message);
-        }
-
-        public void Publish(Object message, SendCallback contextCallback)
-        {
-            if (message == null)
-                throw new IllegalArgumentException("Null message");
-            if (contextCallback == null)
-                throw new IllegalArgumentException("Null contextCallback");
-
-            BusObjectPublisherCache.Instance[message.GetType()].Publish(this, message, contextCallback);
-        }
-
-        public void Publish(Object message, Type messageType, SendCallback<T> contextCallback)
-        {
-            if (message == null)
-                throw new IllegalArgumentException("Null message");
-            if (messageType == null)
-                throw new IllegalArgumentException("Null messageType");
-            if (contextCallback == null)
-                throw new IllegalArgumentException("Null contextCallback");
-
-            BusObjectPublisherCache.Instance[messageType].Publish(this, message, contextCallback);
-        }
-
-        /// <summary>
-        /// <see cref="IServiceBus.Publish{T}"/>: this is a "dynamically"
-        /// typed overload - give it an interface as its type parameter,
-        /// and a loosely typed dictionary of values and the MassTransit
-        /// underlying infrastructure will populate an Object instance
-        /// with the passed values. It actually does this with DynamicProxy
-        /// in the background.
-        /// </summary>
-        /// <typeparam name="T">The type of the interface or
-        /// non-sealed class with all-virtual members.</typeparam>
-        /// <param name="bus">The bus to publish on.</param>
-        /// <param name="values">The dictionary of values to place in the
-        /// Object instance to implement the interface.</param>
-        public void Publish<T>(Object values)
-            where T : class
-        {
-            if (values == null)
-                throw new IllegalArgumentException("Null values");
-
-            var message = InterfaceImplementationExtensions.InitializeProxy<T>(values);
-
-            Publish(message, x => { });
-        }
-
-        /// <summary>
-        /// <see cref="Publish{T}(MassTransit.IServiceBus,Object)"/>: this
-        /// overload further takes an action; it allows you to set <see cref="IPublishContext"/>
-        /// meta-data. Also <see cref="IServiceBus.Publish{T}"/>.
-        /// </summary>
-        /// <typeparam name="T">The type of the message to publish</typeparam>
-        /// <param name="bus">The bus to publish the message on.</param>
-        /// <param name="values">The dictionary of values to become hydrated and
-        /// published under the type of the interface.</param>
-        /// <param name="contextCallback">The context callback.</param>
-        public void Publish<T>(Object values, Action<IPublishContext<T>> contextCallback)
-        {
-            if (values == null)
-                throw new IllegalArgumentException("Null values");
-
-            var message = InterfaceImplementationExtensions.InitializeProxy<T>(values);
-
-            Publish(message, contextCallback);
-        }
+//        /// <summary>
+//        /// <see cref="Publish{T}(MassTransit.IServiceBus,Object)"/>: this
+//        /// overload further takes an action; it allows you to set <see cref="IPublishContext"/>
+//        /// meta-data. Also <see cref="IServiceBus.Publish{T}"/>.
+//        /// </summary>
+//        /// <typeparam name="T">The type of the message to publish</typeparam>
+//        /// <param name="bus">The bus to publish the message on.</param>
+//        /// <param name="values">The dictionary of values to become hydrated and
+//        /// published under the type of the interface.</param>
+//        /// <param name="contextCallback">The context callback.</param>
+//        public void Publish<T>(Object values, PublishCallback contextCallback)
+//        {
+//            if (values == null)
+//                throw new IllegalArgumentException("Null values");
+//
+//            Object message = InterfaceImplementationExtensions.InitializeProxy<T>(values);
+//
+//            Publish(message, contextCallback);
+//        }
 
         public IOutboundMessagePipeline OutboundPipeline;
 
@@ -331,44 +337,37 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
             OutboundPipeline.View(pipe => probe.Add("zz.mt.outbound_pipeline", pipe));
             InboundPipeline.View(pipe => probe.Add("zz.mt.inbound_pipeline", pipe));
         }
-//
-//        public IBusService GetService(Class type)
-//        {
-//            return _serviceContainer.GetService(type);
-//        }
 
-        public bool TryGetService(Class type, out IBusService result)
+        public IBusService GetService(Class type)
         {
-            return _serviceContainer.TryGetService(type, out result);
+            return _serviceContainer.GetService(type);
         }
 
-        void NoContext<T>(IPublishContext<T> context)
-            where T : class
-        {
-        }
+      
+       
 
         public void Start()
         {
             if (_started)
                 return;
 
-            try
-            {
+//            try
+//            {
                 _serviceContainer.Start();
 
-                _consumerPool = new ThreadPoolConsumerPool(this, _eventChannel, _receiveTimeout)
-                    {
-                        MaximumConsumerCount = MaximumConsumerThreads,
-                    };
-                _consumerPool.Start();
-            }
-            catch (Exception)
-            {
-                if (_consumerPool != null)
-                    _consumerPool.Dispose();
-
-                throw;
-            }
+//                _consumerPool = new ThreadPoolConsumerPool(this, _eventChannel, _receiveTimeout)
+//                    {
+//                        MaximumConsumerCount = MaximumConsumerThreads,
+//                    };
+//                _consumerPool.Start();
+//            }
+//            catch (Exception)
+//            {
+//                if (_consumerPool != null)
+//                    _consumerPool.Dispose();
+//
+//                throw;
+//            }
 
             _started = true;
         }
@@ -378,7 +377,7 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
             _serviceContainer.AddService(layer, service);
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected  void Dispose(boolean disposing)
         {
             if (_disposed)
                 return;
@@ -474,4 +473,3 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
             }
         }
     }
-}

@@ -6,8 +6,6 @@ import java.net.URI;
 
 import org.junit.Assert;
 
-
-
 import com.masstransitproject.crosstown.context.ISendContext;
 import com.masstransitproject.crosstown.context.SendContext;
 import com.masstransitproject.crosstown.serialization.IMessageSerializer;
@@ -33,7 +31,7 @@ public class SerializationSpecificationBase  {
 	URI _destinationUri;
 	int _retryCount;
 
-	public void TestSerialization(IMessage message) throws Exception {
+	public void TestSerialization(Object message) throws Exception {
 		byte[] data;
 		IMessageSerializer serializer = new JsonMessageSerializer();
 
@@ -44,7 +42,7 @@ public class SerializationSpecificationBase  {
 		_retryCount = 69;
 
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		ISendContext context = new SendContext();
+		ISendContext<Object> context = new SendContext(message);
 		context.setSourceAddress(_sourceUri);
 		// context.sendResponseTo(_responseUri);
 		// context.sendFaultTo(_faultUri);
@@ -68,7 +66,7 @@ public class SerializationSpecificationBase  {
 		// Assert.AreEqual(_responseUri, context.ResponseAddress);
 		// Assert.AreEqual(_faultUri, context.FaultAddress);
 		// Assert.AreEqual(_destinationUri, context.DestinationAddress);
-		// // Assert.AreEqual(message.GetType().ToMessageName(),
+		// // Assert.AreEqual(message.getClass().ToMessageName(),
 		// CurrentMessage.Headers.MessageType);
 	}
 

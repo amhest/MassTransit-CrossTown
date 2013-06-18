@@ -1,9 +1,6 @@
 package com.masstransitproject.crosstown.newid;
 
-import java.nio.ByteBuffer;
 import java.util.UUID;
-
-
 
 import org.junit.Assert;
 import org.junit.Test;

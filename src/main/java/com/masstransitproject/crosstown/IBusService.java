@@ -36,4 +36,7 @@
 		/// to be released.
 		/// </summary>
 		void Stop();
+		
+		
+		void Dispose();
 	}

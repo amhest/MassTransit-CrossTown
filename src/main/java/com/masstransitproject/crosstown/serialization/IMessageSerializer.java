@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import com.masstransitproject.crosstown.IMessage;
 import com.masstransitproject.crosstown.context.ISendContext;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.

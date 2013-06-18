@@ -1,8 +1,13 @@
 package com.masstransitproject.crosstown.serialization;
 
+import java.net.URISyntaxException;
 import java.util.*;
+import java.util.Map.Entry;
 
+import com.masstransitproject.crosstown.MassTransitException;
+import com.masstransitproject.crosstown.MessageUrn;
 import com.masstransitproject.crosstown.context.ISendContext;
+import com.masstransitproject.crosstown.context.MessageHeaders;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
@@ -26,12 +31,26 @@ import com.masstransitproject.crosstown.context.ISendContext;
         Envelope(Object message, List<Class> messageTypes)
         {
             Headers = new HashMap<String, String>();
-            MessageType = convertMessageTypeClassesToUrns(messageTypes);
+            	try {
+					MessageType = convertMessageTypeClassesToUrns(messageTypes);
+				} catch (URISyntaxException e) {
+					throw new MassTransitException("Cannot create MessageUrn for " + messageTypes,e);
+				}
+           
             Message = message;
         }
         
-        private List<String> convertMessageTypeClassesToUrns(List<Class> messageTypes) {
-        	new List<String>(messageTypes.Select(type => new MessageUrn(type).ToString()));
+        private List<String> convertMessageTypeClassesToUrns(List<Class> messageTypes) throws URISyntaxException {
+        	
+        	
+        	
+        	List<String> l = new ArrayList<String>();
+        	for (Class c : messageTypes) {
+        		l.add(new MessageUrn(c).toString());
+        	}
+        	return l;
+//        	
+//        	(messageTypes.Select(type => new MessageUrn(type).ToString()));
             
         
         }
@@ -203,19 +222,17 @@ import com.masstransitproject.crosstown.context.ISendContext;
             envelope.setRequestId(context.getRequestId());
             envelope.setConversationId(context.getConversationId());
             envelope.setCorrelationId(context.getCorrelationId());
-            envelope.setSourceAddress(context.getSourceAddress());
-            envelope.setDestinationAddress(context.getDestinationAddress.ToStringOrNull() ?? envelope.setDestinationAddress);
-            envelope.setResponseAddress(context.getResponseAddress.ToStringOrNull() ?? envelope.setResponseAddress);
-            envelope.setFaultAddress(context.getFaultAddress.ToStringOrNull() ?? envelope.setFaultAddress);
-            envelope.setNetwork(context.getNetwork);
-            envelope.setRetryCount(context.getRetryCount);
-            if (context.getExpirationTime.HasValue)
-                envelope.setExpirationTime(context.getExpirationTime.Value);
+            envelope.setSourceAddress(context.getSourceAddress()==null?null:context.getSourceAddress().toString());
+            envelope.setDestinationAddress(context.getDestinationAddress()==null?null: context.getDestinationAddress().toString());
+            envelope.setResponseAddress(context.getResponseAddress()==null?null: context.getResponseAddress().toString());
+            envelope.setFaultAddress(context.getFaultAddress()==null?null: context.getFaultAddress().toString());
+            envelope.setNetwork(context.getNetwork());
+            envelope.setRetryCount(context.getRetryCount());
+                envelope.setExpirationTime(context.getExpirationTime());
 
-            foreach (var header in context.Headers)
+            for (Entry<String, String> header : context.getHeaders().entrySet())
             {
-                envelope.Headers[header.Key] = header.Value;
+                envelope.Headers.put(header.getKey(),header.getValue());
             }
         }
     }
-}

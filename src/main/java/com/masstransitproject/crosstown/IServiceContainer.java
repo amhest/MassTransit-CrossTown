@@ -1,4 +1,8 @@
-﻿// Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
+﻿package com.masstransitproject.crosstown;
+
+import com.masstransitproject.crosstown.configuration.BusServiceLayer;
+
+// Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,20 +14,11 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit
-{
-    using System;
-    using Diagnostics;
-    using Diagnostics.Introspection;
 
-    public interface IServiceContainer :
-        IDisposable,
-        DiagnosticsSource
-    {
+
+    public interface IServiceContainer{
         void AddService(BusServiceLayer layer, IBusService service);
-        IBusService GetService(Type type);
-        bool TryGetService(Type type, out IBusService result);
-        void Start();
+        IBusService GetService(Class type);
+        void Start() throws MassTransitException;
         void Stop();
     }
-}

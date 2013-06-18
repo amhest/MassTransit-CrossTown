@@ -2,8 +2,6 @@ package com.masstransitproject.crosstown.messages;
 
 import java.io.Serializable;
 
-import com.masstransitproject.crosstown.IMessage;
-
 @SuppressWarnings("serial")
 public class ClientMessage implements Serializable, IMessage {
 	private String _name;

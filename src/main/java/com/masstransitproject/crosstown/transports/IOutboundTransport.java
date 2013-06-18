@@ -22,4 +22,6 @@ import com.masstransitproject.crosstown.context.ISendContext;
 		ITransport
 	{
 		void Send(ISendContext context);
+	
+		void Dispose();
 	}

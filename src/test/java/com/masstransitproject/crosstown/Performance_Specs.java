@@ -7,8 +7,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 
-
-
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +22,7 @@ public class Performance_Specs  {
 	private Logger log = LoggerFactory.getLogger(Performance_Specs.class);
 	private IMessageSerializer _serializer = new JsonMessageSerializer();
 
+	@Test
 	public void TestJust_how_fast_are_you() throws Exception {
 		log.trace("Serializer: " + _serializer.getClass().getName());
 		SerializationTestMessage message = new SerializationTestMessage();
@@ -38,7 +38,7 @@ public class Performance_Specs  {
 		message.setStringValue("Chris's Sample Code");
 		message.setDoubleValue(1823.172);
 
-		ISendContext ctx = new SendContext();
+		ISendContext ctx = new SendContext(message);
 		// warm it up
 		for (int i = 0; i < 10; i++) {
 			byte[] data;

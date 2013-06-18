@@ -6,8 +6,6 @@ import java.io.IOException;
 
 import org.junit.Before;
 
-
-
 import com.masstransitproject.crosstown.context.ISendContext;
 import com.masstransitproject.crosstown.serialization.IMessageSerializer;
 

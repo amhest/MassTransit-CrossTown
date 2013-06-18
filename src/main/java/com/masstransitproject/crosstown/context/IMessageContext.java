@@ -3,8 +3,10 @@ package com.masstransitproject.crosstown.context;
 import java.net.URI;
 import java.util.Date;
 
-public interface IMessageContext<T> {
+public interface IMessageContext<T extends Object> {
 
+	public abstract T getMessage();
+	
 	public abstract IMessageHeaders getHeaders();
 
 	public abstract String getMessageId();
@@ -35,6 +37,5 @@ public interface IMessageContext<T> {
 
 	public abstract int getRetryCount();
 
-	public abstract String getOriginalMessageId();
 
 }

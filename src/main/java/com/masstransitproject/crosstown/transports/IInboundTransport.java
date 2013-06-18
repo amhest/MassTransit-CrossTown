@@ -1,5 +1,7 @@
 ﻿package com.masstransitproject.crosstown.transports;
 
+import com.masstransitproject.crosstown.handlers.ReceiveHandler;
+
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -32,6 +34,9 @@
 //		/// and gives back either a non-null action handler for </param>
 //		/// <param name="timeout">The timeout to wait for the inbound transport technology to
 //		/// yield a message before giving up.</param>
-//		void Receive([NotNull] Func<IReceiveContext, Action<IReceiveContext>> lookupSinkChain, TimeSpan timeout);
-//	}
+		void Receive(ReceiveHandler lookupSinkChain, long timeout);
+	
+	
+		void Dispose();
+
 }

@@ -2,8 +2,6 @@ package com.masstransitproject.crosstown.newid;
 
 import java.io.IOException;
 
-
-
 import org.junit.Assert;
 import org.junit.Test;
 

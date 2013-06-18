@@ -62,14 +62,14 @@ import com.masstransitproject.crosstown.transports.IOutboundTransport;
         /// <param name="context">Send context to generate the in-transport message from. Contains
         /// out-of-band data such as message ids, correlation ids, headers, and in-band data
         /// such as the actual data of the message to send.</param>
-        <T> void Send(ISendContext<T> context);
+        <T extends Object> void Send(ISendContext<T> context);
 
         /// <summary>
         /// Send a message to an endpoint
         /// </summary>
         /// <typeparam name="T">The message type</typeparam>
         /// <param name="message">The message to send</param>
-        <T> void Send(T message);
+        <T extends Object> void Send(T message);
 
         /// <summary>
         /// Send a message to an endpoint
@@ -77,7 +77,7 @@ import com.masstransitproject.crosstown.transports.IOutboundTransport;
         /// <typeparam name="T">The message type</typeparam>
         /// <param name="message">The message to send</param>
         /// <param name="contextCallback">A callback method to modify the send context for the message</param>
-        <T> void Send(T message, SendCallback contextCallback);
+        <T extends Object> void Send(T message, SendCallback contextCallback);
 
 //        /// <summary>
 //        /// Sends an Object as a message, using the message type specified. If the Object cannot be cast
@@ -91,7 +91,7 @@ import com.masstransitproject.crosstown.transports.IOutboundTransport;
 //        /// to the specified message type, an exception will be thrown.
 //        /// </summary>
 //        /// <param name="message">The message Object</param>
-//        /// <param name="messageType">The type of the message (use message.GetType() if desired)</param>
+//        /// <param name="messageType">The type of the message (use message.getClass() if desired)</param>
 //        void Send(Object message, Class messageType);
 //
 //        /// <summary>
@@ -107,7 +107,7 @@ import com.masstransitproject.crosstown.transports.IOutboundTransport;
         /// to the specified message type, an exception will be thrown.
         /// </summary>
         /// <param name="message">The message Object</param>
-        /// <param name="messageType">The type of the message (use message.GetType() if desired)</param>
+        /// <param name="messageType">The type of the message (use message.getClass() if desired)</param>
         /// <param name="contextCallback">Allows the context values to be specified</param>
         void Send( Object message, Class messageType, SendCallback contextCallback);
 

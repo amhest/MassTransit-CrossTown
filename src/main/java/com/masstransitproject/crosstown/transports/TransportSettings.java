@@ -20,7 +20,7 @@ namespace MassTransit.Transports
 	using Magnum;
 	using Magnum.Extensions;
 
-	public class TransportSettings :
+	public class TransportSettings implements
 		ITransportSettings
 	{
 		public TransportSettings(IEndpointAddress address)
@@ -63,13 +63,13 @@ namespace MassTransit.Transports
 		/// True if the endpoint should be transactional. If Transactional is true and the endpoint already
 		/// exists and is not transactional, an exception will be thrown.
 		/// </summary>
-		public bool Transactional { get; set; }
+		public boolean Transactional { get; set; }
 
 		/// <summary>
 		/// if the transactional queue is requested and required it will throw an exception if the queue 
 		/// exists and is not transactional
 		/// </summary>
-		public bool RequireTransactional { get; set; }
+		public boolean RequireTransactional { get; set; }
 
 		/// <summary>
 		/// The timeout for the transaction if System.Transactions is supported
@@ -84,11 +84,11 @@ namespace MassTransit.Transports
 	    /// <summary>
 		/// The transport should be created if it was not found
 		/// </summary>
-		public bool CreateIfMissing { get; set; }
+		public boolean CreateIfMissing { get; set; }
 
 	    /// <summary>
 		/// If the transport should purge any existing messages before reading from the queue
 		/// </summary>
-		public bool PurgeExistingMessages { get; set; }
+		public boolean PurgeExistingMessages { get; set; }
 	}
 }

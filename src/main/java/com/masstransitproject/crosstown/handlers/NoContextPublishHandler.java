@@ -1,11 +1,8 @@
 package com.masstransitproject.crosstown.handlers;
 
 
-public class FaultHandler{
+public class NoContextPublishHandler extends SendCallback {
 
 	
-	public FaultHandler() {
-	}
-	
 	public void invoke() {}  //Nothing for now
- }
+}

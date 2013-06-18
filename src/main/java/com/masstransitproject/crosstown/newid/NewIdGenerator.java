@@ -13,7 +13,6 @@
 package com.masstransitproject.crosstown.newid;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 public class NewIdGenerator {
 	final long _c;

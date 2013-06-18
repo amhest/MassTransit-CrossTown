@@ -16,7 +16,7 @@
 //
 //    public static class EndpointLoggerExtensions
 //    {
-//        static readonly ILog _messages = Logger.Get("MassTransit.Messages");
+//        static final ILog _messages = Logger.Get("MassTransit.Messages");
 //
 //        public static void LogSkipped(this IEndpointAddress sourceAddress, String messageId)
 //        {

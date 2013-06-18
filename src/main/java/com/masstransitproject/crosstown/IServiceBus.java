@@ -98,7 +98,7 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
         /// <param name = "message">The messages to be published</param>
         /// <param name = "contextCallback">A callback that gives the caller
         /// access to the publish context.</param>
-        <T> void Publish(T message, SendCallback contextCallback);
+         <T> void Publish(T message, SendCallback contextCallback);
 
 //        /// <summary>
 //        /// Publishes an Object as a message, using the message type specified. If the Object cannot be cast
@@ -112,7 +112,7 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
 //        /// to the specified message type, an exception will be thrown.
 //        /// </summary>
 //        /// <param name="message">The message Object</param>
-//        /// <param name="messageType">The type of the message (use message.GetType() if desired)</param>
+//        /// <param name="messageType">The type of the message (use message.getClass() if desired)</param>
 //        void Publish(Object message, Class messageType);
 
 //        /// <summary>
@@ -124,15 +124,15 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
 //        /// access to the publish context.</param>
 //        void Publish(Object message, SendCallback contextCallback);
 
-        /// <summary>
-        /// Publishes an Object as a message, using the message type specified. If the Object cannot be cast
-        /// to the specified message type, an exception will be thrown.
-        /// </summary>
-        /// <param name="message">The message Object</param>
-        /// <param name="messageType">The type of the message (use message.GetType() if desired)</param>
-        /// <param name = "contextCallback">A callback that gives the caller
-        /// access to the publish context.</param>
-        void Publish(Object message, Class messageType, SendCallback contextCallback);
+//        /// <summary>
+//        /// Publishes an Object as a message, using the message type specified. If the Object cannot be cast
+//        /// to the specified message type, an exception will be thrown.
+//        /// </summary>
+//        /// <param name="message">The message Object</param>
+//        /// <param name="messageType">The type of the message (use message.getClass() if desired)</param>
+//        /// <param name = "contextCallback">A callback that gives the caller
+//        /// access to the publish context.</param>
+//        void Publish(Object message, Class messageType, SendCallback contextCallback);
         
 //        /// <summary>
 //        /// <see cref="IServiceBus.Publish{T}"/>: this is a "dynamically"

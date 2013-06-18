@@ -6,15 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonSerializable;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsonschema.JsonSchema;
-import com.masstransitproject.crosstown.serialization.JsonMessageSerializer;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  

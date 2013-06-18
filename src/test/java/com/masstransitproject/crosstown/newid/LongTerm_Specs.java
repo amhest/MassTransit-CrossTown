@@ -1,21 +1,18 @@
 package com.masstransitproject.crosstown.newid;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.UUID;
-
-
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.uuid.UUIDComparator; //UUID's don't do time-based comparisons natively
 import com.masstransitproject.crosstown.newid.providers.NetworkAddressWorkerIdProvider;
 import com.masstransitproject.crosstown.util.FineGrainTimestamp;
+//UUID's don't do time-based comparisons natively
 
 // Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  

@@ -1,16 +1,16 @@
 ﻿package com.masstransitproject.crosstown.context;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.UUID;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Collection;
+import java.util.Date;
+import java.util.UUID;
 
 import com.masstransitproject.crosstown.IEndpoint;
 import com.masstransitproject.crosstown.IEndpointAddress;
 import com.masstransitproject.crosstown.IServiceBus;
-import com.masstransitproject.crosstown.handlers.FaultHandler;
+import com.masstransitproject.crosstown.handlers.FaultSender;
 import com.masstransitproject.crosstown.serialization.IMessageTypeConverter;
 
 // Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
@@ -31,7 +31,7 @@ import com.masstransitproject.crosstown.serialization.IMessageTypeConverter;
     /// <summary>
     /// Receive context that allows receiving sinks to 
     /// </summary>
-    public interface IReceiveContext extends
+    public interface IReceiveContext<T extends Object> extends
         IConsumeContext
     {
         InputStream getBodyStream();
@@ -113,25 +113,25 @@ import com.masstransitproject.crosstown.serialization.IMessageTypeConverter;
         /// appropriate.
         /// </summary>
         /// <param name="faultAction"></param>
-        void NotifyFault(FaultHandler faultAction);
+        void NotifyFault(FaultSender<T> faultAction);
 
-        <T> void NotifySend(ISendContext<T> context, IEndpointAddress address);
+        void NotifySend(ISendContext<T> context, IEndpointAddress address);
 
 
-        <T> void NotifyPublish(IPublishContext<T> publishContext);
+        void NotifyPublish(IPublishContext<T> publishContext);
 
-        <T> void NotifyConsume(IConsumeContext<T> consumeContext, String consumerType, String correlationId);
+        void NotifyConsume(IConsumeContext<T> consumeContext, String consumerType, String correlationId);
 
         /// <summary>
         /// Publish any pending faults for the context
         /// </summary>
-        void ExecuteFaultActions(Collection<FaultHandler> faultActions);
+        void ExecuteFaultActions(Collection<FaultSender> faultActions);
 
         /// <summary>
         /// Returns the fault actions that were added to the context dURIng message processing
         /// </summary>
         /// <returns></returns>
-        Collection<FaultHandler> GetFaultActions();
+        Collection<FaultSender<T>> GetFaultActions();
         
       /// <summary>
       		/// Sets the contextual data based on what was found in the envelope. Used by the inbound

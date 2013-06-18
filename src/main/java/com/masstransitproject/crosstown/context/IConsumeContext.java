@@ -24,8 +24,8 @@ import com.masstransitproject.crosstown.handlers.SendCallback;
     /// calling <see cref="GenerateFault"/>.)
     /// </summary>
     /// <typeparam name="T">Incoming message type.</typeparam>
-    public interface IConsumeContext<T> extends
-        IMessageContext<T>
+    public interface IConsumeContext<T extends Object> extends
+        IMessageContext
     {
         /// <summary>
         /// Send the message to the end of the input queue so that it can be processed again later

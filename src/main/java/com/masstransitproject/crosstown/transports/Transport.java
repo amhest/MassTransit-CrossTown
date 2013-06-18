@@ -1,5 +1,11 @@
 package com.masstransitproject.crosstown.transports;
 
+import java.nio.channels.IllegalSelectorException;
+
+import com.masstransitproject.crosstown.IEndpointAddress;
+import com.masstransitproject.crosstown.context.ISendContext;
+import com.masstransitproject.crosstown.handlers.ReceiveHandler;
+
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -14,18 +20,18 @@ package com.masstransitproject.crosstown.transports;
 // specific language governing permissions and limitations under the License.
 
 
-	public class Transport :
+	public class Transport implements
 		IDuplexTransport
 	{
-		readonly Func<IInboundTransport> _inboundFactory;
-		readonly Object _lock = new Object();
-		readonly Func<IOutboundTransport> _outboundFactory;
-		bool _disposed;
+		final TransportFactory _inboundFactory;
+		final Object _lock = new Object();
+		final TransportFactory _outboundFactory;
+		boolean _disposed;
 		IInboundTransport _inbound;
 		IOutboundTransport _outbound;
-		readonly IEndpointAddress _address;
+		final IEndpointAddress _address;
 
-		public Transport(IEndpointAddress address, Func<IInboundTransport> inboundFactory, Func<IOutboundTransport> outboundFactory)
+		public Transport(IEndpointAddress address, TransportFactory inboundFactory, TransportFactory outboundFactory)
 		{
 			_inboundFactory = inboundFactory;
 			_outboundFactory = outboundFactory;
@@ -35,53 +41,60 @@ package com.masstransitproject.crosstown.transports;
 		public void Dispose()
 		{
 			Dispose(true);
-			GC.SuppressFinalize(this);
+//			GC.SuppressFinalize(this);
 		}
 
-		public IEndpointAddress Address
+		public IEndpointAddress getAddress()
 		{
-			get { return _address; }
+			return _address; 
 		}
 
 		public void Send(ISendContext context)
 		{
 			if (_disposed)
-				throw new ObjectDisposedException("The transport has already been disposed: " + Address);
+				throw new IllegalStateException("The transport has already been disposed: " + getAddress());
 
-			OutboundTransport.Send(context);
+			getOutboundTransport().Send(context);
 		}
 
-		public void Receive(Func<IReceiveContext, Action<IReceiveContext>> callback, TimeSpan timeout)
+		public void Receive(ReceiveHandler callback, long timeout)
 		{
 			if (_disposed)
-				throw new ObjectDisposedException("The transport has already been disposed: " + Address);
+				throw new IllegalStateException("The transport has already been disposed: " + getAddress());
 
-			InboundTransport.Receive(callback, timeout);
+			getInboundTransport().Receive(callback, timeout);
 		}
 
-		public IOutboundTransport OutboundTransport
+		public IOutboundTransport getOutboundTransport()
 		{
-			get
-			{
-				lock (_lock)
+
+			 if (_outbound == null) {
+				synchronized (_lock)
 				{
-					return _outbound ?? (_outbound = _outboundFactory());
+					 if (_outbound == null) {
+						 _outbound = _outboundFactory.createOutbound();
+					 }
 				}
-			}
+			 }
+			return _outbound;
 		}
 
-		public IInboundTransport InboundTransport
+		public IInboundTransport getInboundTransport()
 		{
-			get
-			{
-				lock (_lock)
+
+
+			 if (_inbound == null) {
+				synchronized (_lock)
 				{
-					return _inbound ?? (_inbound = _inboundFactory());
+					 if (_inbound == null) {
+						 _inbound = _inboundFactory.createInbound();
+					 }
 				}
-			}
+			 }
+			return _inbound;
 		}
 
-		void Dispose(bool disposing)
+		void Dispose(boolean disposing)
 		{
 			if (_disposed) return;
 			if (disposing)
@@ -102,9 +115,9 @@ package com.masstransitproject.crosstown.transports;
 			_disposed = true;
 		}
 
-		~Transport()
+		@Override
+		protected void finalize() 
 		{
 			Dispose(false);
 		}
 	}
-}

@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.masstransitproject.crosstown.context.ISendContext;
 
-public class JsonMessageSerializer<T> implements IMessageSerializer<T> {
+public class JsonMessageSerializer<T extends Object> implements IMessageSerializer<T> {
 	private static final String ContentTypeHeaderValue = "application/vnd.masstransit+json";
 
 	@Override
@@ -35,7 +35,7 @@ public class JsonMessageSerializer<T> implements IMessageSerializer<T> {
 	public void Serialize(OutputStream stream, T message,
 			ISendContext ctx) throws IOException {
 
-		Envelope evp = new Envelope(message);
+		Envelope evp = new Envelope(message,ctx.GetMessageTypes());
 		evp.setMessageId(ctx.getMessageId());
 
 		ObjectMapper ObjectMapper = new ObjectMapper();

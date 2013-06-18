@@ -3,8 +3,6 @@ package com.masstransitproject.crosstown.messages;
 import java.io.Serializable;
 import java.util.UUID;
 
-import com.masstransitproject.crosstown.IMessage;
-
 // Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 

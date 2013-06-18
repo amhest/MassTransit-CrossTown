@@ -1,6 +1,10 @@
 ﻿package com.masstransitproject.crosstown.pipeline;
 
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;
+
+import com.masstransitproject.crosstown.context.ISendContext;
+import com.masstransitproject.crosstown.handlers.SendAction;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
@@ -26,18 +30,19 @@ import java.util.concurrent.atomic.AtomicReference;
             _output = new AtomicReference(output);
         }
 
-        public Iterator<Action<ISendContext>> Enumerate(ISendContext context)
+        public Iterator<SendAction> Enumerate(ISendContext context)
         {
-            return _output.Value.Enumerate(context);
+            return _output.get().Enumerate(context);
         }
 
         public boolean Inspect(IPipelineInspector inspector)
         {
-            return inspector.Inspect(this, () => _output.Value.Inspect(inspector));
+            return inspector.Inspect(this, false);//() => _output.Value.Inspect(inspector));
         }
 
         public IPipelineSink<ISendContext> ReplaceOutputSink(IPipelineSink<ISendContext> sink)
         {
-            return _output.Set(output => sink);
+             
+             return _output.getAndSet(sink);
         }
     }

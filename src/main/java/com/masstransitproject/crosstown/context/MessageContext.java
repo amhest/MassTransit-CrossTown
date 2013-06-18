@@ -164,13 +164,6 @@ import java.util.Date;
 			return RetryCount;
 		}
 
-		/* (non-Javadoc)
-		 * @see com.masstransitproject.crosstown.context.IMessageContext#getOriginalMessageId()
-		 */
-		@Override
-		public String getOriginalMessageId() {
-			return OriginalMessageId;
-		}
 
 		public void setMessageId(String messageId) {
 			MessageId = messageId;

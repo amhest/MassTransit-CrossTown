@@ -1,11 +1,11 @@
 ﻿package com.masstransitproject.crosstown.context;
 
 import java.io.OutputStream;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import com.masstransitproject.crosstown.IEndpointAddress;
 import com.masstransitproject.crosstown.newid.NewId;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
@@ -22,13 +22,13 @@ import com.masstransitproject.crosstown.newid.NewId;
 // specific language governing permissions and limitations under the License.
 
 
-    public class SendContext<T> extends
+    public class SendContext<T extends Object> extends
         MessageContext implements ISendContext<T> 
     {
         final T _message;
  //       Writer _bodyWriter;
         UUID _id;
-        //IReceiveContext _receiveContext;
+        IReceiveContext _receiveContext;
 
         public SendContext(T message)
         {
@@ -96,11 +96,11 @@ import com.masstransitproject.crosstown.newid.NewId;
             return context;
         }
 
-//        public  void NotifySend(IEndpointAddress address)
-//        {
-//            if (_receiveContext != null)
-//                _receiveContext.NotifySend(this, address);
-//        }
+        public  void NotifySend(IEndpointAddress address)
+        {
+            if (_receiveContext != null)
+                _receiveContext.NotifySend(this, address);
+        }
 
         /* (non-Javadoc)
 		 * @see com.masstransitproject.crosstown.context.ISendContext#getMessage()
@@ -124,8 +124,8 @@ import com.masstransitproject.crosstown.newid.NewId;
 //            _bodyWriter = bodyWriter;
 //        }
 //
-//        public void SetReceiveContext(IReceiveContext receiveContext)
-//        {
-//            _receiveContext = receiveContext;
-//        }
+        public void SetReceiveContext(IReceiveContext receiveContext)
+        {
+            _receiveContext = receiveContext;
+        }
     }
