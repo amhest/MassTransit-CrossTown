@@ -20,4 +20,8 @@ public interface ISendContext<T extends Object> extends IMessageContext {
 	public abstract List<Class> GetMessageTypes();
 	
 	public void SetReceiveContext(IReceiveContext<T> receiveContext);
+	
+
+	public abstract String getOriginalMessageId();
+	
 }

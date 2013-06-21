@@ -2,6 +2,7 @@ package com.masstransitproject.crosstown.transports;
 
 import java.net.URI;
 
+
 import com.masstransitproject.crosstown.IEndpoint;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
@@ -29,11 +30,13 @@ import com.masstransitproject.crosstown.IEndpoint;
         /// </summary>
         /// <param name="uri">To uri to create the endpoint for</param>
         /// <returns>The endpoint instance that was created from the uri</returns>
-        IEndpoint CreateEndpoint(URI uri);
+        IEndpoint CreateEndpoint(URI uri) throws ConfigurationException;
 
         /// <summary>
         /// Adds a transport factory to the endpoint factory
         /// </summary>
         /// <param name="factory">Factory to add</param>
         void AddTransportFactory( ITransportFactory factory);
+        
+        void Dispose();
     }

@@ -1,10 +1,13 @@
 package com.masstransitproject.crosstown.transports;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.naming.ConfigurationException;
 
 import org.slf4j.Logger;
 
@@ -38,7 +41,7 @@ import com.masstransitproject.crosstown.IEndpointCache;
         {
             _endpointFactory = endpointFactory;
 
-            _endpoints = new ConcurrentHashMap()<URI, IEndpoint>();
+            _endpoints = new ConcurrentHashMap<URI, IEndpoint>();
         }
 
         public void Dispose()
@@ -53,15 +56,24 @@ import com.masstransitproject.crosstown.IEndpointCache;
 
 //            Guard.AgainstNull(uri, "uri", "Uri cannot be null");
 
-                URI key = new URI(uri.toString().toLowerCase());
+                URI key;
+				try {
+					key = new URI(uri.toString().toLowerCase());
+				
                 
                 IEndpoint ep = _endpoints.get(key);
                 if( ep == null) {
-                	ep = _endpointFactory.CreateEndpoint((uri);
+                	
+						ep = _endpointFactory.CreateEndpoint(uri);
+					
                 	_endpoints.put(key,ep);
                 }
                 return ep;
-            
+				} catch (URISyntaxException e) {
+					//This really shouldn't happens since we
+					//just downcase an existing uri
+					throw new RuntimeException(e);
+				}
             
         }
 
@@ -83,7 +95,7 @@ import com.masstransitproject.crosstown.IEndpointCache;
                 }
                 catch (Exception ex)
                 {
-                    _log.Error("An exception was thrown while disposing of an endpoint: " + endpoint.Address, ex);
+                    _log.error("An exception was thrown while disposing of an endpoint: " + endpoint.getAddress(), ex);
                 }
             }
 
@@ -103,4 +115,3 @@ import com.masstransitproject.crosstown.IEndpointCache;
             _disposed = true;
         }
     }
-}

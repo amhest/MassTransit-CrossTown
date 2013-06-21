@@ -1,4 +1,7 @@
-package com.masstransitproject.crosstown.transports;
+package com.masstransitproject.crosstown.configuration.builders;
+
+import com.masstransitproject.crosstown.IEndpoint;
+import com.masstransitproject.crosstown.transports.ITransportFactory;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
@@ -13,14 +16,8 @@ package com.masstransitproject.crosstown.transports;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-	/// <summary>
-	/// A duplex transport binds an inbound and outbound transport into a single transport capable of
-	/// bi-directional communication.
-	/// </summary>
-public interface IDuplexTransport extends
-		IInboundTransport,
-		IOutboundTransport
+
+	public interface EndpointBuilder
 	{
-		IInboundTransport getInboundTransport();
-		IOutboundTransport getOutboundTransport();
+		IEndpoint CreateEndpoint(ITransportFactory transportFactory);
 	}

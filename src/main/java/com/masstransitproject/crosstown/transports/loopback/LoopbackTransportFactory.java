@@ -4,8 +4,12 @@ import java.net.URI;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.masstransitproject.crosstown.transports.DefaultMessageNameFormatter;
+import com.masstransitproject.crosstown.transports.IDuplexTransport;
+import com.masstransitproject.crosstown.transports.IInboundTransport;
 import com.masstransitproject.crosstown.transports.IMessageNameFormatter;
+import com.masstransitproject.crosstown.transports.IOutboundTransport;
 import com.masstransitproject.crosstown.transports.ITransportFactory;
+import com.masstransitproject.crosstown.transports.ITransportSettings;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
@@ -32,14 +36,19 @@ import com.masstransitproject.crosstown.transports.ITransportFactory;
             _messageNameFormatter = new DefaultMessageNameFormatter("::", "--", ":", "-");
         }
 
-        public string Scheme
+        public String getScheme()
         {
-            get { return "loopback"; }
+            return "loopback"; 
         }
 
         public IDuplexTransport BuildLoopback(ITransportSettings settings)
         {
-            return _transports.Get(settings.Address.Uri, _ => new LoopbackTransport(settings.Address));
+        	LoopbackTransport transport = _transports.get(settings.getAddress().getUri());
+    		if (transport == null) {
+    			transport = new LoopbackTransport(settings.getAddress());
+            	_transports.put(settings.getAddress().getUri(),transport);
+}
+    		return transport;
         }
 
         public IInboundTransport BuildInbound(ITransportSettings settings)
@@ -54,16 +63,20 @@ import com.masstransitproject.crosstown.transports.ITransportFactory;
 
         public IOutboundTransport BuildError(ITransportSettings settings)
         {
-            return _transports.Get(settings.Address.Uri, _ => new LoopbackTransport(settings.Address));
+        	LoopbackTransport transport = _transports.get(settings.getAddress().getUri());
+            		if (transport == null) {
+            			transport = new LoopbackTransport(settings.getAddress());
+                    	_transports.put(settings.getAddress().getUri(),transport);
         }
+            		return transport;
+        }    		
 
-        public IMessageNameFormatter MessageNameFormatter
+        public IMessageNameFormatter getMessageNameFormatter()
         {
-            get { return _messageNameFormatter; }
+           return _messageNameFormatter; 
         }
 
         public void Dispose()
         {
         }
     }
-}

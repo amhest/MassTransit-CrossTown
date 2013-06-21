@@ -41,7 +41,14 @@ import java.util.Date;
         private Date ExpirationTime;
         private int RetryCount;
 
-        /* (non-Javadoc)
+        private String OriginalMessageId;
+
+       
+        public String getOriginalMessageId() {
+			return OriginalMessageId;
+		}
+
+		/* (non-Javadoc)
 		 * @see com.masstransitproject.crosstown.context.IMessageContext#getHeaders()
 		 */
         @Override
@@ -50,7 +57,6 @@ import java.util.Date;
             return _headers; 
         }
 
-        private String OriginalMessageId;
 
 		/* (non-Javadoc)
 		 * @see com.masstransitproject.crosstown.context.IMessageContext#getMessageId()

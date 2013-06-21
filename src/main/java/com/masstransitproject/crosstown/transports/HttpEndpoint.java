@@ -1,3 +1,11 @@
+package com.masstransitproject.crosstown.transports;
+
+import java.net.URI;
+
+import org.slf4j.Logger;
+
+import com.masstransitproject.crosstown.IEndpoint;
+
 /// Copyright 2007-2008 The Apache Software Foundation.
 /// 
 /// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -29,69 +37,74 @@
 	/// 
 	/// </summary>
 
-	public class HttpEndpoint implements
-		IEndpoint
+	public class HttpEndpoint 
+//	implements
+//		IEndpoint
 	{
-		private static final ILog _log = LogManager.GetLogger(typeof (HttpEndpoint));
-		private static final ILog _messageLog = LogManager.GetLogger("MassTransit.Messages");
 
-		private final BinaryFormatter _formatter = new BinaryFormatter();
-		private final Uri _uri;
+    	static final Logger _log = org.slf4j.LoggerFactory.getLogger(HttpEndpoint.class);
+    	static final Logger _messageLog = org.slf4j.LoggerFactory.getLogger("MassTransit.Messages");
+    	
 
-		public HttpEndpoint(Uri uri)
+//		private final BinaryFormatter _formatter = new BinaryFormatter();
+		private final URI _uri;
+
+		public HttpEndpoint(URI uri)
 		{
 			_uri = uri;
 		}
 
-		public static string Scheme
-		{
-			get { return "http"; }
+		public static String getScheme()
+		{return "http"; 
 		}
 
 		
-		public Uri Uri
-		{
-			get { return _uri; }
+		public URI getUri()
+		{ return _uri; 
 		}
 
-		public void Send<T>(T message) where T : class
+		public <T extends Object> void Send(T message) 
 		{
-			throw new NotImplementedException();
+			throw new UnsupportedOperationException("NotImplementedException()");
 		}
 
-		public void Send<T>(T message, TimeSpan timeToLive) where T : class
+		public <T extends Object> void Send(T message, long timeToLive) 
 		{
-			WebRequest client = HttpWebRequest.Create(_uri);
-			client.Method = "PUT";
-			client.Timeout = (int) timeToLive.TotalMilliseconds;
-		
-			using(Stream s = client.GetRequestStream())
-			{
-				_formatter.Serialize(s, message);
+			throw new UnsupportedOperationException("Finish coding");
+//			WebRequest client = HttpWebRequest.Create(_uri);
+//			client.Method = "PUT";
+//			client.Timeout = (int) timeToLive.TotalMilliseconds;
+//		
+//			using(Stream s = client.GetRequestStream())
+//			{
+//				_formatter.Serialize(s, message);
+//			}
+//
+//			using ( WebResponse response = client.GetResponse() )
+//			{
+//				response.Close();
+//			}
+		}
+
+	    public Object Receive(long timeout)
+		{
+			try {
+				Thread.sleep(timeout);
+			} catch (InterruptedException e) {
+				//Ignore
 			}
-
-			using ( WebResponse response = client.GetResponse() )
-			{
-				response.Close();
-			}
-		}
-
-	    public object Receive(TimeSpan timeout)
-		{
-			Thread.Sleep(timeout);
 
 			return null;
 		}
 
-	    public object Receive(TimeSpan timeout, Predicate<object> accept)
-		{
-			Thread.Sleep(timeout);
-
-			return null;
-		}
+//	    public object Receive(long timeout, Predicate<object> accept)
+//		{
+//			Thread.Sleep(timeout);
+//
+//			return null;
+//		}
 
 	    public void Dispose()
 		{
 		}
 	}
-}

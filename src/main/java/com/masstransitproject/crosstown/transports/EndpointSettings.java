@@ -1,3 +1,11 @@
+package com.masstransitproject.crosstown.transports;
+
+import java.net.URI;
+
+import com.masstransitproject.crosstown.EndpointAddress;
+import com.masstransitproject.crosstown.IEndpointAddress;
+import com.masstransitproject.crosstown.serialization.IMessageSerializer;
+
 // Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -10,62 +18,81 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.Transports
-{
-    using System;
-    using Magnum;
-    using Serialization;
-    using Util;
 
-    public class EndpointSettings :
-        TransportSettings,
-        IEndpointSettings
+
+    public class EndpointSettings extends
+        TransportSettings implements  IEndpointSettings
     {
-        public EndpointSettings([NotNull] string uri)
-            : this(new EndpointAddress(uri))
-        {
+        public EndpointSettings( String uri)
+            {this(new EndpointAddress(uri));
+        
         }
 
-        public EndpointSettings([NotNull] Uri uri)
-            : this(new EndpointAddress(uri))
-        {
+        public EndpointSettings( URI uri)
+            { this(new EndpointAddress(uri));
+        
         }
 
         EndpointSettings(IEndpointAddress address)
-            : base(address)
-        {
+            {super(address);
+        
             ErrorAddress = GetErrorEndpointAddress();
         }
 
         public EndpointSettings(IEndpointAddress address, IEndpointSettings source)
-            : base(address, source)
-        {
-            Guard.AgainstNull(source, "source");
+        { super(address, source);
+        
+            //Guard.AgainstNull(source, "source");
 
-            Serializer = source.Serializer;
-            if (source.ErrorAddress != address)
-                ErrorAddress = source.ErrorAddress;
-            RetryLimit = source.RetryLimit;
-            TrackerFactory = source.TrackerFactory;
+            setSerializer(source.getSerializer());
+            if (!source.getErrorAddress().equals(address))
+                setErrorAddress(source.getErrorAddress());
+            setRetryLimit(source.getRetryLimit());
+//            TrackerFactory = source.TrackerFactory;
         }
 
         public EndpointSettings(IEndpointAddress address, IMessageSerializer serializer, ITransportSettings source)
-            : base(address, source)
-        {
-            Guard.AgainstNull(source, "source");
+            {super(address, source);
+        
+            //Guard.AgainstNull(source, "source");
 
             Serializer = serializer;
             ErrorAddress = GetErrorEndpointAddress();
         }
 
-        public IEndpointAddress ErrorAddress { get; set; }
-        public IMessageSerializer Serializer { get; set; }
-        public int RetryLimit { get; set; }
-        public MessageTrackerFactory TrackerFactory { get; set; }
+        private IEndpointAddress ErrorAddress;
+        private IMessageSerializer Serializer;
+        private int RetryLimit;
+        
+        
+//        public MessageTrackerFactory TrackerFactory { get; set; }
 
-        EndpointAddress GetErrorEndpointAddress()
+        public IEndpointAddress getErrorAddress() {
+			return ErrorAddress;
+		}
+
+		public void setErrorAddress(IEndpointAddress errorAddress) {
+			ErrorAddress = errorAddress;
+		}
+
+		public IMessageSerializer getSerializer() {
+			return Serializer;
+		}
+
+		public void setSerializer(IMessageSerializer serializer) {
+			Serializer = serializer;
+		}
+
+		public int getRetryLimit() {
+			return RetryLimit;
+		}
+
+		public void setRetryLimit(int retryLimit) {
+			RetryLimit = retryLimit;
+		}
+
+		EndpointAddress GetErrorEndpointAddress()
         {
-            return new EndpointAddress(Address.Uri.AppendToPath("_error"));
+            return new EndpointAddress(URI.create(getAddress().getUri().toString() + "_error"));
         }
     }
-}

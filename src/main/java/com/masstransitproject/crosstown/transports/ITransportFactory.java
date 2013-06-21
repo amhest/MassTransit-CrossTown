@@ -22,6 +22,7 @@ package com.masstransitproject.crosstown.transports;
         IOutboundTransport BuildOutbound(ITransportSettings settings);
         IOutboundTransport BuildError(ITransportSettings settings);
 
+        void Dispose();
         /// <summary>
         /// The message name formatter associated with this transport
         /// </summary>

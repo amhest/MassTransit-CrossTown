@@ -1,3 +1,20 @@
+package com.masstransitproject.crosstown.transports.loopback;
+
+import java.nio.channels.UnsupportedAddressTypeException;
+import java.util.LinkedList;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import com.masstransitproject.crosstown.IEndpointAddress;
+import com.masstransitproject.crosstown.context.ISendContext;
+import com.masstransitproject.crosstown.events.ReceiveCompleted;
+import com.masstransitproject.crosstown.handlers.AutoResetEvent;
+import com.masstransitproject.crosstown.handlers.ReceiveHandler;
+import com.masstransitproject.crosstown.transports.IDuplexTransport;
+import com.masstransitproject.crosstown.transports.IInboundTransport;
+import com.masstransitproject.crosstown.transports.IOutboundTransport;
+
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -10,15 +27,6 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.Transports
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using Context;
-    using Loopback;
-    using Magnum.Extensions;
-    using Subscriptions.Coordinator;
 
     /// <summary>
     /// The loopback transport is a built-in transport for MassTransit that 
@@ -26,233 +34,247 @@ namespace MassTransit.Transports
     /// that takes care of subscribing the buses in the process
     /// depending on what subscriptions are made.
     /// </summary>
-    public class LoopbackTransport :
+    public class LoopbackTransport implements
         IDuplexTransport
     {
-        final object _messageReadLock = new object();
-        final object _messageWriteLock = new object();
-        final TimeSpan _deadlockTimeout = new TimeSpan(0, 1, 0);
-        bool _disposed;
+        final ReentrantLock _messageReadLock = new ReentrantLock();
+        final ReentrantLock _messageWriteLock = new ReentrantLock();
+        final long _deadlockTimeout = 60000;
+        boolean _disposed;
         AutoResetEvent _messageReady = new AutoResetEvent(false);
         LinkedList<LoopbackMessage> _messages = new LinkedList<LoopbackMessage>();
 
         public LoopbackTransport(IEndpointAddress address)
         {
-            Address = address;
+            setAddress(address);
         }
 
-        public int Count
+        public int getCount()
         {
-            get
-            {
+           
                 int messageCount;
-                if (!Monitor.TryEnter(_messageReadLock, _deadlockTimeout))
-                    throw new Exception("Deadlock detected!");
+                try {
+					if (!_messageReadLock.tryLock(_deadlockTimeout, TimeUnit.MILLISECONDS))
+					    throw new RuntimeException("Deadlock detected!");
+				} catch (InterruptedException e) {
+				    throw new RuntimeException("Deadlock check Interrupted!");
+				}
 
                 try
                 {
                     GuardAgainstDisposed();
 
-                    messageCount = _messages.Count;
+                    messageCount = _messages.size();
                 }
                 finally
                 {
-                    Monitor.Exit(_messageReadLock);
+                	_messageReadLock.unlock();
                 }
 
                 return messageCount;
-            }
+            
         }
 
-        public IEndpointAddress Address { get; private set; }
+        private IEndpointAddress Address;
 
-        public IOutboundTransport OutboundTransport
-        {
-            get { return this; }
+        public IEndpointAddress getAddress() {
+			return Address;
+		}
+
+		public void setAddress(IEndpointAddress address) {
+			Address = address;
+		}
+
+		public IOutboundTransport getOutboundTransport()
+        {return this; 
         }
 
-        public IInboundTransport InboundTransport
+        public IInboundTransport getInboundTransport()
         {
-            get { return this; }
+           return this; 
         }
 
         public void Send(ISendContext context)
         {
-            GuardAgainstDisposed();
 
-            LoopbackMessage message = null;
-            try
-            {
-                message = new LoopbackMessage();
-
-                if (context.ExpirationTime.HasValue)
-                {
-                    message.ExpirationTime = context.ExpirationTime.Value;
-                }
-
-                context.SerializeTo(message.Body);
-                message.ContentType = context.ContentType;
-                message.OriginalMessageId = context.OriginalMessageId;
-
-                if (!Monitor.TryEnter(_messageWriteLock, _deadlockTimeout))
-                    throw new Exception("Deadlock detected!");
-
-                try
-                {
-                    GuardAgainstDisposed();
-
-                    _messages.AddLast(message);
-                }
-                finally
-                {
-                    Monitor.Exit(_messageWriteLock);
-                }
-
-                Address.LogSent(message.MessageId, context.MessageType);
-            }
-            catch
-            {
-                if (message != null)
-                    message.Dispose();
-
-                throw;
-            }
-
-            _messageReady.Set();
+        	throw new UnsupportedOperationException("Not Finished");
+//            GuardAgainstDisposed();
+//
+//            LoopbackMessage message = null;
+//            try
+//            {
+//                message = new LoopbackMessage();
+//
+//                if (context.getExpirationTime() != null)
+//                {
+//                    message.ExpirationTime = context.getExpirationTime();
+//                }
+//
+//                context.SerializeTo(message.getBody());
+//                message.ContentType = context.getContentType();
+//                message.OriginalMessageId = context.getOriginalMessageId();
+//
+//
+//                if (!_messageWriteLock.tryLock(_deadlockTimeout, TimeUnit.MILLISECONDS))
+//                    throw new Exception("Deadlock detected!");
+//
+//                try
+//                {
+//                    GuardAgainstDisposed();
+//
+//                    _messages.addLast(message);
+//                }
+//                finally
+//                {
+//                	_messageWriteLock.unlock();
+//                }
+//
+//                getAddress().LogSent(message.MessageId, context.getMessageType());
+//            }
+//            catch (RuntimeException re)
+//            {
+//                if (message != null)
+//                    message.Dispose();
+//
+//                throw re;
+//            }
+//
+//            _messageReady.Set();
         }
 
-        public void Receive(Func<IReceiveContext, Action<IReceiveContext>> callback, TimeSpan timeout)
+        public void Receive(ReceiveHandler callback, long timeout)
         {
-            int messageCount = Count;
-
-            bool waited = false;
-
-            if (messageCount == 0)
-            {
-                if (!_messageReady.WaitOne(timeout, true))
-                    return;
-
-                waited = true;
-            }
-
-            bool monitorExitNeeded = true;
-            if (!Monitor.TryEnter(_messageReadLock, timeout))
-                return;
-
-            try
-            {
-                for (LinkedListNode<LoopbackMessage> iterator = _messages.First;
-                     iterator != null;
-                     iterator = iterator.Next)
-                {
-                    if (iterator.Value != null)
-                    {
-                        LoopbackMessage message = iterator.Value;
-                        if (message.ExpirationTime.HasValue && message.ExpirationTime <= DateTime.UtcNow)
-                        {
-                            if (!Monitor.TryEnter(_messageWriteLock, _deadlockTimeout))
-                                throw new Exception("Deadlock detected!");
-
-                            try
-                            {
-                                _messages.Remove(iterator);
-                            }
-                            finally
-                            {
-                                Monitor.Exit(_messageWriteLock);
-                            }
-                            return;
-                        }
-
-                        ReceiveContext context = ReceiveContext.FromBodyStream(message.Body);
-                        context.SetMessageId(message.MessageId);
-                        context.SetContentType(message.ContentType);
-                        context.SetOriginalMessageId(message.OriginalMessageId);
-                        if (message.ExpirationTime.HasValue)
-                            context.SetExpirationTime(message.ExpirationTime.Value);
-
-                        Action<IReceiveContext> receive = callback(context);
-                        if (receive == null)
-                            continue;
-
-                        if (!Monitor.TryEnter(_messageWriteLock, _deadlockTimeout))
-                            throw new Exception("Deadlock detected!");
-
-                        try
-                        {
-                            _messages.Remove(iterator);
-                        }
-                        finally
-                        {
-                            Monitor.Exit(_messageWriteLock);
-                        }
-
-                        using (message)
-                        {
-                            Monitor.Exit(_messageReadLock);
-                            monitorExitNeeded = false;
-
-                            receive(context);
-                            return;
-                        }
-                    }
-                }
-
-                if (waited)
-                    return;
-
-                // we read to the end and none were accepted, so we are going to wait until we get another in the queue
-                // make any other potential readers wait as well
-                _messageReady.WaitOne(timeout, true);
-            }
-            finally
-            {
-                if (monitorExitNeeded)
-                    Monitor.Exit(_messageReadLock);
-            }
+        	
+        	throw new UnsupportedOperationException("Not Finished");
+//            int messageCount = getCount();
+//
+//            boolean waited = false;
+//
+//            if (messageCount == 0)
+//            {
+//                if (!_messageReady.WaitOne(timeout, true))
+//                    return;
+//
+//                waited = true;
+//            }
+//
+//            boolean monitorExitNeeded = true;
+//            
+//
+//            if (!_messageReadLock.tryLock(_deadlockTimeout, TimeUnit.MILLISECONDS))
+//                return;
+//
+//            try
+//            {
+//                for (LinkedList<LoopbackMessage> iterator = _messages.First;
+//                     iterator != null;
+//                     iterator = iterator.Next)
+//                {
+//                    if (iterator.Value != null)
+//                    {
+//                        LoopbackMessage message = iterator.Value;
+//                        if (message.ExpirationTime.HasValue && message.ExpirationTime <= DateTime.UtcNow)
+//                        {
+//
+//                            if (!_messageWriteLock.tryLock(_deadlockTimeout, TimeUnit.MILLISECONDS))
+//                                throw new Exception("Deadlock detected!");
+//
+//                            try
+//                            {
+//                                _messages.Remove(iterator);
+//                            }
+//                            finally
+//                            {
+//                            	_messageWriteLock.unlock();
+//                            }
+//                            return;
+//                        }
+//
+//                        ReceiveContext context = ReceiveContext.FromBodyStream(message.Body);
+//                        context.SetMessageId(message.MessageId);
+//                        context.SetContentType(message.ContentType);
+//                        context.SetOriginalMessageId(message.OriginalMessageId);
+//                        if (message.ExpirationTime.HasValue)
+//                            context.SetExpirationTime(message.ExpirationTime.Value);
+//
+//                        Action<IReceiveContext> receive = callback(context);
+//                        if (receive == null)
+//                            continue;
+//
+//                        if (!Monitor.TryEnter(_messageWriteLock, _deadlockTimeout))
+//                            throw new Exception("Deadlock detected!");
+//
+//                        try
+//                        {
+//                            _messages.Remove(iterator);
+//                        }
+//                        finally
+//                        {
+//                        	_messageWriteLock.unlock();
+//                        }
+//
+//                        using (message)
+//                        {
+//                            Monitor.Exit(_messageReadLock);
+//                            monitorExitNeeded = false;
+//
+//                            receive(context);
+//                            return;
+//                        }
+//                    }
+//                }
+//
+//                if (waited)
+//                    return;
+//
+//                // we read to the end and none were accepted, so we are going to wait until we get another in the queue
+//                // make any other potential readers wait as well
+//                _messageReady.WaitOne(timeout, true);
+//            }
+//            finally
+//            {
+//                if (monitorExitNeeded)
+//                	_messageReadLock.unlock();
+//            }
         }
 
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         void GuardAgainstDisposed()
         {
             if (_disposed)
-                throw new ObjectDisposedException("The transport has already been disposed: " + Address);
+                throw new IllegalStateException("The transport has already been disposed: " + Address);
         }
 
-        void Dispose(bool disposing)
+        void Dispose(boolean disposing)
         {
             if (_disposed)
                 return;
             if (disposing)
             {
-                lock (_messageReadLock)
+                synchronized (_messageReadLock)
                 {
-                    lock (_messageWriteLock)
+                	synchronized (_messageWriteLock)
                     {
-                        _messages.Each(x => x.Dispose());
-                        _messages.Clear();
+                		for (LoopbackMessage message:_messages) {
+                			message.Dispose();
+                		}
+                        _messages.clear();
                         _messages = null;
                     }
                 }
 
                 _messageReady.Close();
-                using (_messageReady)
-                {
-                }
+//                using (_messageReady)
+//                {
+//                }
                 _messageReady = null;
             }
 
             _disposed = true;
         }
 
-        ~LoopbackTransport()
-        {
-            Dispose(false);
-        }
     }
-}

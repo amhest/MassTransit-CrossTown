@@ -56,17 +56,17 @@ import com.masstransitproject.crosstown.pipeline.IPipelineSink;
 			return _output.get(); 
 		}
 
-		public Iterator<SinkAction<T>> Enumerate(T context)
+		public Iterable<SinkAction<T>> Enumerate(T context)
 		{
 			List<SinkAction<T>> l = new ArrayList<SinkAction<T>>(); 
 			for (IPipelineSink sink:_output.get()) {
- 				Iterator<SinkAction<T>> itr= sink.Enumerate(context);
+ 				Iterator<SinkAction<T>> itr= sink.Enumerate(context).iterator();
 				while (itr.hasNext()) {
 					l.add(itr.next());
 				}
 			}
 			//return _output.get.SelectMany(x => x.Enumerate(context));
-			return l.iterator();
+			return l;
 		}
 
 		public boolean Inspect(IPipelineInspector inspector)

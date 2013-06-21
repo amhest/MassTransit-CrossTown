@@ -2,8 +2,10 @@ package com.masstransitproject.crosstown.transports;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.masstransitproject.crosstown.IEndpoint;
+import com.masstransitproject.crosstown.configuration.builders.EndpointBuilder;
 import com.masstransitproject.crosstown.configuration.endpointconfigurators.IEndpointFactoryDefaultSettings;
 
 // Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
@@ -28,8 +30,8 @@ import com.masstransitproject.crosstown.configuration.endpointconfigurators.IEnd
     {
         final IEndpointFactoryDefaultSettings _defaults;
         final ConcurrentHashMap<URI, EndpointBuilder> _endpointBuilders;
-        final Cache<string, ITransportFactory> _transportFactories;
-        bool _disposed;
+        final ConcurrentHashMap<String, ITransportFactory> _transportFactories;
+        boolean _disposed;
 
         /// <summary>
         /// Creates a new endpoint factory instance
@@ -42,30 +44,33 @@ import com.masstransitproject.crosstown.configuration.endpointconfigurators.IEnd
             IEndpointFactoryDefaultSettings defaults)
         {
             if (transportFactories == null)
-                throw new ArgumentNullException("transportFactories");
+                throw new IllegalArgumentException("transportFactories is null");
             if (endpointBuilders == null)
-                throw new ArgumentNullException("endpointBuilders");
+                throw new IllegalArgumentException("endpointBuilders is null");
             if (defaults == null)
-                throw new ArgumentNullException("defaults");
-            _transportFactories = new ConcurrentCache<String, ITransportFactory>(transportFactories);
+                throw new IllegalArgumentException("defaults");
+            _transportFactories = new ConcurrentHashMap<String, ITransportFactory>(transportFactories);
             _defaults = defaults;
-            _endpointBuilders = new ConcurrentCache<Uri, EndpointBuilder>(endpointBuilders);
+            _endpointBuilders = new ConcurrentHashMap<URI, EndpointBuilder>(endpointBuilders);
         }
 
-        public IEndpoint CreateEndpoint(URI uri)
+        public IEndpoint CreateEndpoint(URI uri) throws ConfigurationException
         {
-            String scheme = uri.Scheme.ToLowerInvariant();
+            String scheme = uri.getScheme().toLowerCase();
 
-            if (_transportFactories.Has(scheme))
+            if (_transportFactories.contains(scheme))
             {
-                ITransportFactory transportFactory = _transportFactories[scheme];
+                ITransportFactory transportFactory = _transportFactories.get(scheme);
                 try
                 {
-                    EndpointBuilder builder = _endpointBuilders.Get(uri, key =>
-                        {
-                            var configurator = new EndpointConfiguratorImpl(uri, _defaults);
-                            return configurator.CreateBuilder();
-                        });
+                    EndpointBuilder builder = _endpointBuilders.get(uri);
+                    if (builder == null) {
+                    	throw new UnsupportedOperationException("Fix me ");
+                    	
+//                    			EndpointConfiguratorImpl configurator = new EndpointConfiguratorImpl(uri, _defaults);
+//                    			builder =  configurator.CreateBuilder();
+                    }
+                    
 
                     return builder.CreateEndpoint(transportFactory);
                 }
@@ -75,36 +80,36 @@ import com.masstransitproject.crosstown.configuration.endpointconfigurators.IEnd
                 }
             }
 
-            throw new ConfigurationException(
-                "The {0} scheme was not handled by any registered transport.".FormatWith(uri.Scheme));
+            throw new ConfigurationException(uri,
+                "The " + uri.getScheme() + " scheme was not handled by any registered transport.");
         }
 
         public void AddTransportFactory(ITransportFactory factory)
         {
-            String scheme = factory.Scheme.ToLowerInvariant();
+            String scheme = factory.getScheme().toLowerCase();
 
-            _transportFactories[scheme] = factory;
+            _transportFactories.put(scheme,factory);
         }
 
-        public void Inspect(DiagnosticsProbe probe)
-        {
-            probe.Add("mt.default_serializer", _defaults.Serializer.GetType().ToShortTypeName());
-            _transportFactories.Each(
-                (scheme, factory) =>
-                    {
-                        probe.Add("mt.transport",
-                            String.Format("[{0}] {1}", scheme, factory.GetType().ToShortTypeName()));
-                    });
-        }
+//        public void Inspect(DiagnosticsProbe probe)
+//        {
+//            probe.Add("mt.default_serializer", _defaults.Serializer.GetType().ToShortTypeName());
+//            _transportFactories.Each(
+//                (scheme, factory) =>
+//                    {
+//                        probe.Add("mt.transport",
+//                            String.Format("[{0}] {1}", scheme, factory.GetType().ToShortTypeName()));
+//                    });
+//        }
 
         public void Dispose()
         {
             if (_disposed)
                 return;
 
-            _transportFactories.Each((scheme, factory) => factory.Dispose());
-
+            for (ITransportFactory factory : _transportFactories.values()) {
+            	factory.Dispose();
+            }
             _disposed = true;
         }
     }
-}

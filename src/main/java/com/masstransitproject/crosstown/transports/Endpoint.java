@@ -49,7 +49,7 @@ public class Endpoint<T extends Object> implements
         public Endpoint( IEndpointAddress address,
              IMessageSerializer serializer,
              IDuplexTransport transport,
-             IOutboundTransport errorTransport,null)
+             IOutboundTransport errorTransport)
 //             IInboundMessageTracker messageTracker)
         {
             if (address == null)
@@ -60,13 +60,13 @@ public class Endpoint<T extends Object> implements
                 throw new IllegalArgumentException("transport is null");
             if (errorTransport == null)
                 throw new IllegalArgumentException("errorTransport is null");
-            if (messageTracker == null)
-                throw new IllegalArgumentException("messageTracker is null");
+//            if (messageTracker == null)
+//                throw new IllegalArgumentException("messageTracker is null");
 
             _address = address;
             _errorTransport = errorTransport;
             _serializer = serializer;
-            _tracker = messageTracker;
+//            _tracker = messageTracker;
             _transport = transport;
 
             _disposedMessage = "The endpoint has already been disposed: " +getAddress();
