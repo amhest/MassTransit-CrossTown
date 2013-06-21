@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown.pipeline.configuration;
+package com.masstransitproject.crosstown.pipeline.configuration;
 
 import com.masstransitproject.crosstown.IServiceBus;
 import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;

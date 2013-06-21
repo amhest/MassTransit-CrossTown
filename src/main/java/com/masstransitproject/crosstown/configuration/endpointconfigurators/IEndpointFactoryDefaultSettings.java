@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown.configuration.endpointconfigurators;
+package com.masstransitproject.crosstown.configuration.endpointconfigurators;
 
 import java.net.URI;
 

@@ -1,6 +1,7 @@
-﻿package com.masstransitproject.crosstown.transports.loopback;
+package com.masstransitproject.crosstown.transports.loopback;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 
@@ -85,20 +86,24 @@ import com.masstransitproject.crosstown.newid.NewId;
 
 		public void Dispose()
         {
-//            Dispose(true);
+            Dispose(true);
 //            GC.SuppressFinalize(this);
         }
 
-//        void Dispose(boolean disposing)
-//        {
-//            if (_disposed) return;
-//            if (disposing)
-//            {
-//                getBody().Dispose();
-//            }
-//
-//            _disposed = true;
-//        }
+        void Dispose(boolean disposing)
+        {
+            if (_disposed) return;
+            if (disposing)
+            {
+                try {
+					getBody().close();
+				} catch (IOException e) {
+					//Ignore
+				}
+            }
+
+            _disposed = true;
+        }
 
     
 }

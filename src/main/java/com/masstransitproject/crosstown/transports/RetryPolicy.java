@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown.transports;
+package com.masstransitproject.crosstown.transports;
 
 import com.masstransitproject.crosstown.handlers.ConnectionPolicyCallback;
 

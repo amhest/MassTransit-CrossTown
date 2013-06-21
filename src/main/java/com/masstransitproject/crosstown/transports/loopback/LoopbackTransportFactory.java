@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown.transports.loopback;
+package com.masstransitproject.crosstown.transports.loopback;
 
 import java.net.URI;
 import java.util.concurrent.ConcurrentHashMap;

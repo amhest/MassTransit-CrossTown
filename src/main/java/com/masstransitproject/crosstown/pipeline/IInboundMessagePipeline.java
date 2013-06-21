@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown.pipeline;
+package com.masstransitproject.crosstown.pipeline;
 
 import com.masstransitproject.crosstown.context.IConsumeContext;
 import com.masstransitproject.crosstown.handlers.ConfigureCallback;
@@ -32,10 +32,10 @@ import com.masstransitproject.crosstown.handlers.UnsubscribeAction;
 		/// <param name="configureCallback">A callback that may be called (directly) from
 		/// the implementing method. The pipeline sink may choose the configurator instance to
 		/// pass to this action.</param>
-//		void Configure(UnsubscribeAction configureCallback);
+		ConfigureCallback Configure(ConfigureCallback configureCallback);
 
 		/// <summary>
 		/// <see cref="Configure"/>
 		/// </summary>
-		<TResult> TResult Configure(ConfigureCallback<TResult> configureCallback);
+		//<TResult> TResult Configure(ConfigureCallback<TResult> configureCallback);
 	}

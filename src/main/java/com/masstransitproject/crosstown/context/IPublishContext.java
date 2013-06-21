@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown.context;
+package com.masstransitproject.crosstown.context;
 
 import com.masstransitproject.crosstown.IEndpointAddress;
 import com.masstransitproject.crosstown.handlers.SendCallback;

@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown;
+package com.masstransitproject.crosstown;
 
 import java.util.ArrayList;
 import java.util.List;

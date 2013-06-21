@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown.pipeline;
+package com.masstransitproject.crosstown.pipeline;
 
 import com.masstransitproject.crosstown.context.ISendContext;
 

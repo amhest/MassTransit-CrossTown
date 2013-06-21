@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown.context;
+package com.masstransitproject.crosstown.context;
 
 import java.net.URI;
 import java.util.HashSet;

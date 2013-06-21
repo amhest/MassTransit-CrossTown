@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown.configuration;
+package com.masstransitproject.crosstown.configuration;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  

@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown.pipeline;
+package com.masstransitproject.crosstown.pipeline;
 
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicReference;

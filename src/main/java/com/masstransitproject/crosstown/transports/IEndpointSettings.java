@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown.transports;
+package com.masstransitproject.crosstown.transports;
 
 import com.masstransitproject.crosstown.IEndpointAddress;
 import com.masstransitproject.crosstown.serialization.IMessageSerializer;

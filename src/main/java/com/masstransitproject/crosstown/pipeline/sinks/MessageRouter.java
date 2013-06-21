@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown.pipeline.sinks;
+package com.masstransitproject.crosstown.pipeline.sinks;
 
 import java.util.ArrayList;
 import java.util.Iterator;

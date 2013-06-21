@@ -1,4 +1,4 @@
-﻿package com.masstransitproject.crosstown;
+package com.masstransitproject.crosstown;
 
 import com.masstransitproject.crosstown.configuration.BusServiceLayer;
 
