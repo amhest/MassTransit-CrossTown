@@ -3,6 +3,8 @@ package com.masstransitproject.crosstown.messages;
 import java.io.Serializable;
 import java.util.UUID;
 
+import com.masstransitproject.crosstown.ExternallyNamespaced;
+
 // Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -17,7 +19,7 @@ import java.util.UUID;
 // specific language governing permissions and limitations under the License.
 
 @SuppressWarnings("serial")
-public class PingMessage implements Serializable, IMessage {
+public class PingMessage implements Serializable, ExternallyNamespaced {
 	private UUID _id = UUID.fromString("D62C9B1C-8E31-4D54-ADD7-C624D56085A4");
 
 	public PingMessage() {
@@ -38,7 +40,7 @@ public class PingMessage implements Serializable, IMessage {
 	}
 
 	@Override
-	public String getDotNetNamespace() {
+	public String getExternalNamespace() {
 		return "MassTransit.TestFramework.Examples.Messages";
 	}
 

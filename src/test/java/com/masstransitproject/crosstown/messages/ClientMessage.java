@@ -2,8 +2,10 @@ package com.masstransitproject.crosstown.messages;
 
 import java.io.Serializable;
 
+import com.masstransitproject.crosstown.ExternallyNamespaced;
+
 @SuppressWarnings("serial")
-public class ClientMessage implements Serializable, IMessage {
+public class ClientMessage implements Serializable, ExternallyNamespaced {
 	private String _name;
 
 	public String get_name() {
@@ -15,7 +17,7 @@ public class ClientMessage implements Serializable, IMessage {
 	}
 
 	@Override
-	public String getDotNetNamespace() {
+	public String getExternalNamespace() {
 		return "MassTransit.TestFramework.Examples.Messages";
 
 

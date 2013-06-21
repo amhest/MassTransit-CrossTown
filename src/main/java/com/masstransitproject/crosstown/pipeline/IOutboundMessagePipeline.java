@@ -15,7 +15,7 @@ import com.masstransitproject.crosstown.context.ISendContext;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-    public interface IOutboundMessagePipeline extends
-		IPipelineSink<ISendContext>
+    public interface IOutboundMessagePipeline<T> extends
+		IPipelineSink<ISendContext<T>>
 	{
 	}

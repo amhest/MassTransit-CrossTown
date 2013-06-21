@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.masstransitproject.crosstown.context.ISendContext;
 import com.masstransitproject.crosstown.handlers.SendAction;
+import com.masstransitproject.crosstown.handlers.SinkAction;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
@@ -20,17 +21,17 @@ import com.masstransitproject.crosstown.handlers.SendAction;
 // specific language governing permissions and limitations under the License.
 
 
-    public class OutboundMessagePipeline implements
-        IOutboundMessagePipeline
+    public class OutboundMessagePipeline<T> implements
+        IOutboundMessagePipeline<T>
     {
-        final AtomicReference<IPipelineSink<ISendContext>> _output;
+        final AtomicReference<IPipelineSink<ISendContext<T>>> _output;
 
-        public OutboundMessagePipeline(IPipelineSink<ISendContext> output)
+        public OutboundMessagePipeline(IPipelineSink<ISendContext<T>> output)
         {
             _output = new AtomicReference(output);
         }
 
-        public Iterator<SendAction> Enumerate(ISendContext context)
+        public Iterable<SinkAction<ISendContext<T>>>  Enumerate(ISendContext<T> context)
         {
             return _output.get().Enumerate(context);
         }
@@ -40,7 +41,7 @@ import com.masstransitproject.crosstown.handlers.SendAction;
             return inspector.Inspect(this, false);//() => _output.Value.Inspect(inspector));
         }
 
-        public IPipelineSink<ISendContext> ReplaceOutputSink(IPipelineSink<ISendContext> sink)
+        public IPipelineSink<ISendContext<T>> ReplaceOutputSink(IPipelineSink<ISendContext<T>> sink)
         {
              
              return _output.getAndSet(sink);

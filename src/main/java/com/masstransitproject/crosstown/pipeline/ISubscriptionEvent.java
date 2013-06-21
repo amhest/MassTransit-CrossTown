@@ -1,6 +1,6 @@
-package com.masstransitproject.crosstown.transports;
+﻿package com.masstransitproject.crosstown.pipeline;
 
-import com.masstransitproject.crosstown.handlers.ConnectionPolicyCallback;
+import com.masstransitproject.crosstown.handlers.UnsubscribeAction;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
@@ -15,15 +15,16 @@ import com.masstransitproject.crosstown.handlers.ConnectionPolicyCallback;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-	public class DisposedConnectionPolicy implements
-		ConnectionPolicy
+	/// <summary>
+	/// Notifies when changes to the subscribed message types changes in the pipeline.
+	/// </summary>
+	public interface ISubscriptionEvent <TMessage extends Object>
 	{
-		public void Execute(ConnectionPolicyCallback callback)
-		{
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				// Ignore
-			}
-		}
+		/// <summary>
+		/// Notify of a subscription for a message.
+		/// </summary>
+		/// <typeparam name="TMessage">Message type</typeparam>
+		/// <returns>The corresponding action for unsubscription</returns>
+		UnsubscribeAction SubscribedTo();
+
 	}

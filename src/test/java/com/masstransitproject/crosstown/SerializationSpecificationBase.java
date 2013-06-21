@@ -42,7 +42,7 @@ public class SerializationSpecificationBase  {
 		_retryCount = 69;
 
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		ISendContext<Object> context = new SendContext(message);
+		SendContext<Object> context = new SendContext(message);
 		context.setSourceAddress(_sourceUri);
 		// context.sendResponseTo(_responseUri);
 		// context.sendFaultTo(_faultUri);
@@ -56,7 +56,7 @@ public class SerializationSpecificationBase  {
 		// Trace.WriteLine(Encoding.UTF8.GetString(data));
 
 		ByteArrayInputStream input = new ByteArrayInputStream(data);
-		IMessage copy = serializer.Deserialize(input);
+		Object copy = serializer.Deserialize(input);
 
 		Assert.assertEquals(message, copy);
 

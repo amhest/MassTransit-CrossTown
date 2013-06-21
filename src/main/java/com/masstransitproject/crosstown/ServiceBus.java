@@ -12,15 +12,23 @@
 // specific language governing permissions and limitations under the License.
 package com.masstransitproject.crosstown;
 
+import java.net.URI;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.masstransitproject.crosstown.configuration.BusServiceLayer;
+import com.masstransitproject.crosstown.context.ContextStorage;
 import com.masstransitproject.crosstown.context.PublishContext;
+import com.masstransitproject.crosstown.handlers.ConfigureCallback;
 import com.masstransitproject.crosstown.handlers.NoContextPublishHandler;
 import com.masstransitproject.crosstown.handlers.SendCallback;
 import com.masstransitproject.crosstown.handlers.UnsubscribeAction;
+import com.masstransitproject.crosstown.pipeline.IInboundMessagePipeline;
 import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
+import com.masstransitproject.crosstown.pipeline.configuration.InboundPipelineConfigurator;
+import com.masstransitproject.crosstown.pipeline.configuration.OutboundPipelineConfigurator;
 import com.masstransitproject.crosstown.stact.Channel;
 import com.masstransitproject.crosstown.stact.ChannelAdapter;
 import com.masstransitproject.crosstown.stact.UntypedChannel;
@@ -67,8 +75,8 @@ import com.masstransitproject.crosstown.stact.UntypedChannel;
 
             _serviceContainer = new ServiceContainer(this);
 
-            OutboundPipeline = new OutboundPipelineConfigurator(this).Pipeline;
-            //InboundPipeline = InboundPipelineConfigurator.CreateDefault(this);
+            setOutboundPipeline ( new OutboundPipelineConfigurator(this).getPipeline());
+            setInboundPipeline ( InboundPipelineConfigurator.CreateDefault(this));
 
             ControlBus = this;
 
@@ -115,10 +123,19 @@ import com.masstransitproject.crosstown.stact.UntypedChannel;
                 _receiveTimeout = value;
             
         }
-//
-//        public TimeSpan ShutdownTimeout { get; set; }
-//
-        public Channel getEventChannel()
+
+        private long ShutdownTimeout;
+       
+
+        public long getShutdownTimeout() {
+			return ShutdownTimeout;
+		}
+
+		public void setShutdownTimeout(long shutdownTimeout) {
+			ShutdownTimeout = shutdownTimeout;
+		}
+
+		public Channel getEventChannel()
         {
         	return _eventChannel; 
         }
@@ -158,46 +175,49 @@ import com.masstransitproject.crosstown.stact.UntypedChannel;
         
         public <T> void Publish(T message, SendCallback contextCallback)
         {
-            PublishContext<T> context = ContextStorage.CreatePublishContext(message);
-            context.SetSourceAddress(Endpoint.Address.Uri);
-
-            contextCallback(context);
-
-            IList<Exception> exceptions = new List<Exception>();
-
-            int publishedCount = 0;
-            foreach (object consumer in OutboundPipeline.Enumerate(context))
-            {
-                try
-                {
-                    consumer(context);
-                    publishedCount++;
-                }
-                catch (Exception ex)
-                {
-                    _log.Error(String.Format("'{0}' threw an exception publishing message '{1}'",
-                        consumer.getClass().FullName, message.getClass().FullName), ex);
-
-                    exceptions.Add(ex);
-                }
-            }
-
-            context.Complete();
-
-            if (publishedCount == 0)
-            {
-                context.NotifyNoSubscribers();
-            }
-
-            _eventChannel.Send(new MessagePublished
-                {
-                    MessageType = typeof(T),
-                    ConsumerCount = publishedCount,
-                    Duration = context.Duration,
-                });
-
-            if (exceptions.Count > 0)
-                throw new PublishException(typeof(T), exceptions);
+        	//TODO FIXME
+        	throw new UnsupportedOperationException("Not Implemented");
+//        	
+//            PublishContext<T> context = ContextStorage.CreatePublishContext(message);
+//            context.setSourceAddress(Endpoint.getAddress().getUri());
+//
+//            contextCallback.invoke();
+//
+//            List<Exception> exceptions = new ArrayList<Exception>();
+//
+//            int publishedCount = 0;
+//            for (Object consumer: getOutboundPipeline().Enumerate(context))
+//            {
+//                try
+//                {
+//                    consumer(context);
+//                    publishedCount++;
+//                }
+//                catch (Exception ex)
+//                {
+//                    _log.Error(String.Format("'{0}' threw an exception publishing message '{1}'",
+//                        consumer.getClass().FullName, message.getClass().FullName), ex);
+//
+//                    exceptions.Add(ex);
+//                }
+//            }
+//
+//            context.Complete();
+//
+//            if (publishedCount == 0)
+//            {
+//                context.NotifyNoSubscribers();
+//            }
+//
+//            _eventChannel.Send(new MessagePublished
+//                {
+//                    MessageType = typeof(T),
+//                    ConsumerCount = publishedCount,
+//                    Duration = context.Duration,
+//                });
+//
+//            if (exceptions.Count > 0)
+//                throw new PublishException(typeof(T), exceptions);
         }
 
 //        public void Publish(Object message)
@@ -283,11 +303,27 @@ import com.masstransitproject.crosstown.stact.UntypedChannel;
 //            Publish(message, contextCallback);
 //        }
 
-        public IOutboundMessagePipeline OutboundPipeline;
+        private IOutboundMessagePipeline _OutboundPipeline;
 
-//        public IInboundMessagePipeline InboundPipeline { get; private set; }
+        private IInboundMessagePipeline _InboundPipeline;
 
-        /// <summary>
+        public IInboundMessagePipeline getInboundPipeline() {
+			return _InboundPipeline;
+		}
+
+		public void setInboundPipeline(IInboundMessagePipeline inboundPipeline) {
+			this._InboundPipeline = inboundPipeline;
+		}
+
+		public IOutboundMessagePipeline getOutboundPipeline() {
+			return _OutboundPipeline;
+		}
+
+		public void setOutboundPipeline(IOutboundMessagePipeline outboundPipeline) {
+			this._OutboundPipeline = _OutboundPipeline;
+		}
+
+		/// <summary>
         /// The endpoint associated with this instance
         /// </summary>
         private IEndpoint Endpoint;
@@ -300,9 +336,9 @@ import com.masstransitproject.crosstown.stact.UntypedChannel;
 			Endpoint = endpoint;
 		}
 
-		public UnsubscribeAction Configure(Func<IInboundPipelineConfigurator, UnsubscribeAction> configure)
+		public ConfigureCallback Configure(ConfigureCallback configure)
         {
-            return InboundPipeline.Configure(configure);
+            return getInboundPipeline().Configure(configure);
         }
 
         public IServiceBus ControlBus;
@@ -317,28 +353,28 @@ import com.masstransitproject.crosstown.stact.UntypedChannel;
 
 		public IEndpoint GetEndpoint(URI address)
         {
-            return EndpointCache.GetEndpoint(address);
+            return getEndpointCache().GetEndpoint(address);
         }
 
-        public void Inspect(DiagnosticsProbe probe)
-        {
-            new StandardDiagnosticsInfo().WriteCommonItems(probe);
+//        public void Inspect(DiagnosticsProbe probe)
+//        {
+//            new StandardDiagnosticsInfo().WriteCommonItems(probe);
+//
+//            probe.Add("mt.version", typeof(IServiceBus).Assembly.GetName().Version);
+//            probe.Add("mt.receive_from", Endpoint.Address);
+//            probe.Add("mt.control_bus", ControlBus.Endpoint.Address);
+//            probe.Add("mt.max_consumer_threads", MaximumConsumerThreads);
+//            probe.Add("mt.concurrent_receive_threads", ConcurrentReceiveThreads);
+//            probe.Add("mt.receive_timeout", ReceiveTimeout);
+//
+//            EndpointCache.Inspect(probe);
+//            _serviceContainer.Inspect(probe);
+//
+//            getOutboundPipeline().View(pipe => probe.Add("zz.mt.outbound_pipeline", pipe));
+//            getInboundPipeline.View(pipe => probe.Add("zz.mt.inbound_pipeline", pipe));
+//        }
 
-            probe.Add("mt.version", typeof(IServiceBus).Assembly.GetName().Version);
-            probe.Add("mt.receive_from", Endpoint.Address);
-            probe.Add("mt.control_bus", ControlBus.Endpoint.Address);
-            probe.Add("mt.max_consumer_threads", MaximumConsumerThreads);
-            probe.Add("mt.concurrent_receive_threads", ConcurrentReceiveThreads);
-            probe.Add("mt.receive_timeout", ReceiveTimeout);
-
-            EndpointCache.Inspect(probe);
-            _serviceContainer.Inspect(probe);
-
-            OutboundPipeline.View(pipe => probe.Add("zz.mt.outbound_pipeline", pipe));
-            InboundPipeline.View(pipe => probe.Add("zz.mt.inbound_pipeline", pipe));
-        }
-
-        public IBusService GetService(Class type)
+        public IBusService getService(Class type)
         {
             return _serviceContainer.GetService(type);
         }
@@ -383,12 +419,12 @@ import com.masstransitproject.crosstown.stact.UntypedChannel;
                 return;
             if (disposing)
             {
-                if (_consumerPool != null)
-                {
-                    _consumerPool.Stop();
-                    _consumerPool.Dispose();
-                    _consumerPool = null;
-                }
+//                if (_consumerPool != null)
+//                {
+//                    _consumerPool.Stop();
+//                    _consumerPool.Dispose();
+//                    _consumerPool = null;
+//                }
 
                 if (_serviceContainer != null)
                 {
@@ -400,76 +436,90 @@ import com.masstransitproject.crosstown.stact.UntypedChannel;
                 if (ControlBus != this)
                     ControlBus.Dispose();
 
-                if (_performanceCounterConnection != null)
-                {
-                    _performanceCounterConnection.Dispose();
-                    _performanceCounterConnection = null;
-                }
+//                if (_performanceCounterConnection != null)
+//                {
+//                    _performanceCounterConnection.Dispose();
+//                    _performanceCounterConnection = null;
+//                }
 
                 _eventChannel = null;
 
                 Endpoint = null;
 
-                if (_counters != null)
-                {
-                    _counters.Dispose();
-                    _counters = null;
-                }
+//                if (_counters != null)
+//                {
+//                    _counters.Dispose();
+//                    _counters = null;
+//                }
 
-                EndpointCache.Dispose();
+                getEndpointCache().Dispose();
             }
             _disposed = true;
         }
 
         void InitializePerformanceCounters()
         {
-            try
-            {
-                String instanceName = String.Format("{0}_{1}{2}",
-                    Endpoint.Address.Uri.Scheme, Endpoint.Address.Uri.Host, Endpoint.Address.Uri.AbsolutePath.Replace("/", "_"));
-
-                _counters = new ServiceBusInstancePerformanceCounters(instanceName);
-
-                _performanceCounterConnection = _eventChannel.Connect(x =>
-                    {
-                        x.AddConsumerOf<MessageReceived>()
-                            .UsingConsumer(message =>
-                                {
-                                    _counters.ReceiveCount.Increment();
-                                    _counters.ReceiveRate.Increment();
-                                    _counters.ReceiveDuration.IncrementBy(
-                                        (long)message.ReceiveDuration.TotalMilliseconds);
-                                    _counters.ReceiveDurationBase.Increment();
-                                    _counters.ConsumerDuration.IncrementBy(
-                                        (long)message.ConsumeDuration.TotalMilliseconds);
-                                    _counters.ConsumerDurationBase.Increment();
-                                });
-
-                        x.AddConsumerOf<MessagePublished>()
-                            .UsingConsumer(message =>
-                                {
-                                    _counters.PublishCount.Increment();
-                                    _counters.PublishRate.Increment();
-                                    _counters.PublishDuration.IncrementBy((long)message.Duration.TotalMilliseconds);
-                                    _counters.PublishDurationBase.Increment();
-
-                                    _counters.SentCount.IncrementBy(message.ConsumerCount);
-                                    _counters.SendRate.IncrementBy(message.ConsumerCount);
-                                });
-
-                        x.AddConsumerOf<ThreadPoolEvent>()
-                            .UsingConsumer(message =>
-                                {
-                                    _counters.ReceiveThreadCount.Set(message.ReceiverCount);
-                                    _counters.ConsumerThreadCount.Set(message.ConsumerCount);
-                                });
-                    });
-            }
-            catch (Exception ex)
-            {
-                _log.Warn(
-                    "The performance counters could not be created, try running the program in the Administrator role. Just once.",
-                    ex);
-            }
+//            try
+//            {
+//                String instanceName = String.Format("{0}_{1}{2}",
+//                    Endpoint.Address.Uri.Scheme, Endpoint.Address.Uri.Host, Endpoint.Address.Uri.AbsolutePath.Replace("/", "_"));
+//
+//                _counters = new ServiceBusInstancePerformanceCounters(instanceName);
+//
+//                _performanceCounterConnection = _eventChannel.Connect(x =>
+//                    {
+//                        x.AddConsumerOf<MessageReceived>()
+//                            .UsingConsumer(message =>
+//                                {
+//                                    _counters.ReceiveCount.Increment();
+//                                    _counters.ReceiveRate.Increment();
+//                                    _counters.ReceiveDuration.IncrementBy(
+//                                        (long)message.ReceiveDuration.TotalMilliseconds);
+//                                    _counters.ReceiveDurationBase.Increment();
+//                                    _counters.ConsumerDuration.IncrementBy(
+//                                        (long)message.ConsumeDuration.TotalMilliseconds);
+//                                    _counters.ConsumerDurationBase.Increment();
+//                                });
+//
+//                        x.AddConsumerOf<MessagePublished>()
+//                            .UsingConsumer(message =>
+//                                {
+//                                    _counters.PublishCount.Increment();
+//                                    _counters.PublishRate.Increment();
+//                                    _counters.PublishDuration.IncrementBy((long)message.Duration.TotalMilliseconds);
+//                                    _counters.PublishDurationBase.Increment();
+//
+//                                    _counters.SentCount.IncrementBy(message.ConsumerCount);
+//                                    _counters.SendRate.IncrementBy(message.ConsumerCount);
+//                                });
+//
+//                        x.AddConsumerOf<ThreadPoolEvent>()
+//                            .UsingConsumer(message =>
+//                                {
+//                                    _counters.ReceiveThreadCount.Set(message.ReceiverCount);
+//                                    _counters.ConsumerThreadCount.Set(message.ConsumerCount);
+//                                });
+//                    });
+//            }
+//            catch (Exception ex)
+//            {
+//                _log.Warn(
+//                    "The performance counters could not be created, try running the program in the Administrator role. Just once.",
+//                    ex);
+//            }
         }
+
+		@Override
+		public IBusService GetService(Class type) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void Dispose() {
+			// TODO Auto-generated method stub
+			
+		}
+
+
     }

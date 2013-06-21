@@ -6,12 +6,12 @@ import org.junit.Test;
 import com.masstransitproject.crosstown.MessageUrn;
 import com.masstransitproject.crosstown.messages.PingMessage;
 
-public class MessageUrn_Specs {
+public class MessageUrnSimple_Specs {
 
 	@Test
-	public void TestSimpleMessage() {
-		String urn = MessageUrn.GetUrn(new PingMessage());
-		Assert.assertEquals(urn,
+	public void TestSimpleMessage() throws Exception{
+		MessageUrn urn = new MessageUrn( PingMessage.class);
+		Assert.assertEquals(urn.toString(),
 				"urn:message:MassTransit.TestFramework.Examples.Messages:PingMessage");
 	}
 

@@ -1,3 +1,5 @@
+package com.masstransitproject.crosstown.transports;
+
 import java.net.URI;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
@@ -36,4 +38,3 @@ import java.net.URI;
         
 
     }
-}

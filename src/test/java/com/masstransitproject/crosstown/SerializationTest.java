@@ -30,7 +30,7 @@ public abstract class SerializationTest  {
 		// _serializer = new TSerializer();
 	}
 
-	protected IMessage SerializeAndReturn(IMessage message, ISendContext ctx)
+	protected Object SerializeAndReturn(Object message, ISendContext ctx)
 			throws IOException {
 		byte[] serializedMessageData;
 		ByteArrayOutputStream output = new ByteArrayOutputStream();

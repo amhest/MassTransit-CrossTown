@@ -75,7 +75,7 @@ public class NewId_Specs  // Using_the_newid_generator
 
 		for (int i = 0; i < limit - 1; i++) {
 			Assert.assertFalse(ids[i].equals(ids[i + 1]));
-			String end = ids[i].toString().subString(32, 32+4);
+			String end = ids[i].toString().substring(32, 32+4);
 			if (end == "0000")
 				log.trace(ids[i].toString());
 		}

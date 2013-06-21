@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
+import com.masstransitproject.crosstown.ExternallyNamespaced;
+
 // Copyright 2007-2010 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -19,7 +21,7 @@ import java.util.UUID;
 // specific language governing permissions and limitations under the License.
 
 @SuppressWarnings("serial")
-public class SerializationTestMessage implements Serializable, IMessage {
+public class SerializationTestMessage implements Serializable, ExternallyNamespaced {
 	private UUID UUIDValue;
 	private boolean BoolValue;
 	private byte ByteValue;
@@ -34,7 +36,7 @@ public class SerializationTestMessage implements Serializable, IMessage {
 	private BigDecimal MaybeMoney;
 
 	@Override
-	public String getDotNetNamespace() {
+	public String getExternalNamespace() {
 		return "MassTransit.TestFramework.Examples.Messages";
 	}
 

@@ -2,6 +2,7 @@ package com.masstransitproject.crosstown;
 
 import java.net.URI;
 
+import com.masstransitproject.crosstown.handlers.ConfigureCallback;
 import com.masstransitproject.crosstown.handlers.SendCallback;
 import com.masstransitproject.crosstown.handlers.UnsubscribeAction;
 import com.masstransitproject.crosstown.handlers.UnsubscribeHandler;
@@ -174,7 +175,7 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
         /// <param name = "configure"></param>
         /// <returns>An unsubscribe action that can be called to unsubscribe
         /// what was configured to be subscribed with the func passed. <see cref="UnsubscribeAction"/>.</returns>
-        UnsubscribeAction Configure(UnsubscribeHandler configure);
+        ConfigureCallback Configure(ConfigureCallback configure);
 
         /// <summary>
         /// Get the first service with the matching type, throwing an InvalidOperationException if none is found.
@@ -190,5 +191,7 @@ import com.masstransitproject.crosstown.pipeline.IOutboundMessagePipeline;
 	    /// <param name="result">The service.</param>
 	    /// <returns>Whether the service was found.</returns>
         IBusService getService(Class type);
+        
+        void Dispose();
     
 }

@@ -1,4 +1,13 @@
-﻿// Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
+﻿package com.masstransitproject.crosstown.transports.loopback;
+
+import java.net.URI;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.masstransitproject.crosstown.transports.DefaultMessageNameFormatter;
+import com.masstransitproject.crosstown.transports.IMessageNameFormatter;
+import com.masstransitproject.crosstown.transports.ITransportFactory;
+
+// Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,20 +19,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.Transports.Loopback
-{
-    using System;
-    using Magnum.Caching;
 
-    public class LoopbackTransportFactory :
+    public class LoopbackTransportFactory implements
         ITransportFactory
     {
-        final Cache<Uri, LoopbackTransport> _transports;
+        final ConcurrentHashMap<URI, LoopbackTransport> _transports;
         final IMessageNameFormatter _messageNameFormatter;
 
         public LoopbackTransportFactory()
         {
-            _transports = new ConcurrentCache<Uri, LoopbackTransport>();
+            _transports = new ConcurrentHashMap<URI, LoopbackTransport>();
             _messageNameFormatter = new DefaultMessageNameFormatter("::", "--", ":", "-");
         }
 

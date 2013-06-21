@@ -21,4 +21,5 @@ import com.masstransitproject.crosstown.configuration.BusServiceLayer;
         IBusService GetService(Class type);
         void Start() throws MassTransitException;
         void Stop();
+        void Dispose();
     }

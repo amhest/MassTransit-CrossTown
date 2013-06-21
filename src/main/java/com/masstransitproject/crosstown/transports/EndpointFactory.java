@@ -1,3 +1,11 @@
+package com.masstransitproject.crosstown.transports;
+
+import java.net.URI;
+import java.util.Map;
+
+import com.masstransitproject.crosstown.IEndpoint;
+import com.masstransitproject.crosstown.configuration.endpointconfigurators.IEndpointFactoryDefaultSettings;
+
 // Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -10,24 +18,16 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.Transports
-{
-    using System;
-    using System.Collections.Generic;
-    using Builders;
-    using Diagnostics.Introspection;
-    using EndpointConfigurators;
-    using Exceptions;
-    using Magnum.Caching;
-    using Magnum.Extensions;
-    using Util;
 
 
-    public class EndpointFactory :
+    public class EndpointFactory 
+
+    	
+    	implements 
         IEndpointFactory
     {
         final IEndpointFactoryDefaultSettings _defaults;
-        final Cache<Uri, EndpointBuilder> _endpointBuilders;
+        final ConcurrentHashMap<URI, EndpointBuilder> _endpointBuilders;
         final Cache<string, ITransportFactory> _transportFactories;
         bool _disposed;
 
@@ -37,9 +37,9 @@ namespace MassTransit.Transports
         /// <param name="transportFactories">Dictionary + contents owned by the EndpointFactory instance.</param>
         /// <param name="endpointBuilders"></param>
         /// <param name="defaults"></param>
-        public EndpointFactory([NotNull] IDictionary<string, ITransportFactory> transportFactories,
-            [NotNull] IDictionary<Uri, EndpointBuilder> endpointBuilders,
-            [NotNull] IEndpointFactoryDefaultSettings defaults)
+        public EndpointFactory(Map<String, ITransportFactory> transportFactories,
+             Map<URI, EndpointBuilder> endpointBuilders,
+            IEndpointFactoryDefaultSettings defaults)
         {
             if (transportFactories == null)
                 throw new ArgumentNullException("transportFactories");
@@ -47,14 +47,14 @@ namespace MassTransit.Transports
                 throw new ArgumentNullException("endpointBuilders");
             if (defaults == null)
                 throw new ArgumentNullException("defaults");
-            _transportFactories = new ConcurrentCache<string, ITransportFactory>(transportFactories);
+            _transportFactories = new ConcurrentCache<String, ITransportFactory>(transportFactories);
             _defaults = defaults;
             _endpointBuilders = new ConcurrentCache<Uri, EndpointBuilder>(endpointBuilders);
         }
 
-        public IEndpoint CreateEndpoint(Uri uri)
+        public IEndpoint CreateEndpoint(URI uri)
         {
-            string scheme = uri.Scheme.ToLowerInvariant();
+            String scheme = uri.Scheme.ToLowerInvariant();
 
             if (_transportFactories.Has(scheme))
             {
@@ -81,7 +81,7 @@ namespace MassTransit.Transports
 
         public void AddTransportFactory(ITransportFactory factory)
         {
-            string scheme = factory.Scheme.ToLowerInvariant();
+            String scheme = factory.Scheme.ToLowerInvariant();
 
             _transportFactories[scheme] = factory;
         }
@@ -93,7 +93,7 @@ namespace MassTransit.Transports
                 (scheme, factory) =>
                     {
                         probe.Add("mt.transport",
-                            string.Format("[{0}] {1}", scheme, factory.GetType().ToShortTypeName()));
+                            String.Format("[{0}] {1}", scheme, factory.GetType().ToShortTypeName()));
                     });
         }
 

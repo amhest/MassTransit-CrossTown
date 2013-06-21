@@ -34,4 +34,6 @@ import java.net.URI;
         /// send over such a scheme/transport protocol.</exception>
       
         IEndpoint GetEndpoint(URI uri);
+        
+        void Dispose();
     }

@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.masstransitproject.crosstown.ServiceBus;
+import com.masstransitproject.crosstown.handlers.ConnectionCallback;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
@@ -45,7 +46,7 @@ import com.masstransitproject.crosstown.ServiceBus;
 
         public void Connect()
         {
-            lock (_lock)
+            synchronized (_lock)
             {
                 if (!_connected)
                     _connection.Connect();
@@ -58,7 +59,7 @@ import com.masstransitproject.crosstown.ServiceBus;
 
         public void Disconnect()
         {
-            lock (_lock)
+        	synchronized (_lock)
             {
                 _connected = false;
                 try
@@ -69,39 +70,40 @@ import com.masstransitproject.crosstown.ServiceBus;
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn("Disconnect failed, but ignoring", ex);
+                    _log.warn("Disconnect failed, but ignoring", ex);
                 }
             }
         }
 
-        public void ForceReconnect(TimeSpan reconnectDelay)
+        public void ForceReconnect(long reconnectDelay)
         {
             _policyChain.Push(new ReconnectPolicy(this, _policyChain, reconnectDelay));
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+//        public void Dispose()
+//        {
+//            Dispose(true);
+//            GC.SuppressFinalize(this);
+//        }
 
-        public void Use(Action<T> callback)
+        public void Use(ConnectionCallback callback)
         {
-            _policyChain.Execute(() =>
-                {
-                    if (!_connected)
-                        throw new InvalidConnectionException();
-
-                    callback(_connection);
-                });
+//            _policyChain.Execute(() =>
+//                {
+//                    if (!_connected)
+//                        throw new InvalidConnectionException();
+//
+//                    callback(_connection);
+//                });
+        	throw new UnsupportedOperationException("NOT IMPLEMENTED");
         }
 
 
         public void AddBinding(ConnectionBinding<T> binding)
         {
-            lock (_lock)
+            synchronized (_lock)
             {
-                _bindings.Add(binding);
+                _bindings.add(binding);
                 if (_bound)
                 {
                     binding.Bind(_connection);
@@ -111,13 +113,13 @@ import com.masstransitproject.crosstown.ServiceBus;
 
         public void RemoveBinding(ConnectionBinding<T> binding)
         {
-            lock (_lock)
+        	synchronized (_lock)
             {
                 if (_bound)
                 {
                     binding.Unbind(_connection);
                 }
-                _bindings.Remove(binding);
+                _bindings.remove(binding);
             }
         }
 
@@ -126,7 +128,7 @@ import com.masstransitproject.crosstown.ServiceBus;
             if (_bound)
                 return;
 
-            foreach (var binding in _bindings)
+            for (ConnectionBinding<T> binding : _bindings)
             {
                 binding.Bind(_connection);
             }
@@ -135,7 +137,7 @@ import com.masstransitproject.crosstown.ServiceBus;
 
         void UnbindBindings()
         {
-            foreach (var binding in _bindings)
+            for (ConnectionBinding<T> binding : _bindings)
             {
                 try
                 {
@@ -143,7 +145,7 @@ import com.masstransitproject.crosstown.ServiceBus;
                 }
                 catch (Exception ex)
                 {
-                    _log.Error("An exception occurred while a binding was being unbound", ex);
+                    _log.error("An exception occurred while a binding was being unbound", ex);
                 }
             }
 
@@ -174,4 +176,3 @@ import com.masstransitproject.crosstown.ServiceBus;
             Dispose(false);
         }
     }
-}

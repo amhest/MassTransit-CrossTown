@@ -1,6 +1,6 @@
-package com.masstransitproject.crosstown.transports;
+package com.masstransitproject.crosstown.events;
 
-import com.masstransitproject.crosstown.handlers.ConnectionPolicyCallback;
+import com.masstransitproject.crosstown.context.IConsumeContext;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
@@ -15,15 +15,21 @@ import com.masstransitproject.crosstown.handlers.ConnectionPolicyCallback;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-	public class DisposedConnectionPolicy implements
-		ConnectionPolicy
+	public class MessageConsumed
 	{
-		public void Execute(ConnectionPolicyCallback callback)
-		{
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				// Ignore
-			}
+		private int ConsumeCount;
+		private IConsumeContext Context ;
+		public int getConsumeCount() {
+			return ConsumeCount;
 		}
+		public void setConsumeCount(int consumeCount) {
+			ConsumeCount = consumeCount;
+		}
+		public IConsumeContext getContext() {
+			return Context;
+		}
+		public void setContext(IConsumeContext context) {
+			Context = context;
+		}
+		
 	}

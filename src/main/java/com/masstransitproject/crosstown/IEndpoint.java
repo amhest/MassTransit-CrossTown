@@ -34,6 +34,8 @@ import com.masstransitproject.crosstown.transports.IOutboundTransport;
         /// The address of the endpoint
         /// </summary>
         IEndpointAddress getAddress();
+        
+        void Dispose();
 
         /// <summary>
         /// The inbound transport for the endpoint

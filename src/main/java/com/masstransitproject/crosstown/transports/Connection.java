@@ -18,4 +18,5 @@ package com.masstransitproject.crosstown.transports;
 	{
 		void Connect();
 		void Disconnect();
+		void Dispose();
 	}

@@ -2,6 +2,8 @@ package com.masstransitproject.crosstown.transports;
 
 import java.util.Stack;
 
+import com.masstransitproject.crosstown.handlers.ConnectionPolicyCallback;
+
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -28,39 +30,40 @@ import java.util.Stack;
 
 		public void Push(ConnectionPolicy policy)
 		{
-			lock (_policies)
-				_policies.Push(policy);
+			synchronized (_policies) {
+				_policies.push(policy);
+			}
 		}
 
 		public void Pop(ConnectionPolicy policy)
 		{
-			lock (_policies)
-				if (_policies.Peek() == policy)
-					_policies.Pop();
+			synchronized (_policies) {
+				if (_policies.peek() == policy)
+					_policies.pop();
+			}
 		}
 
-		public void Next(Action callback)
+		public void Next(ConnectionPolicyCallback callback)
 		{
 			ConnectionPolicy policy;
 
-			lock (_policies)
-				policy = _policies.Peek();
-
+			synchronized (_policies) {
+				policy = _policies.peek();
+			}
 			policy.Execute(callback);
 		}
 
-		public void Execute(Action callback)
+		public void Execute(ConnectionPolicyCallback callback)
 		{
 			Next(callback);
 		}
 
 		public void Set(ConnectionPolicy connectionPolicy)
 		{
-			lock (_policies)
+			synchronized (_policies)
 			{
-				_policies.Clear();
-				_policies.Push(connectionPolicy);
+				_policies.clear();
+				_policies.push(connectionPolicy);
 			}
 		}
 	}
-}

@@ -1,4 +1,12 @@
-﻿// Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
+﻿package com.masstransitproject.crosstown.transports.loopback;
+
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.util.Date;
+
+import com.masstransitproject.crosstown.newid.NewId;
+
+// Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -10,58 +18,87 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.Transports.Loopback
-{
-    using System;
-    using System.IO;
 
-    public class LoopbackMessage :
-        IDisposable
+
+    public class LoopbackMessage 
     {
-        Stream _body;
-        bool _disposed;
+        OutputStream _body;
+        boolean _disposed;
 
         public LoopbackMessage()
         {
-            Body = new MemoryStream();
-            MessageId = NewId.Next().ToString();
+            setBody(new ByteArrayOutputStream());
+            setMessageId(NewId.Next().toString());
         }
 
-        public Stream Body
+        public OutputStream getBody()
         {
-            get
-            {
-                _body.Seek(0, SeekOrigin.Begin);
+            
+          //      _body.Seek(0, SeekOrigin.Begin);
                 return _body;
-            }
-            private set { _body = value; }
+        }
+        
+        private void setBody(OutputStream value) {
+            _body = value; 
         }
 
-        public string OriginalMessageId { get; set; }
-        public string ContentType { get; set; }
-        public DateTime? ExpirationTime { get; set; }
-        public string MessageId { get; private set; }
+        public String OriginalMessageId;
+        public String ContentType;
+        public Date ExpirationTime; 
+        public String MessageId ;
+        
+        
 
-        public void Dispose()
+        
+
+		public String getOriginalMessageId() {
+			return OriginalMessageId;
+		}
+
+		public void setOriginalMessageId(String originalMessageId) {
+			OriginalMessageId = originalMessageId;
+		}
+
+		public String getContentType() {
+			return ContentType;
+		}
+
+		public void setContentType(String contentType) {
+			ContentType = contentType;
+		}
+
+		public Date getExpirationTime() {
+			return ExpirationTime;
+		}
+
+		public void setExpirationTime(Date expirationTime) {
+			ExpirationTime = expirationTime;
+		}
+
+		public String getMessageId() {
+			return MessageId;
+		}
+
+		private void setMessageId(String messageId) {
+			MessageId = messageId;
+		}
+
+		public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+//            Dispose(true);
+//            GC.SuppressFinalize(this);
         }
 
-        void Dispose(bool disposing)
-        {
-            if (_disposed) return;
-            if (disposing)
-            {
-                Body.Dispose();
-            }
+//        void Dispose(boolean disposing)
+//        {
+//            if (_disposed) return;
+//            if (disposing)
+//            {
+//                getBody().Dispose();
+//            }
+//
+//            _disposed = true;
+//        }
 
-            _disposed = true;
-        }
-
-        ~LoopbackMessage()
-        {
-            Dispose(false);
-        }
-    }
+    
 }

@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
+import com.masstransitproject.crosstown.ExternallyNamespaced;
+
 // Copyright 2007-2010 The Apache Software Foundation.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -21,7 +23,7 @@ import java.util.UUID;
 //because the built in dot net xml serializer can't do timespans
 
 @SuppressWarnings("serial")
-public class PartialSerializationTestMessage implements Serializable, IMessage {
+public class PartialSerializationTestMessage implements Serializable, ExternallyNamespaced {
 	private UUID UUIDValue;
 	private boolean BoolValue;
 	private byte ByteValue;
@@ -196,7 +198,7 @@ public class PartialSerializationTestMessage implements Serializable, IMessage {
 	}
 
 	@Override
-	public String getDotNetNamespace() {
+	public String getExternalNamespace() {
 		return "MassTransit.TestFramework.Examples.Messages";
 	}
 }

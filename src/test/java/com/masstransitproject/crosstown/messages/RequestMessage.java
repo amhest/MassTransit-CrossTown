@@ -3,6 +3,8 @@ package com.masstransitproject.crosstown.messages;
 import java.io.Serializable;
 import java.util.UUID;
 
+import com.masstransitproject.crosstown.ExternallyNamespaced;
+
 // Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -17,7 +19,7 @@ import java.util.UUID;
 // specific language governing permissions and limitations under the License.
 
 @SuppressWarnings("serial")
-public class RequestMessage implements Serializable, IMessage {
+public class RequestMessage implements Serializable, ExternallyNamespaced {
 	public RequestMessage() {
 		CorrelationId = UUID.randomUUID();
 	}
@@ -25,7 +27,7 @@ public class RequestMessage implements Serializable, IMessage {
 	private UUID CorrelationId;
 
 	@Override
-	public String getDotNetNamespace() {
+	public String getExternalNamespace() {
 		return "MassTransit.TestFramework.Examples.Messages";
 	}
 

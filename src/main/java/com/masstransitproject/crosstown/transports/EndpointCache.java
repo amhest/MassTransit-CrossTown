@@ -1,3 +1,16 @@
+package com.masstransitproject.crosstown.transports;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.slf4j.Logger;
+
+import com.masstransitproject.crosstown.IEndpoint;
+import com.masstransitproject.crosstown.IEndpointCache;
+
 // Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -10,30 +23,22 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.Transports
-{
-    using System;
-    using Diagnostics.Introspection;
-    using Exceptions;
-    using Logging;
-    using Magnum;
-    using Magnum.Caching;
 
 
-    public class EndpointCache :
+    public class EndpointCache implements
         IEndpointCache
     {
-        static final ILog _log = Logger.Get(typeof(EndpointCache));
-
+    	static final Logger _log = org.slf4j.LoggerFactory.getLogger(EndpointCache.class);
+        
         final IEndpointFactory _endpointFactory;
-        final Cache<Uri, IEndpoint> _endpoints;
-        bool _disposed;
+        final ConcurrentHashMap<URI, IEndpoint> _endpoints;
+        boolean _disposed;
 
         public EndpointCache(IEndpointFactory endpointFactory)
         {
             _endpointFactory = endpointFactory;
 
-            _endpoints = new ConcurrentCache<Uri, IEndpoint>();
+            _endpoints = new ConcurrentHashMap()<URI, IEndpoint>();
         }
 
         public void Dispose()
@@ -41,44 +46,36 @@ namespace MassTransit.Transports
             Dispose(true);
         }
 
-        public IEndpoint GetEndpoint(Uri uri)
+        public IEndpoint GetEndpoint(URI uri)
         {
             if (_disposed)
-                throw new ObjectDisposedException("The endpoint resolver has been disposed");
+                throw new IllegalStateException("The endpoint resolver has been disposed");
 
-            Guard.AgainstNull(uri, "uri", "Uri cannot be null");
+//            Guard.AgainstNull(uri, "uri", "Uri cannot be null");
 
-            try
-            {
-                var key = new Uri(uri.ToString().ToLowerInvariant());
-
-                return _endpoints.Get(key, _ => _endpointFactory.CreateEndpoint(uri));
-            }
-            catch (TransportException)
-            {
-                throw;
-            }
-            catch (EndpointException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                throw new ConfigurationException("An exception was thrown retrieving the endpoint:" + uri, ex);
-            }
+                URI key = new URI(uri.toString().toLowerCase());
+                
+                IEndpoint ep = _endpoints.get(key);
+                if( ep == null) {
+                	ep = _endpointFactory.CreateEndpoint((uri);
+                	_endpoints.put(key,ep);
+                }
+                return ep;
+            
+            
         }
 
-        public void Inspect(DiagnosticsProbe probe)
-        {
-            _endpointFactory.Inspect(probe);
-        }
+//        public void Inspect(DiagnosticsProbe probe)
+//        {
+//            _endpointFactory.Inspect(probe);
+//        }
 
         public void Clear()
         {
-            IEndpoint[] endpoints = _endpoints.GetAll();
-            _endpoints.Clear();
+        	Collection<IEndpoint> endpoints =  new ArrayList(_endpoints.values());
+            _endpoints.clear();
 
-            foreach (IEndpoint endpoint in endpoints)
+            for (IEndpoint endpoint : endpoints)
             {
                 try
                 {
@@ -90,10 +87,9 @@ namespace MassTransit.Transports
                 }
             }
 
-            _endpoints.Clear();
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected  void Dispose(boolean disposing)
         {
             if (_disposed)
                 return;

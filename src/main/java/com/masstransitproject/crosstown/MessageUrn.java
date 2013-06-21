@@ -140,7 +140,7 @@ import org.slf4j.LoggerFactory;
 			//dotNet
 			if (includeScope) {
 				String scope = null;
-				if (type.isAssignableFrom(ExternallyNamespaced.class)) {
+				if (ExternallyNamespaced.class.isAssignableFrom(type)) {
 					//Use dotNet Namespaces
 					
 					try {

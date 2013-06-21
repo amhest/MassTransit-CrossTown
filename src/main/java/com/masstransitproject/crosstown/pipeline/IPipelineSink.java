@@ -2,6 +2,8 @@ package com.masstransitproject.crosstown.pipeline;
 
 import java.util.Iterator;
 
+import com.masstransitproject.crosstown.handlers.SinkAction;
+
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -32,7 +34,7 @@ import java.util.Iterator;
 		/// </summary>
 		/// <param name="context"></param>
 		/// <returns>An enumerable of consumers for the message</returns>
-		Iterator Enumerate(T context);
+		Iterable<SinkAction<T>> Enumerate(T context);
 
 		/// <summary>
 		/// Walks the pipeline from the current sink forward, calling back to the inspector for each

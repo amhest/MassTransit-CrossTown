@@ -1,3 +1,7 @@
+package com.masstransitproject.crosstown.transports;
+
+import com.masstransitproject.crosstown.IEndpointAddress;
+
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -11,84 +15,126 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-using MassTransit.Util;
-
-namespace MassTransit.Transports
-{
-	using System;
-	using System.Transactions;
-	using Magnum;
-	using Magnum.Extensions;
 
 	public class TransportSettings implements
 		ITransportSettings
 	{
 		public TransportSettings(IEndpointAddress address)
 		{
-			Guard.AgainstNull(address, "address");
+//			Guard.AgainstNull(address, "address");
 
-			Address = address;
+			setAddress( address);
 
-			Transactional = Address.IsTransactional;
-			RequireTransactional = false;
-			TransactionTimeout = 30.Seconds();
-			IsolationLevel = IsolationLevel.Serializable;
+			setTransactional ( getAddress().IsTransactional());
+			setRequireTransactional ( false);
+			setTransactionTimeout ( 30000);
+//			IsolationLevel = IsolationLevel.Serializable;
 
-			CreateIfMissing = true;
-			PurgeExistingMessages = false;
+			setCreateIfMissing(true);
+			setPurgeExistingMessages (false);
 		}
 
 		public TransportSettings(IEndpointAddress address, ITransportSettings source)
 		{
-			Guard.AgainstNull(address, "address");
-			Guard.AgainstNull(source, "source");
+//			Guard.AgainstNull(address, "address");
+//			Guard.AgainstNull(source, "source");
 
-			Address = address;
+			setAddress(address);
 
-			Transactional = source.Transactional;
-			RequireTransactional = source.RequireTransactional;
-			TransactionTimeout = source.TransactionTimeout;
-			IsolationLevel = source.IsolationLevel;
+			setTransactional(source.isTransactional());
+			setRequireTransactional(source.isRequireTransactional());
+			setTransactionTimeout(source.getTransactionTimeout());
+//			IsolationLevel(source.IsolationLevel;
 
-			CreateIfMissing = source.CreateIfMissing;
-			PurgeExistingMessages = source.PurgeExistingMessages;
+			setCreateIfMissing(source.isCreateIfMissing());
+			setPurgeExistingMessages(source.isPurgeExistingMessages());
 		}
 
 		/// <summary>
 		/// The address of the endpoint
 		/// </summary>
-		public IEndpointAddress Address { get; private set; }
+		private IEndpointAddress Address;
 
 		/// <summary>
 		/// True if the endpoint should be transactional. If Transactional is true and the endpoint already
 		/// exists and is not transactional, an exception will be thrown.
 		/// </summary>
-		public boolean Transactional { get; set; }
+		private boolean Transactional;
 
 		/// <summary>
 		/// if the transactional queue is requested and required it will throw an exception if the queue 
 		/// exists and is not transactional
 		/// </summary>
-		public boolean RequireTransactional { get; set; }
+		private boolean RequireTransactional;
 
 		/// <summary>
 		/// The timeout for the transaction if System.Transactions is supported
 		/// </summary>
-		public TimeSpan TransactionTimeout { get; set; }
+		private long TransactionTimeout;
 
 	    /// <summary>
 	    /// The isolation level to use with the transaction if a transactional transport is used
 	    /// </summary>
-	    public IsolationLevel IsolationLevel { get; set; }
+//		private  IsolationLevel IsolationLevel;
 
 	    /// <summary>
 		/// The transport should be created if it was not found
 		/// </summary>
-		public boolean CreateIfMissing { get; set; }
+	    private boolean CreateIfMissing ;
 
 	    /// <summary>
 		/// If the transport should purge any existing messages before reading from the queue
 		/// </summary>
-		public boolean PurgeExistingMessages { get; set; }
+		private boolean PurgeExistingMessages ;
+
+		public IEndpointAddress getAddress() {
+			return Address;
+		}
+
+		private void setAddress(IEndpointAddress address) {
+			Address = address;
+		}
+
+		public boolean isTransactional() {
+			return Transactional;
+		}
+
+		public void setTransactional(boolean transactional) {
+			Transactional = transactional;
+		}
+
+		public boolean isRequireTransactional() {
+			return RequireTransactional;
+		}
+
+		public void setRequireTransactional(boolean requireTransactional) {
+			RequireTransactional = requireTransactional;
+		}
+
+		public long getTransactionTimeout() {
+			return TransactionTimeout;
+		}
+
+		public void setTransactionTimeout(long transactionTimeout) {
+			TransactionTimeout = transactionTimeout;
+		}
+
+		public boolean isCreateIfMissing() {
+			return CreateIfMissing;
+		}
+
+		public void setCreateIfMissing(boolean createIfMissing) {
+			CreateIfMissing = createIfMissing;
+		}
+
+		public boolean isPurgeExistingMessages() {
+			return PurgeExistingMessages;
+		}
+
+		public void setPurgeExistingMessages(boolean purgeExistingMessages) {
+			PurgeExistingMessages = purgeExistingMessages;
+		}
+		
+		
+		
 	}
-}

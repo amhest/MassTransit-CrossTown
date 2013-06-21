@@ -20,8 +20,8 @@ public class Timestamp_Specs  {
 		// should be same minute to ensure that we are creating a real timestamp
 		Assert.assertEquals(
 				"Finegrain timestamp should be in same minute as traditional timestamp.",
-				ts.toString().subString(0, coarseTs.lastIndexOf(':')),
-				coarseTs.subString(0, coarseTs.lastIndexOf(':')));
+				ts.toString().substring(0, coarseTs.lastIndexOf(':')),
+				coarseTs.substring(0, coarseTs.lastIndexOf(':')));
 
 		Assert.assertEquals("Lost fidelity converting " + currentNanos
 				+ " to timestamp.", currentNanos, ts.getTotalNanos());
@@ -42,8 +42,8 @@ public class Timestamp_Specs  {
 		// prevent serious weirdness
 		Assert.assertEquals(
 				"Finegrain timestamp should be in same minute as traditional timestamp.",
-				fine.subString(0, fine.lastIndexOf('.')),
-				course.subString(0, course.lastIndexOf('.')));
+				fine.substring(0, fine.lastIndexOf('.')),
+				course.substring(0, course.lastIndexOf('.')));
 
 		String nanoComponent = fine.subSequence(fine.lastIndexOf('.') + 1,
 				fine.lastIndexOf('-')).toString();

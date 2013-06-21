@@ -1,3 +1,7 @@
+package com.masstransitproject.crosstown.transports;
+
+import com.masstransitproject.crosstown.handlers.ConnectionPolicyCallback;
+
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -10,31 +14,33 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
-namespace MassTransit.Transports
-{
-	using System;
-	using System.Threading;
 
-	public class ReconnectPolicy :
+	
+
+	public class ReconnectPolicy implements
 		ConnectionPolicy
 	{
 		final ConnectionHandler _connectionHandler;
 		final ConnectionPolicyChain _policyChain;
-		final TimeSpan _reconnectDelay;
+		final long _reconnectDelay;
 
-		public ReconnectPolicy(ConnectionHandler connectionHandler, ConnectionPolicyChain policyChain, TimeSpan reconnectDelay)
+		public ReconnectPolicy(ConnectionHandler connectionHandler, ConnectionPolicyChain policyChain, long reconnectDelay)
 		{
 			_connectionHandler = connectionHandler;
 			_policyChain = policyChain;
 			_reconnectDelay = reconnectDelay;
 		}
 
-		public void Execute(Action callback)
+		public void Execute(ConnectionPolicyCallback callback)
 		{
 			_connectionHandler.Disconnect();
 
-			if (_reconnectDelay > TimeSpan.Zero)
-				Thread.Sleep(_reconnectDelay);
+			if (_reconnectDelay > 0)
+				try {
+					Thread.sleep(_reconnectDelay);
+				} catch (InterruptedException e) {
+					//Ignore
+				}
 
 			_connectionHandler.Connect();
 
@@ -42,4 +48,3 @@ namespace MassTransit.Transports
 			_policyChain.Next(callback);
 		}
 	}
-}

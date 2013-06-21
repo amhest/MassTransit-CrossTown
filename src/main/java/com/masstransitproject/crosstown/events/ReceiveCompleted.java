@@ -1,8 +1,6 @@
-package com.masstransitproject.crosstown.transports;
+package com.masstransitproject.crosstown.events;
 
-import com.masstransitproject.crosstown.handlers.ConnectionPolicyCallback;
-
-// Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
+// Copyright 2007-2008 The Apache Software Foundation.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -15,15 +13,6 @@ import com.masstransitproject.crosstown.handlers.ConnectionPolicyCallback;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-	public class DisposedConnectionPolicy implements
-		ConnectionPolicy
+	public class ReceiveCompleted
 	{
-		public void Execute(ConnectionPolicyCallback callback)
-		{
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				// Ignore
-			}
-		}
 	}
