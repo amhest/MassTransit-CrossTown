@@ -7,40 +7,37 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
+public class Timestamp_Specs {
 
-
-public class Timestamp_Specs  {
-
-	
 	@BeforeClass
-	public  static void setup() {
+	public static void setup() {
+		// Seed the statics and be sure there's a little cushion
 		FineGrainTimestamp.init();
 		try {
-			Thread.currentThread().sleep(1);
+			Thread.currentThread();
+			Thread.sleep(1);
 		} catch (InterruptedException e) {
-			//Ignore
+			// Ignore
 		}
 	}
 
 	private final SimpleDateFormat formatter;
-	
+
 	public Timestamp_Specs() {
-		formatter = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm:ss.SSSSZ");
+		formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSZ");
 		final TimeZone utc = TimeZone.getTimeZone("UTC");
 		formatter.setTimeZone(utc);
-		
+
 	}
+
 	@Test
 	public void testNoLossiness() {
 
-		long currentNanos = System.nanoTime();
-		FineGrainTimestamp ts =  FineGrainTimestamp.fromNanos(currentNanos);
+		long currentNanos = FineGrainTimestamp.getInstance().getTotalNanos();
+		FineGrainTimestamp ts = FineGrainTimestamp.fromNanos(currentNanos);
 		String coarseTs = formatter.format(new Timestamp(new Date().getTime()))
 				.replace(" ", "T");
 
@@ -54,20 +51,21 @@ public class Timestamp_Specs  {
 				+ " to timestamp.", currentNanos, ts.getTotalNanos());
 
 	}
+
 	@Test
 	public void testMath() {
-		
-		System.out.println(1373395591234070000l-1373395591000260000l);
+
+		// This subtraction is too big for some tools like Excel...
+		System.out.println(1373395591234070000l - 1373395591000260000l);
 	}
 
 	@Test
 	public void testToString() {
 
-		
 		long currentNanos = FineGrainTimestamp.getInstance().getTotalNanos();
-		long nanos = System.nanoTime();
+
 		long millis = new Date().getTime();
-		Timestamp ts =  FineGrainTimestamp.fromNanos(currentNanos);
+		Timestamp ts = FineGrainTimestamp.fromNanos(currentNanos);
 
 		Timestamp coarseTs = new Timestamp(millis);
 
@@ -92,17 +90,12 @@ public class Timestamp_Specs  {
 	@Test
 	public void time_in_current_year() {
 
-		Timestamp ts =  FineGrainTimestamp.getInstance();
-		
+		Timestamp ts = FineGrainTimestamp.getInstance();
 
-		
-		
 		Calendar base = Calendar.getInstance();
-		
+
 		Calendar fine = Calendar.getInstance();
 		fine.setTimeInMillis(ts.getTime());
-		System.out.println(fine);
-		System.out.println(base);
 		Assert.assertEquals(base.get(Calendar.YEAR), fine.get(Calendar.YEAR));
 
 	}

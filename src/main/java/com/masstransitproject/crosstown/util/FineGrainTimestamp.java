@@ -3,73 +3,41 @@ package com.masstransitproject.crosstown.util;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 
 public class FineGrainTimestamp extends Timestamp {
 
 	
-		private static final long stopwatch;
-		private static final long secondsAsMillis;
-		//private static final long extraNanos;
-		
-		
-		
+	private static final long serialVersionUID = 1L;
 	
-	static { // This really just ensures that the JVM is internally
-				// consistent
-
-		// Need to do some machinations to not double-count nanos
+	//These two need to be set at as close to the same time as possible
+	/** Starting value of fine-grain timer
+	 */
+	private static final long baseNanos; 
+	
+	/**This is current time in Millis padded out with nanos values */
+	private static final long baseMillisWithNanos;  
 		
-		//TODO this block should be injectable
-		 long nanoBase = System.nanoTime();
-		 long currentMillis = System.currentTimeMillis();
+	static { 
 
-			System.out.println("nanoBase="+nanoBase);
-			System.out.println("currentMillis=" + currentMillis);
-		 
-			long fractionalSeconds =  (currentMillis % 1000);
-			
-
-			System.out.println("fractionalSeconds=" + fractionalSeconds);
-			secondsAsMillis = currentMillis - fractionalSeconds;
-
-			System.out.println("secondsAsMillis=" + secondsAsMillis);
-			long extraNanos = fractionalSeconds * 1000000;
-
-			System.out.println("extraNanos=" + extraNanos);
-			stopwatch = nanoBase-extraNanos;
-
-			System.out.println("stopwatch=" + stopwatch);
+		//This will be used to calculate an interval for a later time
+		baseNanos = System.nanoTime();
+		long baseMillis = System.currentTimeMillis();
 		
+		//Combine nanos from system timer with actual millis to create baseline
+		baseMillisWithNanos = (baseMillis * 1000000) + (baseNanos % 1000000);
+
 	}
 
 	private ThreadLocal<DateFormat> defaultFormatter = new ThreadLocal<DateFormat>();
 
 	public static void init() {
-		
+		//Do nothing for now.  Ensures statics are seeded.
 	}
 	
-	
-	protected static long zeroOutMillis(long timeInMillis) {
-		
-		long l =  (timeInMillis / 1000) * 1000;
-		
-		
-///DEBUGGIMG
-		SimpleDateFormat sdf = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm:ss.SSSSZ");
-		final TimeZone utc = TimeZone.getTimeZone("UTC");
-		sdf.setTimeZone(utc);
-		System.out.println(sdf.format(new Date(l)));
-		System.out.println(sdf.format(new Date(timeInMillis)));
-		return l;
-	}
+	protected FineGrainTimestamp(long currentTimeInMillis) {
 
-	protected FineGrainTimestamp(long currentTimeZeroMillis) {
-
-		super(currentTimeZeroMillis);
+		super(currentTimeInMillis);
 
 	}
 	protected FineGrainTimestamp(long currentTimeZeroMillis, int nanos) {
@@ -81,51 +49,24 @@ public class FineGrainTimestamp extends Timestamp {
 
 	public static FineGrainTimestamp fromNanos(long timeInNanos) {
 		
-		System.out.println("timeInNanos=" +timeInNanos);
 
-//		if (timeInNanos < stopwatch) {
-//			//Really only an issue for JUnit
-//			
-//			throw new IllegalStateException("internals not initialized before calling argumented creator.  Call Init first.");
-//		}
-
-		long delta = (timeInNanos - stopwatch);// + extraNanos;
-		System.out.println("delta=" +delta);
-		long secondsDelta = delta / 1000000000; //nanos to seconds
-		System.out.println("secondsDelta=" +secondsDelta);
-		long nanosDelta =  ((delta % 1000000000) ); //nanos up to seconds
-		System.out.println("nanosDelta=" +nanosDelta);
-	    long dateZeroMills = secondsAsMillis + (secondsDelta * 1000); 
-		System.out.println("dateZeroMills=" +dateZeroMills);
+		long delta;
+		if (timeInNanos == -1) {
+			//This is current time
+			delta = System.nanoTime() - baseNanos;
+		} else {
+			//This is a unix time on same scale as timeInMillis
+			delta = timeInNanos - baseMillisWithNanos;
+		}
+		long newTotalNanos = baseMillisWithNanos + delta;
+		long dateZeroMills = newTotalNanos / 1000000000 * 1000;
 		
-
-		System.out.println("dateZeroMillis=" +dateZeroMills);
-	    
-//		//Could use some conversion here but not trivial
-//		
-//		if (conversions.nanosCheck > timeInNanos)
-//			throw new IllegalArgumentException(timeInNanos
-//					+ " should be a highly granular value greater than "
-//					+ conversions.nanosCheck + ". Should you call fromMillis() instead?");
-
+		int nanosDelta = (int) ( newTotalNanos % 1000000000);
 		
-		
-		return new FineGrainTimestamp(dateZeroMills,(int) nanosDelta);
+		return new FineGrainTimestamp(dateZeroMills,nanosDelta);
 	}
 
 	public static FineGrainTimestamp fromMillis(long timeInMillis) {
-
-//		if (timeInMillis > conversions.nanosCheck)
-//			throw new IllegalArgumentException(timeInMillis
-//					+ " appears to be a highly granular value greater than "
-//					+ conversions.nanosCheck + ". Should you call fromNanos() instead?");
-//
-//		if (timeInMillis > conversions.nanosCheck)
-//			throw new IllegalArgumentException(
-//					timeInMillis
-//							+ " is too small to be a reasonable value for a recent time. ( < "
-//							+ conversions.millisCheck + ")");
-
 		return new FineGrainTimestamp(timeInMillis);
 	}
 
@@ -152,19 +93,14 @@ public class FineGrainTimestamp extends Timestamp {
 
 	public static FineGrainTimestamp getInstance() {
 		
-		return fromNanos(System.nanoTime());
+		return fromNanos(-1);
 	   
-		
 	}
 	
-
 	public long getTotalNanos() {
 
 		// Zero out the millis, pad and then add nanos.
-		long total =  getTime() / 1 * 1000000 + getNanos();
-		System.out.println("getNanos=" + getNanos());
-		System.out.println("getTime=" +  getTime());
-		System.out.println("total=" + total);
+		long total =  (getTime() / 1000 * 1000000000) + getNanos();
 		return total;
 	}
 

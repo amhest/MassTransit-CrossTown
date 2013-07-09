@@ -13,22 +13,14 @@
 package com.masstransitproject.crosstown.newid.providers;
 
 import com.masstransitproject.crosstown.newid.ITickProvider;
+import com.masstransitproject.crosstown.util.FineGrainTimestamp;
 
 public class StopwatchTickProvider implements ITickProvider {
 
 	
-	long _startNanos;
-    long _stopwatch;
-
-    public StopwatchTickProvider()
-    {
-    	_startNanos = System.currentTimeMillis() * 1000000; //millis to nanos
-        _stopwatch = System.nanoTime();
-    }
-
 
 	@Override
 	public long getTicks() {
-       return _startNanos+(System.nanoTime()-_stopwatch);
+       return FineGrainTimestamp.getInstance().getTotalNanos();
     }
 }

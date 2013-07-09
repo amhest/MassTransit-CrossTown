@@ -99,7 +99,6 @@ Comparable<NewId> {
 		//
 		//if (uuid.variant() == 2) 
 		{
-			//System.out.println("Swapping for variant " + uuid.variant());
 		//Reverse part a
 			newIdBytes[0] = guidBytes[3];
 			newIdBytes[1] = guidBytes[2];
