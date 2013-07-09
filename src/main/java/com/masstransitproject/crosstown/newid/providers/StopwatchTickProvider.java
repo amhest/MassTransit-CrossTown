@@ -16,9 +16,19 @@ import com.masstransitproject.crosstown.newid.ITickProvider;
 
 public class StopwatchTickProvider implements ITickProvider {
 
+	
+	long _startNanos;
+    long _stopwatch;
+
+    public StopwatchTickProvider()
+    {
+    	_startNanos = System.currentTimeMillis() * 1000000; //millis to nanos
+        _stopwatch = System.nanoTime();
+    }
+
+
 	@Override
 	public long getTicks() {
-		return System.nanoTime();
-	}
-
+       return _startNanos+(System.nanoTime()-_stopwatch);
+    }
 }
