@@ -2,6 +2,7 @@ package com.masstransitproject.crosstown.newid;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -84,4 +85,37 @@ public class NewId_Specs  // Using_the_newid_generator
 				new Object[] { limit, stop - start, limit / (stop - start) }));
 
 	}
+
+	@Test
+	public void Should_generate_multiple_timestamps() {
+		NewId.Next();
+		HashSet tss = new HashSet();
+		long start = System.currentTimeMillis();
+
+		int limit = 1024 * 1024;
+
+		NewId[] ids = new NewId[limit];
+		for (int i = 0; i < limit; i++) {
+			ids[i] = NewId.Next();
+			
+			if (tss.size() < 100) {
+				System.out.println(ids[i].getTimestamp());
+				
+			}
+		}
+		
+		long stop = System.currentTimeMillis();
+
+		for (int i = 0; i < limit - 1; i++) {
+			Assert.assertFalse(ids[i].equals(ids[i + 1]));
+			String end = ids[i].toString().substring(32, 32+4);
+			if (end == "0000")
+				log.trace(ids[i].toString());
+		}
+ 
+		log.trace(String.format("Generated {0} ids in {1}ms ({2}/ms)",
+				new Object[] { limit, stop - start, limit / (stop - start) }));
+
+	}
+	
 }

@@ -16,6 +16,7 @@ import com.masstransitproject.crosstown.context.ISendContext;
 import com.masstransitproject.crosstown.handlers.ReceiveHandler;
 import com.masstransitproject.crosstown.handlers.SendCallback;
 import com.masstransitproject.crosstown.serialization.IMessageSerializer;
+import com.masstransitproject.crosstown.transports.IInboundTransport;
 import com.masstransitproject.crosstown.transports.IOutboundTransport;
 
 
@@ -40,7 +41,7 @@ import com.masstransitproject.crosstown.transports.IOutboundTransport;
         /// <summary>
         /// The inbound transport for the endpoint
         /// </summary>
-        //IInboundTransport getInboundTransport();
+        IInboundTransport getInboundTransport();
 
         /// <summary>
         /// The outbound transport for the endpoint
