@@ -28,6 +28,6 @@ import com.masstransitproject.crosstown.handlers.ConnectionCallback;
 		void Disconnect();
 		void ForceReconnect(long reconnectDelay);
 
-		void AddBinding(ConnectionBinding<T> binding);
-		void RemoveBinding(ConnectionBinding<T> binding);
+		void addBinding(ConnectionBinding<T> binding);
+		void removeBinding(ConnectionBinding<T> binding);
 	}

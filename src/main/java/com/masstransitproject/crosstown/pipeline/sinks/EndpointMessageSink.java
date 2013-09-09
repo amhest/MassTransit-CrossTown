@@ -6,6 +6,7 @@ import java.util.HashSet;
 import com.masstransitproject.crosstown.IEndpoint;
 import com.masstransitproject.crosstown.context.IBusPublishContext;
 import com.masstransitproject.crosstown.context.ISendContext;
+import com.masstransitproject.crosstown.handlers.SinkAction;
 import com.masstransitproject.crosstown.pipeline.IOutboundPipelineSink;
 import com.masstransitproject.crosstown.pipeline.IPipelineInspector;
 
@@ -42,14 +43,16 @@ import com.masstransitproject.crosstown.pipeline.IPipelineInspector;
 			 return _endpoint; 
 		}
 
-		public Collection<Action<IBusPublishContext<TMessage>>> Enumerate(IBusPublishContext<TMessage> context)
+		public Collection<SinkAction<IBusPublishContext<TMessage>>> Enumerate(IBusPublishContext<TMessage> context)
 		{
-			Collection<Action<IBusPublishContext<TMessage>>>  result = new
-					HashSet<Action<IBusPublishContext<TMessage>>> ();
-			if (context.WasEndpointAlreadySent(_endpoint.getAddress()))
-						return result;
-
-			result.add(		_endpoint.Send((ISendContext<TMessage>) context));
+			
+			throw new UnsupportedOperationException("Not Implemented");
+//			Collection<SinkAction<IBusPublishContext<TMessage>>>  result = new
+//					HashSet<SinkAction<IBusPublishContext<TMessage>>> ();
+//			if (context.WasEndpointAlreadySent(_endpoint.getAddress()))
+//						return result;
+//
+//			result.add(	new SinkAction(	_endpoint.Send((ISendContext<TMessage>) context)));
 			
 		}
 

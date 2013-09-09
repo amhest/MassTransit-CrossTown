@@ -99,7 +99,7 @@ import com.masstransitproject.crosstown.handlers.ConnectionCallback;
         }
 
 
-        public void AddBinding(ConnectionBinding<T> binding)
+        public void addBinding(ConnectionBinding<T> binding)
         {
             synchronized (_lock)
             {
@@ -111,7 +111,7 @@ import com.masstransitproject.crosstown.handlers.ConnectionCallback;
             }
         }
 
-        public void RemoveBinding(ConnectionBinding<T> binding)
+        public void removeBinding(ConnectionBinding<T> binding)
         {
         	synchronized (_lock)
             {
