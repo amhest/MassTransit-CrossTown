@@ -7,8 +7,9 @@ import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.masstransitproject.crosstown.newid.providers.NetworkAddressWorkerIdProvider;
 import com.masstransitproject.crosstown.util.FineGrainTimestamp;
@@ -29,7 +30,7 @@ import com.masstransitproject.crosstown.util.FineGrainTimestamp;
 
 public class LongTerm_Specs  // Generating_ids_over_time
 {
-	private Logger log = LoggerFactory.getLogger(LongTerm_Specs.class);
+	private Logger log = LogManager.getLogger(LongTerm_Specs.class);
 	
 	
 

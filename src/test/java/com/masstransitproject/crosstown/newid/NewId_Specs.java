@@ -6,8 +6,9 @@ import java.util.HashSet;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.masstransitproject.crosstown.newid.providers.StopwatchTickProvider;
 
@@ -26,7 +27,7 @@ import com.masstransitproject.crosstown.newid.providers.StopwatchTickProvider;
 
 public class NewId_Specs  // Using_the_newid_generator
 {
-	private Logger log = LoggerFactory.getLogger(NewId_Specs.class);
+	private Logger log = LogManager.getLogger(NewId_Specs.class);
 
 	@Test
 	public void Should_be_able_to_extract_timestamp() {

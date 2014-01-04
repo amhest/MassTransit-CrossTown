@@ -5,8 +5,9 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
     
 // Copyright 2010 Chris Patterson
@@ -26,7 +27,7 @@ import org.slf4j.LoggerFactory;
 	public class MessageUrn 
 	{
 
-        private static final Logger  _log = LoggerFactory.getLogger(MessageUrn.class);
+        private static final Logger  _log = LogManager.getLogger(MessageUrn.class);
         
 		private URI myUri;
 

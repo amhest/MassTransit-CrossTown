@@ -90,7 +90,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
            return getUri().getRawPath().substring(1); 
         }
 
-        public boolean IsTransactional()
+        public boolean isTransactional()
         {
              return _isTransactional; 
              }
@@ -104,11 +104,11 @@ import org.apache.http.client.utils.URLEncodedUtils;
             return _uri.toString();
         }
 
-        public boolean IsLocal() {
-        	return IsLocal(getUri());
+        public boolean isLocal() {
+        	return isLocal(getUri());
         }
     
-        protected boolean IsLocal(URI uri)
+        protected boolean isLocal(URI uri)
         {
             String hostName = uri.getHost();
             boolean local = (".".equals(hostName) ||
@@ -130,4 +130,5 @@ import org.apache.http.client.utils.URLEncodedUtils;
         	}
         	return false;
         }
+
     }

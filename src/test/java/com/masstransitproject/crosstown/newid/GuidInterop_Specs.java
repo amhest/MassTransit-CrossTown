@@ -6,8 +6,9 @@ import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.uuid.UUIDType;
 import com.fasterxml.uuid.impl.UUIDUtil;
@@ -28,7 +29,7 @@ import com.fasterxml.uuid.impl.UUIDUtil;
 public class GuidInterop_Specs  // When_interoperating_with_the_UUID_type
 {
 
-	private Logger log = LoggerFactory.getLogger(GuidInterop_Specs.class);
+	private Logger log = LogManager.getLogger(GuidInterop_Specs.class);
 
 	@Test
 	public void Should_convert_from_a_UUID_quickly() {
