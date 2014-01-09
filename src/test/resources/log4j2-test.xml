@@ -9,7 +9,7 @@
     <root level="error">
       <appender-ref ref="Console"/>
     </root>
-    <logger name="com.masstransitproject.crosstown" level="trace">
+    <logger name="com.masstransitproject.crosstown" level="info">
       <appender-ref ref="Console"/>
     </logger>
   </loggers>

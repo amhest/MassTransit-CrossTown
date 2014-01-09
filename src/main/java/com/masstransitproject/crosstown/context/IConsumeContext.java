@@ -23,7 +23,7 @@ import com.masstransitproject.crosstown.IEndpoint;
     /// </summary>
     /// <typeparam name="T">Incoming message type.</typeparam>
     public interface IConsumeContext<T extends Object> extends
-        IMessageContext
+        IMessageContext<T>
     {
         /// <summary>
         /// Send the message to the end of the input queue so that it can be processed again later
@@ -40,7 +40,7 @@ import com.masstransitproject.crosstown.IEndpoint;
         /// <summary>
         /// Gets the base context of this consume context.
         /// </summary>
-        IReceiveContext getBaseContext();
+        IReceiveContext<T> getBaseContext();
 
 
         /// <summary>
@@ -53,7 +53,7 @@ import com.masstransitproject.crosstown.IEndpoint;
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        boolean IsContextAvailable(Class messageType);
+        boolean IsContextAvailable(@SuppressWarnings("rawtypes") Class messageType);
 
         /// <summary>
         /// Retrieves a specified message type from the consumer context, if available.

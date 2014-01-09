@@ -1,7 +1,5 @@
 package com.masstransitproject.crosstown.context;
 
-import com.masstransitproject.crosstown.IEndpointAddress;
-
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -15,9 +13,9 @@ import com.masstransitproject.crosstown.IEndpointAddress;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-	public interface ISent<T>
-	{
-		IEndpointAddress getAddress();
-		ISendContext<T> getContext();
-		long getTimestamp();
-	}
+public interface IPublished<T extends Object> {
+	
+	ISendContext<T> getContext();
+
+	long getTimestamp();
+}

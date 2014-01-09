@@ -2,6 +2,8 @@ package com.masstransitproject.crosstown;
 
 public class MassTransitException extends RuntimeException {
 
+	private static final long serialVersionUID = 1L;
+
 	public MassTransitException(String string, Exception ex) {
 		super( string,  ex);
 	}

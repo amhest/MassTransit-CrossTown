@@ -17,7 +17,7 @@ import java.util.Date;
 // specific language governing permissions and limitations under the License.
 
 
-    public abstract class MessageContext implements IMessageContext 
+    public abstract class MessageContext<T extends Object> implements IMessageContext<T>
     {
         IMessageHeaders _headers;
 
@@ -233,7 +233,7 @@ import java.util.Date;
         
      
 
-        public void populate(IMessageContext context)
+        public void populate(IMessageContext<T> context)
         {
             setMessageType(context.getMessageType());
             setMessageId(context.getMessageId());

@@ -26,7 +26,7 @@ import com.masstransitproject.crosstown.serialization.IMessageSerializer;
     /// over to MassTransit's internals.
     /// </para>
     /// </summary>
-    public interface IEndpoint<T> {
+    public interface IEndpoint<T extends Object> {
         /// <summary>
         /// The address of the endpoint
         /// </summary>
@@ -61,7 +61,7 @@ import com.masstransitproject.crosstown.serialization.IMessageSerializer;
         /// <param name="context">Send context to generate the in-transport message from. Contains
         /// out-of-band data such as message ids, correlation ids, headers, and in-band data
         /// such as the actual data of the message to send.</param>
-        <T extends Object> void Send(ISendContext<T> context);
+        void Send(ISendContext<T> context);
 
         /// <summary>
         /// Send a message to an endpoint

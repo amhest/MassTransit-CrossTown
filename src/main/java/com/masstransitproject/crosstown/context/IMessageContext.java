@@ -2,7 +2,6 @@ package com.masstransitproject.crosstown.context;
 
 import java.net.URI;
 import java.util.Date;
-import java.util.UUID;
 
 public interface IMessageContext<T extends Object> {
 

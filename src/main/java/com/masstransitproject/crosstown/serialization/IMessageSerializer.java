@@ -38,7 +38,7 @@ public interface IMessageSerializer<T> {
 	// / <param name="stream">The stream to write the context to</param>
 	// / <param name="context">The context to send</param>
 	public void Serialize(OutputStream stream, T message,
-			ISendContext ctx) throws IOException;
+			ISendContext<T> ctx) throws IOException;
 
 	// / <summary>
 	// / Deserialize a message from the stream by reading the

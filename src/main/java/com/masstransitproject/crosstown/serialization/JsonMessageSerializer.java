@@ -33,7 +33,7 @@ public class JsonMessageSerializer<T extends Object> implements IMessageSerializ
 
 	@Override
 	public void Serialize(OutputStream stream, T message,
-			ISendContext ctx) throws IOException {
+			ISendContext<T> ctx) throws IOException {
 
 		Envelope evp = new Envelope(message,ctx.GetMessageTypes());
 		evp.setMessageId(ctx.getMessageId());

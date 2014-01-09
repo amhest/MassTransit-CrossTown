@@ -29,10 +29,10 @@ import com.masstransitproject.crosstown.serialization.IMessageTypeConverter;
     /// Receive context that allows receiving sinks to 
     /// </summary>
     public interface IReceiveContext<T extends Object> extends
-        IConsumeContext
+        IConsumeContext<T>
     {
         InputStream getBodyStream();
-        Collection<ISent> getSent();
+        Collection<ISent<T>> getSent();
 
         Collection<IReceived> getReceived();
 
@@ -58,7 +58,7 @@ import com.masstransitproject.crosstown.serialization.IMessageTypeConverter;
 
         void SetInputAddress(URI URI);
 
-        void SetEndpoint(IEndpoint endpoint);
+        void SetEndpoint(IEndpoint<T> endpoint);
 
         void SetRequestId(String value);
 

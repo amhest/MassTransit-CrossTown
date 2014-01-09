@@ -2,13 +2,11 @@ package com.masstransitproject.crosstown.newid;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
-
-import org.junit.Assert;
-import org.junit.Test;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
+import org.junit.Test;
 
 import com.masstransitproject.crosstown.newid.providers.StopwatchTickProvider;
 
@@ -90,7 +88,6 @@ public class NewId_Specs  // Using_the_newid_generator
 	@Test
 	public void Should_generate_multiple_timestamps() {
 		NewId.Next();
-		HashSet tss = new HashSet();
 		long start = System.currentTimeMillis();
 
 		int limit = 1024 * 1024;
@@ -99,10 +96,9 @@ public class NewId_Specs  // Using_the_newid_generator
 		for (int i = 0; i < limit; i++) {
 			ids[i] = NewId.Next();
 			
-			if (tss.size() < 100) {
-				System.out.println(ids[i].getTimestamp());
+			log.trace(ids[i].getTimestamp());
 				
-			}
+			
 		}
 		
 		long stop = System.currentTimeMillis();
