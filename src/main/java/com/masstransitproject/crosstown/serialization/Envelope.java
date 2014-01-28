@@ -4,10 +4,14 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.Map.Entry;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.masstransitproject.crosstown.MassTransitException;
 import com.masstransitproject.crosstown.MessageUrn;
 import com.masstransitproject.crosstown.context.ISendContext;
 import com.masstransitproject.crosstown.context.MessageHeaders;
+import com.masstransitproject.crosstown.context.SendContext;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
@@ -28,6 +32,8 @@ import com.masstransitproject.crosstown.context.MessageHeaders;
 	/// </summary>
     public class Envelope
     {
+        private static final Logger  _log = LogManager.getLogger(SendContext.class);
+        
         Envelope(Object message, List<Class> messageTypes)
         {
             Headers = new HashMap<String, String>();
@@ -46,6 +52,7 @@ import com.masstransitproject.crosstown.context.MessageHeaders;
         	
         	List<String> l = new ArrayList<String>();
         	for (Class c : messageTypes) {
+        		_log.debug("Creating urn for class " + c);
         		l.add(new MessageUrn(c).toString());
         	}
         	return l;
@@ -216,4 +223,19 @@ import com.masstransitproject.crosstown.context.MessageHeaders;
             }
             return envelope;
         }
+
+		@Override
+		public String toString() {
+			return "Envelope [RequestId=" + RequestId + ", ConversationId="
+					+ ConversationId + ", CorrelationId=" + CorrelationId
+					+ ", DestinationAddress=" + DestinationAddress
+					+ ", ExpirationTime=" + ExpirationTime + ", FaultAddress="
+					+ FaultAddress + ", Headers=" + Headers + ", Message="
+					+ Message + ", MessageId=" + MessageId + ", MessageType="
+					+ MessageType + ", Network=" + Network
+					+ ", ResponseAddress=" + ResponseAddress + ", RetryCount="
+					+ RetryCount + ", SourceAddress=" + SourceAddress + "]";
+		}
+        
+        
     }

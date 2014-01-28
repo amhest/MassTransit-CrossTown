@@ -8,6 +8,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.masstransitproject.crosstown.MessageUrn;
 import com.masstransitproject.crosstown.context.IMessageHeaders;
 import com.masstransitproject.crosstown.context.IReceiveContext;
 import com.masstransitproject.crosstown.context.ISendContext;
@@ -18,6 +22,8 @@ import com.masstransitproject.crosstown.serialization.JsonMessageSerializer;
 public class SendContext<T extends Object> implements
 		ISendContext<T> {
 
+    private static final Logger  _log = LogManager.getLogger(SendContext.class);
+    
 	private Class declaringType;
 	private final UUID id;
 	private final T message;
@@ -33,6 +39,7 @@ public class SendContext<T extends Object> implements
 			throw new RuntimeException(e);
 		}
 		this.id = NewId.NextGuid();
+		_log.debug("Created new SendContext for " + this.declaringType);
 	}
 
 	@Override
@@ -174,6 +181,13 @@ public class SendContext<T extends Object> implements
 	@Override
 	public void setDeclaringMessageType(Class declaringType) {
 		this.declaringType = declaringType;
+	}
+
+	@Override
+	public String toString() {
+		return "SendContext [declaringType=" + declaringType + ", id=" + id
+				+ ", message=" + message + ", headers=" + headers
+				+ ", retryCount=" + retryCount + "]";
 	}
 
 }

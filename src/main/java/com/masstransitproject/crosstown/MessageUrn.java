@@ -79,7 +79,9 @@ import org.apache.logging.log4j.Logger;
 
 			//This might be a .Net name rather than a Java one so 
 			// we must check cache before instantiating
-			
+			if (_nameToClassCache == null) {
+				_nameToClassCache = new ThreadLocal<Map<String,Class>>();
+			}
 			if (_nameToClassCache.get() == null) {
 				_nameToClassCache.set(new HashMap<String,Class>());
 			}
@@ -115,9 +117,12 @@ import org.apache.logging.log4j.Logger;
 			if (_typeToUrnCache == null)
 				{
 					_typeToUrnCache = new ThreadLocal<Map<Class, String>>();
-					_typeToUrnCache.set(new HashMap<Class, String>());
 				}
-
+			if (_typeToUrnCache.get() == null)
+			{
+				_typeToUrnCache.set(new HashMap<Class, String>());
+			}
+			_log.trace("Getting type "+type+" from cache "+ _typeToUrnCache.get());
 			String urn = _typeToUrnCache.get().get(type);
 			if (urn == null) {
 

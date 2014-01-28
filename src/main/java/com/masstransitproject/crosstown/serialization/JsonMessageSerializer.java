@@ -18,6 +18,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -31,10 +34,14 @@ public class JsonMessageSerializer<T extends Object> implements IMessageSerializ
 		return ContentTypeHeaderValue;
 	}
 
+	private static final Logger logger = LogManager
+			.getLogger(JsonMessageSerializer.class.getName());
+	
 	@Override
 	public void Serialize(OutputStream stream, T message,
 			ISendContext<T> ctx) throws IOException {
 
+		logger.info("Serializing object "+message +"of type " + message.getClass());
 		Envelope evp = new Envelope(message,ctx.GetMessageTypes());
 		evp.setMessageId(ctx.getMessageId());
 
