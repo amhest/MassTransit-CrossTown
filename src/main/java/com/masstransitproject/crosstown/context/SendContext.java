@@ -51,10 +51,10 @@ public class SendContext<T extends Object> implements ISendContext<T> {
 
 	private URI sourceAddress;
 
-	public SendContext(Class<T> declaringMessageType) {
+	public SendContext(Class declaringMessageType) {
 		this.declaringType = declaringMessageType;
 		try {
-			this.message = declaringMessageType.newInstance();
+			this.message = (T) declaringMessageType.newInstance();
 		} catch (InstantiationException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
