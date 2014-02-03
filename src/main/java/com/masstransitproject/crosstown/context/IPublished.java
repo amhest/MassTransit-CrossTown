@@ -14,8 +14,8 @@ package com.masstransitproject.crosstown.context;
 // specific language governing permissions and limitations under the License.
 
 public interface IPublished<T extends Object> {
-	
-	ISendContext<T> getContext();
+
+	IPublishContext<T> getContext();
 
 	long getTimestamp();
 }

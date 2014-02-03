@@ -8,9 +8,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
-    
-// Copyright 2010 Chris Patterson
+// Copyright 2010 Chris Patterson, Evan Schnell
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 // this file except in compliance with the License. You may obtain a copy of the 
@@ -23,199 +21,148 @@ import org.apache.logging.log4j.Logger;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
+public class MessageUrn {
 
-	public class MessageUrn 
-	{
+	private static final Logger _log = LogManager.getLogger(MessageUrn.class);
 
-        private static final Logger  _log = LogManager.getLogger(MessageUrn.class);
-        
-		private URI myUri;
+	private URI myUri;
 
-		//May have both java and .Net entries
-		static ThreadLocal<Map<String,Class>> _nameToClassCache;  
-		static ThreadLocal<Map<Class, String>> _typeToUrnCache;
+	// May have both java and .Net entries
+	private static Map<String, Class> _nameToClassCache = new HashMap<String, Class>();
+	private static Map<Class, String> _typeToUrnCache = new HashMap<Class, String>();
 
-		public MessageUrn(Class type) throws URISyntaxException
-			{
-			myUri = new URI(GetUrnForType(type));
-		
-		}
+	public MessageUrn(Class type) throws URISyntaxException {
+		myUri = new URI(GetUrnForType(type));
 
-		public MessageUrn(String uriString) throws URISyntaxException
-		{
-			myUri =  new URI(uriString);
-		
-		}
+	}
 
-//		protected MessageUrn(SerializationInfo serializationInfo, StreamingContext streamingContext)
-//			: base(serializationInfo, streamingContext)
-//		{
-//		}
+	public static void registerMessageType(
+			Class messageType) {
 
-		public Class getMessageClass()
-		{
-			return this.getMessageClass(true,true);
-		}
-		
-		public Class getMessageClass(boolean throwOnError, boolean ignoreCase)
-		{
-			if (myUri == null || myUri.getPath()== null || myUri.getPath().isEmpty()) //Was segments.lenght==0
-				return null;
+		try {
+			_nameToClassCache.put(messageType.getName(), messageType);
 
-			String[] names = myUri.getPath().split(":");
-			if (names[0] != "message")
-				return null;
-
-			String typeName;
-
-			if (names.length == 2)
-				typeName = names[1];
-			else if (names.length == 3)
-				typeName = names[1] + "." + names[2] + ", " + names[1];
-			else if (names.length >= 4)
-				typeName = names[1] + "." + names[2] + ", " + names[3];
-			else
-				return null;
-
-			//This might be a .Net name rather than a Java one so 
-			// we must check cache before instantiating
-			if (_nameToClassCache == null) {
-				_nameToClassCache = new ThreadLocal<Map<String,Class>>();
+			// Cache dotNet if possible
+			if (ExternallyNamespaced.class.isAssignableFrom(messageType)) {
+				// Use dotNet Namespaces
+				_nameToClassCache.put(
+						((ExternallyNamespaced) messageType.newInstance())
+								.getExternalNamespace()
+								+ "."
+								+ messageType.getSimpleName(), messageType);
 			}
-			if (_nameToClassCache.get() == null) {
-				_nameToClassCache.set(new HashMap<String,Class>());
+		} catch (InstantiationException e) {
+			_log.error("Unable to create class for " + messageType, e);
+		} catch (IllegalAccessException e) {
+			_log.error("Unable to access class for " + messageType, e);
+		}
+
+	}
+
+	public MessageUrn(String uriString) throws URISyntaxException {
+		myUri = new URI(uriString);
+
+	}
+
+	public Class getMessageClass() {
+		return this.getMessageClass(true, true);
+	}
+
+	public Class getMessageClass(boolean throwOnError, boolean ignoreCase) {
+		if (myUri == null || myUri.getSchemeSpecificPart() == null
+				|| myUri.getSchemeSpecificPart().isEmpty()) // Was
+															// segments.lenght==0
+			return null;
+
+		String[] names = myUri.getSchemeSpecificPart().split(":");
+		if (!"message".equals(names[0]))
+			return null;
+
+		String typeName;
+
+		if (names.length == 2)
+			typeName = names[1];
+		else if (names.length == 3)
+			typeName = names[1] + "." + names[2];// + ", " + names[1];
+		else if (names.length >= 4)
+			typeName = names[1] + "." + names[2];// + ", " + names[3];
+		else
+			return null;
+
+		// This might be a .Net name rather than a Java one so
+		// we must check cache before instantiating
+		Class messageType = _nameToClassCache.get(typeName);
+		if (messageType == null) {
+
+			try {
+				messageType = Class.forName(typeName);
+			} catch (ClassNotFoundException e) {
+				_log.info("Unable to create class for " + messageType +".  This may be because we are using a .Net name", e);
 			}
-			
-			Class messageType = _nameToClassCache.get().get(typeName);
-		    if (messageType == null) {
-					 
+			if (messageType != null) {
+				registerMessageType(messageType);
+			}
+		}
+		return messageType;
+	}
+
+	@Override
+	public String toString() {
+		return myUri.toString();
+	}
+
+	static String IsInCache(Class type) {
+
+		_log.trace("Getting type " + type + " from cache " + _typeToUrnCache);
+		String urn = _typeToUrnCache.get(type);
+		if (urn == null) {
+
+			StringBuilder sb = new StringBuilder("urn:message:");
+
+			urn = GetMessageName(sb, type, true);
+			_typeToUrnCache.put(type, urn);
+		}
+		return urn;
+	}
+
+	static String GetUrnForType(Class type) {
+		return IsInCache(type);
+	}
+
+	static String GetMessageName(StringBuilder sb, Class type,
+			boolean includeScope) {
+
+		// Crosstown does not support complex generated names since they won't
+		// translate to
+		// dotNet
+		if (includeScope) {
+			String scope = null;
+			if (ExternallyNamespaced.class.isAssignableFrom(type)) {
+				// Use dotNet Namespaces
+
 				try {
-					messageType = Class.forName(typeName);
-					_nameToClassCache.get().put(typeName,messageType);
-
-//					//Cache dotNet if possible
-//					if (messageType.isAssignableFrom(ExternallyNamespaced.class)) {
-//						//Use dotNet Namespaces
-//						_nameToClassCache.get().put(
-//									((ExternallyNamespaced) messageType.newInstance()).getExternalNamespace()+
-//									"." + messageType.getSimpleName(),messageType);
-//					}
-				} catch (ClassNotFoundException e) {
-					_log.error("Unable to locate class for " + myUri, e);
+					scope = ((ExternallyNamespaced) type.newInstance())
+							.getExternalNamespace();
+				} catch (Exception e) {
+					_log.error(
+							"Unable to obtain namespace for "
+									+ type
+									+ ".  ExternallyNamespaced classes must have a default constructor.",
+							e);
 				}
-		    }
-			return messageType;
-		}
-
-		@Override
-		public String toString() {
-			return myUri.toString();
-		}
-
-		static String IsInCache(Class type)
-		{
-			if (_typeToUrnCache == null)
-				{
-					_typeToUrnCache = new ThreadLocal<Map<Class, String>>();
-				}
-			if (_typeToUrnCache.get() == null)
-			{
-				_typeToUrnCache.set(new HashMap<Class, String>());
+			} else {
+				// Use Java Packages
+				scope = type.getPackage().getName();
 			}
-			_log.trace("Getting type "+type+" from cache "+ _typeToUrnCache.get());
-			String urn = _typeToUrnCache.get().get(type);
-			if (urn == null) {
-
-				StringBuilder sb = new StringBuilder("urn:message:");
-
-				urn =  GetMessageName(sb, type, true);
-				_typeToUrnCache.get().put(type, urn);
+			if (scope != null && !scope.isEmpty()) {
+				sb.append(scope);
+				sb.append(":");
 			}
-			return urn;
 		}
 
-		static String GetUrnForType(Class type)
-		{
-			return IsInCache(type);
-		}
-
-		static String GetMessageName(StringBuilder sb, Class type, boolean includeScope)
-		{
-			
-			//Crosstown does not support complex generated names since they won't translate to 
-			//dotNet
-			if (includeScope) {
-				String scope = null;
-				if (ExternallyNamespaced.class.isAssignableFrom(type)) {
-					//Use dotNet Namespaces
-					
-					try {
-						scope = ((ExternallyNamespaced) type.newInstance()).getExternalNamespace();
-					} catch (Exception e) {
-						_log.error("Unable to obtain namespace for " + type + 
-								".  ExternallyNamespaced classes must have a default constructor.", e);
-					}
-				} else {
-					//Use Java Packages
-					scope = type.getPackage().getName();
-				}
-				if (scope != null && !scope.isEmpty()) {
-					sb.append(scope);
-					sb.append(":");
-				}
-			}
-
-			sb.append(type.getSimpleName());
+		sb.append(type.getSimpleName());
 
 		return sb.toString();
-			
-			
-//            if (type.IsGenericParameter)
-//                return "";
-//
-//			if (includeScope && type.Namespace != null)
-//			{
-//				String ns = type.Namespace;
-//				sb.Append(ns);
-//
-//				sb.Append(':');
-//			}
-//
-//			if (type.IsNested)
-//			{
-//				GetMessageName(sb, type.DeclaringType, false);
-//				sb.Append('+');
-//			}
-//
-//			if (type.IsGenericType)
-//			{
-//			    var name = type.GetGenericTypeDefinition().Name;
-//
-//                //remove `1
-//			    int index = name.IndexOf('`');
-//                if(index > 0)
-//			        name = name.Remove(index);
-//                //
-//
-//			    sb.Append(name);
-//				sb.Append('[');
-//
-//				Type[] arguments = type.GetGenericArguments();
-//				for (int i = 0; i < arguments.Length; i++)
-//				{
-//					if (i > 0)
-//						sb.Append(',');
-//
-//					sb.Append('[');
-//					GetMessageName(sb, arguments[i], true);
-//					sb.Append(']');
-//				}
-//
-//				sb.Append(']');
-//			}
-//			else
-//				sb.Append(type.Name);
-//
-//			return sb.ToString();
-		}
+
 	}
+}

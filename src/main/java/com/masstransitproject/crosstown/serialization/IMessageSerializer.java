@@ -19,32 +19,39 @@ import com.masstransitproject.crosstown.context.ISendContext;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-/// <summary>
-/// Message Serialization implementors should handle the nitty-gritty
-/// details of writing Object instances to streams and reading them back
-/// up from streams.
-/// </summary>
+/**
+ * Message Serialization implementors should handle the nitty-gritty details of
+ * writing Object instances to streams and reading them back up from streams.
+ */
 public interface IMessageSerializer<T> {
-	// / <summary>
-	// / The content type that identifies the message serializer
-	// / </summary>
+
+	/**
+	 * The content type that identifies the message serializer
+	 * 
+	 * @return MIME format string
+	 */
 	String getContentType();
 
-	// / <summary>
-	// / Serialize the message to the stream
-	// / </summary>
-	// / <typeparam name="T">The implicit type of the message to
-	// serialize</typeparam>
-	// / <param name="stream">The stream to write the context to</param>
-	// / <param name="context">The context to send</param>
-	public void Serialize(OutputStream stream, T message,
-			ISendContext<T> ctx) throws IOException;
+	/**
+	 * Serialize the message to the stream
+	 * 
+	 * @param <T>The implicit type of the message to serialize
+	 * @param stream
+	 *            ">The stream to write the context to
+	 * @param context
+	 *            ">The context to send
+	 */
+	public void Serialize(OutputStream stream, T message, ISendContext<T> ctx)
+			throws IOException;
 
-	// / <summary>
-	// / Deserialize a message from the stream by reading the
-	// / </summary>
-	// / <param name="context">The context to deserialize</param>
-	// / <returns>An Object that was deserialized</returns>
+	/**
+	 * Deserialize a message from the stream by reading the
+	 * 
+	 * @param context
+	 *            ">The context to deserialize
+	 * @return An Object that was deserialized
+	 */
+	//
 
 	/**
 	 * Since we don't receive messages I short-circuited the original signature

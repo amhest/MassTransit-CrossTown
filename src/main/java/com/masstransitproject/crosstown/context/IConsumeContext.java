@@ -1,6 +1,7 @@
 package com.masstransitproject.crosstown.context;
 
 import com.masstransitproject.crosstown.IEndpoint;
+import com.masstransitproject.crosstown.ISendHandler;
 
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
@@ -15,61 +16,69 @@ import com.masstransitproject.crosstown.IEndpoint;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-    /// <summary>
-    /// Typed consumer context that can be used by message consumers to retrieve out-of-band information
-    /// related to a message. This consumer context can also be used for explicitly telling the service bus
-    /// to place the message at the end of the input-queue (by calling <see cref="RetryLater"/>) or send the message to the poison-letter queue (by
-    /// calling <see cref="GenerateFault"/>.)
-    /// </summary>
-    /// <typeparam name="T">Incoming message type.</typeparam>
-    public interface IConsumeContext<T extends Object> extends
-        IMessageContext<T>
-    {
-        /// <summary>
-        /// Send the message to the end of the input queue so that it can be processed again later
-        /// </summary>
-        void RetryLater();
+/**
+ * Typed consumer context that can be used by message consumers to retrieve
+ * out-of-band information related to a message. This consumer context can also
+ * be used for explicitly telling the service bus to place the message at the
+ * end of the input-queue (by calling <see cref="RetryLater"/>) or send the
+ * message to the poison-letter queue (by calling @see GenerateFault
+ * 
+ * @param <T>
+ *            Incoming message type.
+ */
+public interface IConsumeContext<T extends Object> extends IMessageContext<T> {
+	/**
+	 * Send the message to the end of the input queue so that it can be
+	 * processed again later
+	 */
+	void RetryLater();
 
-        /// <summary>
-        /// Generates a fault for this message, which will be published once the message is moved
-        /// </summary>
-        void GenerateFault(Exception ex);
-    
+	/**
+	 * Generates a fault for this message, which will be published once the
+	 * message is moved
+	 */
+	void GenerateFault(Exception ex);
 
-    
-        /// <summary>
-        /// Gets the base context of this consume context.
-        /// </summary>
-        IReceiveContext<T> getBaseContext();
+	/**
+	 * Gets the base context of this consume context.
+	 */
+	IReceiveContext<T> getBaseContext();
 
+	/**
+	 * The endpoint from which the message was received
+	 */
+	IEndpoint<T> getEndpoint();
 
-        /// <summary>
-        /// The endpoint from which the message was received
-        /// </summary>
-        IEndpoint<T> getEndpoint();
+	/**
+	 * Determines if the specified message type is available in the consumer
+	 * context
+	 * 
+	 * @param <T>
+	 */
+	boolean IsContextAvailable(@SuppressWarnings("rawtypes") Class messageType);
 
-        /// <summary>
-        /// Determines if the specified message type is available in the consumer context
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        boolean IsContextAvailable(@SuppressWarnings("rawtypes") Class messageType);
+	/**
+	 * Retrieves a specified message type from the consumer context, if
+	 * available.
+	 * 
+	 * @param <T>The message type requested
+	 * @param context
+	 *            ">The message context for the requested message type
+	 * @return True if the message type is available, otherwise false.
+	 */
+	IConsumeContext<T> getContext();
 
-        /// <summary>
-        /// Retrieves a specified message type from the consumer context, if available.
-        /// </summary>
-        /// <typeparam name="T">The message type requested</typeparam>
-        /// <param name="context">The message context for the requested message type</param>
-        /// <returns>True if the message type is available, otherwise false.</returns>
-        IConsumeContext<T>  getContext();
-//
-//        /// <summary>
-//        /// Respond to the current message, sending directly to the ResponseAddress if specified
-//        /// otherwise publishing the message
-//        /// </summary>
-//        /// <typeparam name="T">The type of the message to respond with.</typeparam>
-//        /// <param name="message">The message to send in response</param>
-//        /// <param name="contextCallback">The context action for specifying additional context information</param>
-//        void Respond(T message, SendCallback<T> contextCallback);
-    
+	/**
+	 * Respond to the current message, sending directly to the ResponseAddress
+	 * if specified otherwise publishing the message
+	 * 
+	 * @param <T>The type of the message to respond with.
+	 * @param message
+	 *            ">The message to send in response
+	 * @param contextCallback
+	 *            ">The context action for specifying additional context
+	 *            information
+	 */
+	void Respond(T message, ISendHandler<T> contextCallback);
+
 }

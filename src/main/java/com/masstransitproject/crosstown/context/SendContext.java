@@ -3,7 +3,7 @@ package com.masstransitproject.crosstown.context;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -11,7 +11,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.masstransitproject.crosstown.MessageUrn;
 import com.masstransitproject.crosstown.context.IMessageHeaders;
 import com.masstransitproject.crosstown.context.IReceiveContext;
 import com.masstransitproject.crosstown.context.ISendContext;
@@ -19,20 +18,43 @@ import com.masstransitproject.crosstown.context.MessageHeaders;
 import com.masstransitproject.crosstown.newid.NewId;
 import com.masstransitproject.crosstown.serialization.JsonMessageSerializer;
 
-public class SendContext<T extends Object> implements
-		ISendContext<T> {
+public class SendContext<T extends Object> implements ISendContext<T> {
 
-    private static final Logger  _log = LogManager.getLogger(SendContext.class);
-    
-	private Class declaringType;
-	private final UUID id;
-	private final T message;
+	private static final Logger _log = LogManager.getLogger(SendContext.class);
+
+	private String conversationId;
+	private String correlationId;
+	private Class<T> declaringType;
+	private URI destinationAddress;
+
+	private Date expirationTime;
+
+	private URI faultAddress;
+
 	private final MessageHeaders headers = new MessageHeaders();
 
-	public SendContext(Class declaringMessageType) {
+	private final UUID id;
+
+	private URI inputAddress;
+
+	private final T message;
+
+	private String network;
+
+	private IReceiveContext<T> receiveContext;
+
+	private String requestId;
+
+	private URI responseAddress;
+
+	private int retryCount = 0;
+
+	private URI sourceAddress;
+
+	public SendContext(Class<T> declaringMessageType) {
 		this.declaringType = declaringMessageType;
 		try {
-			this.message = (T) declaringMessageType.newInstance();
+			this.message = declaringMessageType.newInstance();
 		} catch (InstantiationException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
@@ -50,32 +72,34 @@ public class SendContext<T extends Object> implements
 
 	@Override
 	public String getConversationId() {
-		// TODO Auto-generated method stub
-		return null;
+		return conversationId;
 	}
 
 	@Override
 	public String getCorrelationId() {
-		// TODO Auto-generated method stub
-		return null;
+		return correlationId;
+	}
+
+	@Override
+	public Class<T> getDeclaringMessageType() {
+
+		return this.declaringType;
 	}
 
 	@Override
 	public URI getDestinationAddress() {
-		// TODO Auto-generated method stub
-		return null;
+		return destinationAddress;
 	}
 
 	@Override
 	public Date getExpirationTime() {
-		// TODO Auto-generated method stub
-		return null;
+		return expirationTime;
 	}
 
 	@Override
 	public URI getFaultAddress() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return faultAddress;
 	}
 
 	@Override
@@ -85,9 +109,20 @@ public class SendContext<T extends Object> implements
 	}
 
 	@Override
+	public UUID getId() {
+
+		return this.id;
+	}
+
+	@Override
 	public URI getInputAddress() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return inputAddress;
+	}
+
+	@Override
+	public T getMessage() {
+		return this.message;
 	}
 
 	@Override
@@ -102,24 +137,32 @@ public class SendContext<T extends Object> implements
 	}
 
 	@Override
+	public List<Class> GetMessageTypes() {
+
+		List<Class> l = new ArrayList<Class>();
+		l.add(this.getDeclaringMessageType());
+		return l;
+	}
+
+	@Override
 	public String getNetwork() {
-		// TODO Auto-generated method stub
+		return network;
+	}
+
+	@Override
+	public String getOriginalMessageId() {
 		return null;
 	}
 
 	@Override
 	public String getRequestId() {
-		// TODO Auto-generated method stub
-		return null;
+		return requestId;
 	}
 
 	@Override
 	public URI getResponseAddress() {
-		// TODO Auto-generated method stub
-		return null;
+		return responseAddress;
 	}
-
-	private int retryCount = 0;
 
 	@Override
 	public int getRetryCount() {
@@ -127,20 +170,8 @@ public class SendContext<T extends Object> implements
 	}
 
 	@Override
-	public void setRetryCount(int value) {
-		this.retryCount = value;
-	}
-
-	@Override
 	public URI getSourceAddress() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Class> GetMessageTypes() {
-
-		return Arrays.asList(new Class[] { this.declaringType });
+		return sourceAddress;
 	}
 
 	@Override
@@ -151,36 +182,18 @@ public class SendContext<T extends Object> implements
 	}
 
 	@Override
-	public void SetReceiveContext(IReceiveContext<T> arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Class getDeclaringMessageType() {
-
-		return this.declaringType;
-	}
-
-	@Override
-	public UUID getId() {
-
-		return this.id;
-	}
-
-	@Override
-	public T getMessage() {
-		return this.message;
-	}
-
-	@Override
-	public String getOriginalMessageId() {
-		return null;
-	}
-
-	@Override
-	public void setDeclaringMessageType(Class declaringType) {
+	public void setDeclaringMessageType(Class<T> declaringType) {
 		this.declaringType = declaringType;
+	}
+
+	@Override
+	public void SetReceiveContext(IReceiveContext<T> receiveContext) {
+		this.receiveContext = receiveContext;
+	}
+
+	@Override
+	public void setRetryCount(int value) {
+		this.retryCount = value;
 	}
 
 	@Override

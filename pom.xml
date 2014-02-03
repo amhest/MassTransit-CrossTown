@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>masstransit-crosstown</groupId>
 	<artifactId>masstransit-crosstown</artifactId>
-	<version>0.0.1-NewIdOnly</version>
+	<version>0.0.2</version>
 	<build>
 		<plugins>
 			<plugin>

@@ -17,10 +17,8 @@ import com.masstransitproject.crosstown.util.FineGrainTimestamp;
 
 public class StopwatchTickProvider implements ITickProvider {
 
-	
-
 	@Override
 	public long getTicks() {
-       return FineGrainTimestamp.getInstance().getTotalNanos();
-    }
+		return FineGrainTimestamp.getInstance().getTotalNanos();
+	}
 }

@@ -1,3 +1,16 @@
+// Copyright 2013 Evan Schnell
+//  
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
+// this file except in compliance with the License. You may obtain a copy of the 
+// License at 
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0 
+// 
+// Unless required by applicable law or agreed to in writing, software distributed 
+// under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
+// CONDITIONS OF ANY KIND, either express or implied. See the License for the 
+// specific language governing permissions and limitations under the License.
+
 package com.masstransitproject.crosstown.util;
 
 import java.sql.Timestamp;
@@ -7,24 +20,24 @@ import java.util.TimeZone;
 
 public class FineGrainTimestamp extends Timestamp {
 
-	
 	private static final long serialVersionUID = 1L;
-	
-	//These two need to be set at as close to the same time as possible
-	/** Starting value of fine-grain timer
-	 */
-	private static final long baseNanos; 
-	
-	/**This is current time in Millis padded out with nanos values */
-	private static final long baseMillisWithNanos;  
-		
-	static { 
 
-		//This will be used to calculate an interval for a later time
+	// These two need to be set at as close to the same time as possible
+	/**
+	 * Starting value of fine-grain timer
+	 */
+	private static final long baseNanos;
+
+	/** This is current time in Millis padded out with nanos values */
+	private static final long baseMillisWithNanos;
+
+	static {
+
+		// This will be used to calculate an interval for a later time
 		baseNanos = System.nanoTime();
 		long baseMillis = System.currentTimeMillis();
-		
-		//Combine nanos from system timer with actual millis to create baseline
+
+		// Combine nanos from system timer with actual millis to create baseline
 		baseMillisWithNanos = (baseMillis * 1000000) + (baseNanos % 1000000);
 
 	}
@@ -32,14 +45,15 @@ public class FineGrainTimestamp extends Timestamp {
 	private ThreadLocal<DateFormat> defaultFormatter = new ThreadLocal<DateFormat>();
 
 	public static void init() {
-		//Do nothing for now.  Ensures statics are seeded.
+		// Do nothing for now. Ensures statics are seeded.
 	}
-	
+
 	protected FineGrainTimestamp(long currentTimeInMillis) {
 
 		super(currentTimeInMillis);
 
 	}
+
 	protected FineGrainTimestamp(long currentTimeZeroMillis, int nanos) {
 
 		super(currentTimeZeroMillis);
@@ -48,28 +62,26 @@ public class FineGrainTimestamp extends Timestamp {
 	}
 
 	public static FineGrainTimestamp fromNanos(long timeInNanos) {
-		
 
 		long delta;
 		if (timeInNanos == -1) {
-			//This is current time
+			// This is current time
 			delta = System.nanoTime() - baseNanos;
 		} else {
-			//This is a unix time on same scale as timeInMillis
+			// This is a unix time on same scale as timeInMillis
 			delta = timeInNanos - baseMillisWithNanos;
 		}
 		long newTotalNanos = baseMillisWithNanos + delta;
 		long dateZeroMills = newTotalNanos / 1000000000 * 1000;
-		
-		int nanosDelta = (int) ( newTotalNanos % 1000000000);
-		
-		return new FineGrainTimestamp(dateZeroMills,nanosDelta);
+
+		int nanosDelta = (int) (newTotalNanos % 1000000000);
+
+		return new FineGrainTimestamp(dateZeroMills, nanosDelta);
 	}
 
 	public static FineGrainTimestamp fromMillis(long timeInMillis) {
 		return new FineGrainTimestamp(timeInMillis);
 	}
-
 
 	@Override
 	public String toString() {
@@ -87,20 +99,19 @@ public class FineGrainTimestamp extends Timestamp {
 		}
 		String s = defaultFormatter.get().format(this);
 		return s.subSequence(0, s.lastIndexOf('.') + 1)
-				+ String.valueOf(this.getNanos())
-				+ "+0000";
+				+ String.valueOf(this.getNanos()) + "+0000";
 	}
 
 	public static FineGrainTimestamp getInstance() {
-		
+
 		return fromNanos(-1);
-	   
+
 	}
-	
+
 	public long getTotalNanos() {
 
 		// Zero out the millis, pad and then add nanos.
-		long total =  (getTime() / 1000 * 1000000000) + getNanos();
+		long total = (getTime() / 1000 * 1000000000) + getNanos();
 		return total;
 	}
 

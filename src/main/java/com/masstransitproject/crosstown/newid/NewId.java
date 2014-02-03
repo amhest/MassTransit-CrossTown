@@ -25,11 +25,12 @@ import com.masstransitproject.crosstown.newid.providers.NetworkAddressWorkerIdPr
 import com.masstransitproject.crosstown.newid.providers.StopwatchTickProvider;
 import com.masstransitproject.crosstown.util.FineGrainTimestamp;
 
-/// <summary>
-/// A NewId is a type that fits into the same space as a Guid/Uuid/uniqueidentifier,
-/// but is guaranteed to be both unique and ordered, assuming it is generated using
-/// a single instance of the generator for each network address used.
-/// </summary>
+/**
+ * A NewId is a type that fits into the same space as a
+ * Guid/Uuid/uniqueidentifier, but is guaranteed to be both unique and ordered,
+ * assuming it is generated using a single instance of the generator for each
+ * network address used.
+ */
 public class NewId extends Object implements
 
 Comparable<NewId> {
@@ -51,10 +52,11 @@ Comparable<NewId> {
 	private final long _c;
 	private final long _d;
 
-	// / <summary>
-	// / Creates a NewId using the specified byte array.
-	// / </summary>
-	// / <param name="bytes"></param>
+	/**
+	 * Creates a NewId using the specified byte array.
+	 * 
+	 * @param bytes
+	 */
 	public NewId(byte[] bytes) {
 		if (bytes == null)
 			throw new IllegalArgumentException("bytes are null");
@@ -74,19 +76,17 @@ Comparable<NewId> {
 	public NewId(String value) {
 		this(UUID.fromString(value));
 	}
-	
+
 	public NewId(UUID guid) {
-		
 
 		byte[] bytes = convertToNewIdBytes(guid);
-		
+
 		ABCD holder = FromByteArray(bytes);
 		_a = holder.a;
 		_b = holder.b;
 		_c = holder.c;
 		_d = holder.d;
 	}
-	
 
 	private byte[] convertToNewIdBytes(UUID uuid) {
 		ByteBuffer bb = ByteBuffer.wrap(new byte[16]);
@@ -95,24 +95,25 @@ Comparable<NewId> {
 		bb.flip();
 		byte[] guidBytes = bb.array();
 		byte[] newIdBytes = Arrays.copyOf(guidBytes, guidBytes.length);
-		
+
 		//
-		//if (uuid.variant() == 2) 
+		// if (uuid.variant() == 2)
 		{
-		//Reverse part a
+			// Reverse part a
 			newIdBytes[0] = guidBytes[3];
 			newIdBytes[1] = guidBytes[2];
 			newIdBytes[2] = guidBytes[1];
 			newIdBytes[3] = guidBytes[0];
-			
-			//Flip each int in b
-				newIdBytes[4] = guidBytes[5];
-				newIdBytes[5] = guidBytes[4];
-				newIdBytes[6] = guidBytes[7];
-				newIdBytes[7] = guidBytes[6];
+
+			// Flip each int in b
+			newIdBytes[4] = guidBytes[5];
+			newIdBytes[5] = guidBytes[4];
+			newIdBytes[6] = guidBytes[7];
+			newIdBytes[7] = guidBytes[6];
 		}
 		return newIdBytes;
 	}
+
 	public NewId(long a, long b, long c, long d) {
 		_a = a;
 		_b = b;
@@ -120,13 +121,13 @@ Comparable<NewId> {
 		_d = d;
 	}
 
-//	public NewId(int a, short b, short c, byte d, byte e, byte f, byte g,
-//			byte h, byte i, byte j, byte k) {
-//		_a = (f << 24) | (g << 16) | (h << 8) | i;
-//		_b = (j << 24) | (k << 16) | (d << 8) | e;
-//		_c = (c << 16) | b;
-//		_d = (int) a;
-//	}
+	// public NewId(int a, short b, short c, byte d, byte e, byte f, byte g,
+	// byte h, byte i, byte j, byte k) {
+	// _a = (f << 24) | (g << 16) | (h << 8) | i;
+	// _b = (j << 24) | (k << 16) | (d << 8) | e;
+	// _c = (c << 16) | b;
+	// _d = (int) a;
+	// }
 
 	static NewIdGenerator getGenerator() {
 		if (_generator == null) {
@@ -158,8 +159,8 @@ Comparable<NewId> {
 
 	public Timestamp getTimestamp() {
 
-		long ticks = (((long)_a)  << 32) | ((long)_b);
-		return  FineGrainTimestamp.fromNanos(ticks);
+		long ticks = ((_a) << 32) | (_b);
+		return FineGrainTimestamp.fromNanos(ticks);
 
 	}
 
@@ -176,26 +177,27 @@ Comparable<NewId> {
 	@Override
 	public int compareTo(NewId other) {
 		if (_a != other._a)
-			return ((long) _a < (long) other._a) ? -1 : 1;
+			return (_a < other._a) ? -1 : 1;
 		if (_b != other._b)
-			return ((long) _b < (long) other._b) ? -1 : 1;
+			return (_b < other._b) ? -1 : 1;
 		if (_c != other._c)
-			return ((long) _c < (long) other._c) ? -1 : 1;
+			return (_c < other._c) ? -1 : 1;
 		if (_d != other._d)
-			return ((long) _d < (long) other._d) ? -1 : 1;
+			return (_d < other._d) ? -1 : 1;
 
 		return 0;
 	}
 
 	public boolean equals(NewId other) {
-		return ((int) other._a) == ((int)_a) && ((int)other._b) == ((int)_b) && ((int)other._c) == ((int)_c)
-				&& ((int)other._d) == ((int)_d);
+		return ((int) other._a) == ((int) _a) && ((int) other._b) == ((int) _b)
+				&& ((int) other._c) == ((int) _c)
+				&& ((int) other._d) == ((int) _d);
 	}
-	
+
 	@Override
 	public boolean equals(Object other) {
 		if (other instanceof NewId) {
-			return this.equals((NewId) other); 
+			return this.equals((NewId) other);
 		}
 		return false;
 	}
@@ -281,7 +283,7 @@ Comparable<NewId> {
 
 	public UUID ToGuid() {
 		ByteBuffer bb = ByteBuffer.allocate(16);
-		bb.putInt((int)_d);
+		bb.putInt((int) _d);
 		bb.putShort((short) _c);
 		bb.putShort((short) (_c >> 16));
 		bb.put((byte) (_b >> 8));
@@ -302,7 +304,7 @@ Comparable<NewId> {
 
 	public UUID ToSequentialGuid() {
 		ByteBuffer bb = ByteBuffer.allocate(16);
-		bb.putInt((int)_a);
+		bb.putInt((int) _a);
 		bb.putShort((short) (_b >> 16));
 		bb.putShort((short) _b);
 		bb.put((byte) (_c >> 24));
@@ -321,53 +323,50 @@ Comparable<NewId> {
 		return new UUID(bb.getLong(), bb.getLong());
 	}
 
-	
-
-
-//	private byte[] ToByteArray(ABCD abcd) {
-//		byte[] bytes = new byte[16];
-//
-//		bytes[0] = (byte) (abcd.d);
-//		bytes[1] = (byte) (abcd.d >> 8);
-//		bytes[2] = (byte) (abcd.d >> 16);
-//		bytes[3] = (byte) (abcd.d >> 24);
-//		bytes[4] = (byte) (abcd.c);
-//		bytes[5] = (byte) (abcd.c >> 8);
-//		bytes[6] = (byte) (abcd.c >> 16);
-//		bytes[7] = (byte) (abcd.c >> 24);
-//		bytes[8] = (byte) (abcd.b >> 8);
-//		bytes[9] = (byte) (abcd.b);
-//		bytes[10] = (byte) (abcd.a >> 24);
-//		bytes[11] = (byte) (abcd.a >> 16);
-//		bytes[12] = (byte) (abcd.a >> 8);
-//		bytes[13] = (byte) (abcd.a);
-//		bytes[14] = (byte) (abcd.b >> 24);
-//		bytes[15] = (byte) (abcd.b >> 16);
-//
-//		return bytes;
-//	}
+	// private byte[] ToByteArray(ABCD abcd) {
+	// byte[] bytes = new byte[16];
+	//
+	// bytes[0] = (byte) (abcd.d);
+	// bytes[1] = (byte) (abcd.d >> 8);
+	// bytes[2] = (byte) (abcd.d >> 16);
+	// bytes[3] = (byte) (abcd.d >> 24);
+	// bytes[4] = (byte) (abcd.c);
+	// bytes[5] = (byte) (abcd.c >> 8);
+	// bytes[6] = (byte) (abcd.c >> 16);
+	// bytes[7] = (byte) (abcd.c >> 24);
+	// bytes[8] = (byte) (abcd.b >> 8);
+	// bytes[9] = (byte) (abcd.b);
+	// bytes[10] = (byte) (abcd.a >> 24);
+	// bytes[11] = (byte) (abcd.a >> 16);
+	// bytes[12] = (byte) (abcd.a >> 8);
+	// bytes[13] = (byte) (abcd.a);
+	// bytes[14] = (byte) (abcd.b >> 24);
+	// bytes[15] = (byte) (abcd.b >> 16);
+	//
+	// return bytes;
+	// }
 
 	public byte[] ToByteArray() {
-		
-	    ByteBuffer buffer = ByteBuffer.allocate(16);
-	    buffer.order(ByteOrder.LITTLE_ENDIAN);
-	    buffer.putInt((int) _d);
-	    buffer.putInt((int) _c);
-	    
-	    ByteBuffer bb = ByteBuffer.allocate(4);
-	    bb.putInt((int)_b);
-	    bb.flip();
-	    byte[] b = bb.array();
-	    buffer.order(ByteOrder.BIG_ENDIAN);
-	    buffer.put(b[2]);
-	    buffer.put(b[3]);
-	    buffer.putInt((int) _a);
-	    buffer.put(b[0]);
-	    buffer.put(b[1]);
-	    
-	    return buffer.array();
+
+		ByteBuffer buffer = ByteBuffer.allocate(16);
+		buffer.order(ByteOrder.LITTLE_ENDIAN);
+		buffer.putInt((int) _d);
+		buffer.putInt((int) _c);
+
+		ByteBuffer bb = ByteBuffer.allocate(4);
+		bb.putInt((int) _b);
+		bb.flip();
+		byte[] b = bb.array();
+		buffer.order(ByteOrder.BIG_ENDIAN);
+		buffer.put(b[2]);
+		buffer.put(b[3]);
+		buffer.putInt((int) _a);
+		buffer.put(b[0]);
+		buffer.put(b[1]);
+
+		return buffer.array();
 	}
-	
+
 	@Override
 	public String toString() {
 		return toString("D", null);
@@ -382,12 +381,11 @@ Comparable<NewId> {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (int) _a;
-		result = prime * result + (int)_b;
-		result = prime * result + (int)_c;
-		result = prime * result + (int)_d;
+		result = prime * result + (int) _b;
+		result = prime * result + (int) _c;
+		result = prime * result + (int) _d;
 		return result;
 	}
-
 
 	public static void SetGenerator(NewIdGenerator generator) {
 		_generator = generator;
@@ -409,38 +407,37 @@ Comparable<NewId> {
 		return getGenerator().Next().ToGuid();
 	}
 
-//	static ABCD FromByteArray(byte[] bytes) {
-//		ABCD holder = new ABCD();
-//		holder.a = bytes[10] << 24 | bytes[11] << 16 | bytes[12] << 8
-//				| bytes[13];
-//		holder.b = bytes[14] << 24 | bytes[15] << 16 | bytes[8] << 8 | bytes[9];
-//		holder.c = bytes[7] << 24 | bytes[6] << 16 | bytes[5] << 8 | bytes[4];
-//		holder.d = bytes[3] << 24 | bytes[2] << 16 | bytes[1] << 8 | bytes[0];
-//		
-//		return holder;
-//	}
-	
+	// static ABCD FromByteArray(byte[] bytes) {
+	// ABCD holder = new ABCD();
+	// holder.a = bytes[10] << 24 | bytes[11] << 16 | bytes[12] << 8
+	// | bytes[13];
+	// holder.b = bytes[14] << 24 | bytes[15] << 16 | bytes[8] << 8 | bytes[9];
+	// holder.c = bytes[7] << 24 | bytes[6] << 16 | bytes[5] << 8 | bytes[4];
+	// holder.d = bytes[3] << 24 | bytes[2] << 16 | bytes[1] << 8 | bytes[0];
+	//
+	// return holder;
+	// }
 
-    static ABCD FromByteArray(byte[] bytes) {
+	static ABCD FromByteArray(byte[] bytes) {
 		ABCD holder = new ABCD();
-		holder.a = bytesToInt(bytes[10],bytes[11],bytes[12] ,bytes[13]);
-		holder.b = bytesToInt(bytes[14],bytes[15],bytes[8],bytes[9]);
-		holder.c = bytesToInt(bytes[7],bytes[6],bytes[5],bytes[4]);
-		holder.d = bytesToInt(bytes[3],bytes[2],bytes[1],bytes[0]);
-		
+		holder.a = bytesToInt(bytes[10], bytes[11], bytes[12], bytes[13]);
+		holder.b = bytesToInt(bytes[14], bytes[15], bytes[8], bytes[9]);
+		holder.c = bytesToInt(bytes[7], bytes[6], bytes[5], bytes[4]);
+		holder.d = bytesToInt(bytes[3], bytes[2], bytes[1], bytes[0]);
+
 		return holder;
 	}
-    static int bytesToInt(byte f, byte g, byte h, byte i ) {
-	    ByteBuffer buffer = ByteBuffer.allocate(4);
-	    buffer.put(f);
-	    buffer.put(g);
-	    buffer.put(h);
-	    buffer.put(i);
-	    buffer.flip();//need flip before we read back
-	    return buffer.getInt();
+
+	static int bytesToInt(byte f, byte g, byte h, byte i) {
+		ByteBuffer buffer = ByteBuffer.allocate(4);
+		buffer.put(f);
+		buffer.put(g);
+		buffer.put(h);
+		buffer.put(i);
+		buffer.flip();// need flip before we read back
+		return buffer.getInt();
 	}
 
-	
 	private static class ABCD {
 
 		public long a;

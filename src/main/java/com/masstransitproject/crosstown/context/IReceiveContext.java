@@ -23,131 +23,138 @@ import com.masstransitproject.crosstown.serialization.IMessageTypeConverter;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
+/**
+ * Receive context that allows receiving sinks to
+ */
+public interface IReceiveContext<T extends Object> extends IConsumeContext<T> {
+	InputStream getBodyStream();
 
+	Collection<ISent<T>> getSent();
 
-    /// <summary>
-    /// Receive context that allows receiving sinks to 
-    /// </summary>
-    public interface IReceiveContext<T extends Object> extends
-        IConsumeContext<T>
-    {
-        InputStream getBodyStream();
-        Collection<ISent<T>> getSent();
+	Collection<IReceived> getReceived();
 
-        Collection<IReceived> getReceived();
+	UUID getId();
 
-        UUID getId();
+	/**
+	 * True if the transport is transactional and will leave the message on the
+	 * queue if an exception is thrown
+	 */
+	boolean IsTransactional();
 
-        /// <summary>
-        /// True if the transport is transactional and will leave the message on the queue if an exception is thrown
-        /// </summary>
-        boolean IsTransactional();
-        
-        /// <summary>
-        ///  The original message id that was consumed
-        /// </summary>
-        String getOriginalMessageId();
+	/**
+	 * The original message id that was consumed
+	 */
+	String getOriginalMessageId();
 
-        /// <summary>
-        /// Set the content type that was indicated by the transport message header
-        /// </summary>
-        /// <param name="value"></param>
-        void SetContentType(String value);
+	/**
+	 * Set the content type that was indicated by the transport message header
+	 * 
+	 * @param value
+	 */
+	void SetContentType(String value);
 
-        void SetMessageId(String value);
+	void SetMessageId(String value);
 
-        void SetInputAddress(URI URI);
+	void SetInputAddress(URI URI);
 
-        void SetEndpoint(IEndpoint<T> endpoint);
+	void SetEndpoint(IEndpoint<T> endpoint);
 
-        void SetRequestId(String value);
+	void SetRequestId(String value);
 
-        void SetConversationId(String value);
+	void SetConversationId(String value);
 
-        void SetCorrelationId(String value);
+	void SetCorrelationId(String value);
 
-        void SetOriginalMessageId(String value);
+	void SetOriginalMessageId(String value);
 
-        void SetSourceAddress(URI URI);
+	void SetSourceAddress(URI URI);
 
-        void SetDestinationAddress(URI URI);
+	void SetDestinationAddress(URI URI);
 
-        void SetResponseAddress(URI URI);
+	void SetResponseAddress(URI URI);
 
-        void SetFaultAddress(URI URI);
+	void SetFaultAddress(URI URI);
 
-        void SetNetwork(String value);
+	void SetNetwork(String value);
 
-        void SetRetryCount(int retryCount);
+	void SetRetryCount(int retryCount);
 
-        void SetExpirationTime(Date value);
+	void SetExpirationTime(Date value);
 
-        void SetMessageType(String messageType);
+	void SetMessageType(String messageType);
 
-        void SetHeader(String key, String value);
+	void SetHeader(String key, String value);
 
-        /// <summary>
-        /// Sets the context's body stream;
-        /// useful for wrapped serializers 
-        /// such as encrypting serializers
-        /// and for testing.
-        /// </summary>
-        /// <param name="stream">Stream to replace the previous stream with</param>
-        void SetBodyStream(InputStream stream);
+	/**
+	 * Sets the context's body stream; useful for wrapped serializers such as
+	 * encrypting serializers and for testing.
+	 * 
+	 * @param stream
+	 *            Stream to replace the previous stream with
+	 **/
+	void SetBodyStream(InputStream stream);
 
-        void CopyBodyTo(OutputStream stream);
+	void CopyBodyTo(OutputStream stream);
 
-        void SetMessageTypeConverter(IMessageTypeConverter messageTypeConverter);
-//
-//        /// <summary>
-//        /// Notify that a fault needs to be sent, so that the endpoint can send it when
-//        /// appropriate.
-//        /// </summary>
-//        /// <param name="faultAction"></param>
-//        void NotifyFault(FaultSender<T> faultAction);
-//
-//        void NotifySend(ISendContext<T> context, IEndpointAddress address);
-//
-//
-//        void NotifyPublish(IPublishContext<T> publishContext);
-//
-//        void NotifyConsume(IConsumeContext<T> consumeContext, String consumerType, String correlationId);
-//
-//        /// <summary>
-//        /// Publish any pending faults for the context
-//        /// </summary>
-//        void ExecuteFaultActions(Collection<FaultSender> faultActions);
-//
-//        /// <summary>
-//        /// Returns the fault actions that were added to the context dURIng message processing
-//        /// </summary>
-//        /// <returns></returns>
-//        Collection<FaultSender<T>> GetFaultActions();
-//        
-//      /// <summary>
-//      		/// Sets the contextual data based on what was found in the envelope. Used by the inbound
-//      		/// transports as the receive context needs to be hydrated from the actual data that was 
-//      		/// transferred through the transport as payload.
-//      		/// </summary>
-//      		/// <param name="context">The context to write data to, from the envelope</param>
-//      		/// <param name="envelope">The envelope that contains the data to read into the context</param>
-////              public static void SetUsingEnvelope(this IReceiveContext context, Envelope envelope);
-////              {
-////                  context.SetRequestId(envelope.RequestId);
-////                  context.SetConversationId(envelope.ConversationId);
-////                  context.SetCorrelationId(envelope.CorrelationId);
-////                  context.SetSourceAddress(envelope.SourceAddress.ToURIOrNull());
-////                  context.SetDestinationAddress(envelope.DestinationAddress.ToURIOrNull());
-////                  context.SetResponseAddress(envelope.ResponseAddress.ToURIOrNull());
-////                  context.SetFaultAddress(envelope.FaultAddress.ToURIOrNull());
-////                  context.SetNetwork(envelope.Network);
-////                  context.SetRetryCount(envelope.RetryCount);
-////                  if (envelope.ExpirationTime.HasValue)
-////                      context.SetExpirationTime(envelope.ExpirationTime.Value);
-////
-////                  foreach (var header in envelope.Headers)
-////                  {
-////                      context.SetHeader(header.Key, header.Value);
-////                  }
-////              }
-    }
+	void SetMessageTypeConverter(IMessageTypeConverter messageTypeConverter);
+	//
+	// /**
+	// * Notify that a fault needs to be sent, so that the endpoint can send it
+	// when
+	// * appropriate.
+	// *
+	// * @param faultAction
+	// */
+	// void NotifyFault(FaultSender<T> faultAction);
+	//
+	// void NotifySend(ISendContext<T> context, IEndpointAddress address);
+	//
+	//
+	// void NotifyPublish(IPublishContext<T> publishContext);
+	//
+	// void NotifyConsume(IConsumeContext<T> consumeContext, String
+	// consumerType, String correlationId);
+	//
+	// /**
+	// * Publish any pending faults for the context
+	// *
+	// void ExecuteFaultActions(Collection<FaultSender> faultActions);
+	//
+	// /**
+	// * Returns the fault actions that were added to the context dURIng message
+	// processing
+	// *
+	// * @return
+	// Collection<FaultSender<T>> GetFaultActions();
+	//
+	// /**
+	// * Sets the contextual data based on what was found in the envelope. Used
+	// by the inbound
+	// * transports as the receive context needs to be hydrated from the actual
+	// data that was
+	// * transferred through the transport as payload.
+	// *
+	// * @param context">The context to write data to, from the envelope
+	// * @param envelope">The envelope that contains the data to read into the
+	// context
+	// public static void SetUsingEnvelope(this IReceiveContext context,
+	// Envelope envelope);
+	// {
+	// context.SetRequestId(envelope.RequestId);
+	// context.SetConversationId(envelope.ConversationId);
+	// context.SetCorrelationId(envelope.CorrelationId);
+	// context.SetSourceAddress(envelope.SourceAddress.ToURIOrNull());
+	// context.SetDestinationAddress(envelope.DestinationAddress.ToURIOrNull());
+	// context.SetResponseAddress(envelope.ResponseAddress.ToURIOrNull());
+	// context.SetFaultAddress(envelope.FaultAddress.ToURIOrNull());
+	// context.SetNetwork(envelope.Network);
+	// context.SetRetryCount(envelope.RetryCount);
+	// if (envelope.ExpirationTime.HasValue)
+	// context.SetExpirationTime(envelope.ExpirationTime.Value);
+	//
+	// foreach (var header in envelope.Headers)
+	// {
+	// context.SetHeader(header.Key, header.Value);
+	// }
+	// }
+}

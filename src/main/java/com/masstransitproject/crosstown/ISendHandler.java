@@ -7,7 +7,6 @@ package com.masstransitproject.crosstown;
  * 
  * @param <T>
  */
-public interface IReceiveHandler<T> {
+public interface ISendHandler<T> {
 
-	// Needs an onMessage method
 }

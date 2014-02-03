@@ -1,6 +1,5 @@
 package com.masstransitproject.crosstown.context;
 
-
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -14,26 +13,27 @@ package com.masstransitproject.crosstown.context;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-    public interface IPublishContext<T> extends
-        ISendContext<T>
-    {
-//        /// <summary>
-//        /// Determines if the endpoint was already sent to during this publish
-//        /// </summary>
-//        /// <param name="address">The address of the endpoint to check</param>
-//        /// <returns>True if the message was already sent to the specified endpoint address</returns>
-//        boolean WasEndpointAlreadySent(IEndpointAddress address);
-//
-//        /// <summary>
-//        /// Defines an action to be called if there are no subscribers for the message
-//        /// </summary>
-//        /// <param name="callback">The action to call if there are no subscribers registered</param>
-//        void IfNoSubscribers(SendCallback<T> callback);
-//
-//        /// <summary>
-//        /// Defines an action to be called for each subscriber of the message
-//        /// </summary>
-//        /// <param name="callback">The action to call for each subscriber, including the endpoint address of the destination endpoint</param>
-//        void ForEachSubscriber(SendCallback<T> callback);
-    }
-
+public interface IPublishContext<T> extends ISendContext<T> {
+	// /**
+	// * Determines if the endpoint was already sent to during this publish
+	// *
+	// * @param address">The address of the endpoint to check
+	// * @return True if the message was already sent to the specified endpoint
+	// address
+	// boolean WasEndpointAlreadySent(IEndpointAddress address);
+	//
+	// /**
+	// * Defines an action to be called if there are no subscribers for the
+	// message
+	// *
+	// * @param callback">The action to call if there are no subscribers
+	// registered
+	// void IfNoSubscribers(SendCallback<T> callback);
+	//
+	// /**
+	// * Defines an action to be called for each subscriber of the message
+	// *
+	// * @param callback">The action to call for each subscriber, including the
+	// endpoint address of the destination endpoint
+	// void ForEachSubscriber(SendCallback<T> callback);
+}

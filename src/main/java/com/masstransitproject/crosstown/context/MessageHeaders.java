@@ -18,61 +18,43 @@ import java.util.Set;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
+public class MessageHeaders implements IMessageHeaders {
+	final Map<String, String> _headers;
 
-    public class MessageHeaders implements IMessageHeaders {
-        final Map<String, String> _headers;
+	public MessageHeaders() {
+		_headers = new HashMap<String, String>();
+	}
 
-        public MessageHeaders()
-        {
-            _headers = new HashMap<String, String>();
-        }
-
-        public MessageHeaders(Set<Entry<String, String>> headers)
-        {
-           this._headers = new HashMap<String, String>();
-           for (Entry<String,String> entry : headers) {
-        	   this._headers.put(entry.getKey(), entry.getValue());
-           }
-           
-        }
-
-        
-
-        /* (non-Javadoc)
-		 * @see com.masstransitproject.crosstown.context.IMessageHeaders#get(java.lang.Object)
-		 */
-        @Override
-		public String get(Object key) {
-			return _headers.get(key);
+	public MessageHeaders(Set<Entry<String, String>> headers) {
+		this._headers = new HashMap<String, String>();
+		for (Entry<String, String> entry : headers) {
+			this._headers.put(entry.getKey(), entry.getValue());
 		}
 
-		/* (non-Javadoc)
-		 * @see com.masstransitproject.crosstown.context.IMessageHeaders#put(java.lang.String, java.lang.String)
-		 */
-		@Override
-		public String put(String key, String value) {
-			if (value == null) {
-				this._headers.remove(key);
-				return null;
-			}
-			return _headers.put(key, value);
-		}
+	}
 
-		/* (non-Javadoc)
-		 * @see com.masstransitproject.crosstown.context.IMessageHeaders#entrySet()
-		 */
-		@Override
-		public Set<Entry<String, String>> entrySet() {
-			return _headers.entrySet();
-		}
+	@Override
+	public String get(Object key) {
+		return _headers.get(key);
+	}
 
-		/* (non-Javadoc)
-		 * @see com.masstransitproject.crosstown.context.IMessageHeaders#keySet()
-		 */
-		@Override
-		public Set<String> keySet() {
-			return _headers.keySet();
+	@Override
+	public String put(String key, String value) {
+		if (value == null) {
+			this._headers.remove(key);
+			return null;
 		}
+		return _headers.put(key, value);
+	}
 
-		
-    }
+	@Override
+	public Set<Entry<String, String>> entrySet() {
+		return _headers.entrySet();
+	}
+
+	@Override
+	public Set<String> keySet() {
+		return _headers.keySet();
+	}
+
+}
