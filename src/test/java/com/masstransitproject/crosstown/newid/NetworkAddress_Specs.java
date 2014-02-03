@@ -30,6 +30,6 @@ public class NetworkAddress_Specs  // When_getting_a_network_address_for_the_id_
 		byte[] networkId = networkIdProvider.GetWorkerId(0);
 
 		Assert.assertNotNull(networkId);
-		Assert.assertEquals(6, networkId.length);
+		Assert.assertTrue(6==networkId.length || 8 == networkId.length);
 	}
 }
