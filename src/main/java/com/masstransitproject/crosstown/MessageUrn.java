@@ -28,16 +28,16 @@ public class MessageUrn {
 	private URI myUri;
 
 	// May have both java and .Net entries
-	private static Map<String, Class> _nameToClassCache = new HashMap<String, Class>();
-	private static Map<Class, String> _typeToUrnCache = new HashMap<Class, String>();
+	private static Map<String, Class<?>> _nameToClassCache = new HashMap<String, Class<?>>();
+	private static Map<Class<?>, String> _typeToUrnCache = new HashMap<Class<?>, String>();
 
-	public MessageUrn(Class type) throws URISyntaxException {
-		myUri = new URI(GetUrnForType(type));
+	public MessageUrn(Class<?> type) throws URISyntaxException {
+		myUri = new URI(getUrnForType(type));
 
 	}
 
 	public static void registerMessageType(
-			Class messageType) {
+			Class<?> messageType) {
 
 		try {
 			_nameToClassCache.put(messageType.getName(), messageType);
@@ -64,11 +64,11 @@ public class MessageUrn {
 
 	}
 
-	public Class getMessageClass() {
+	public Class<?> getMessageClass() {
 		return this.getMessageClass(true, true);
 	}
 
-	public Class getMessageClass(boolean throwOnError, boolean ignoreCase) {
+	public Class<?> getMessageClass(boolean throwOnError, boolean ignoreCase) {
 		if (myUri == null || myUri.getSchemeSpecificPart() == null
 				|| myUri.getSchemeSpecificPart().isEmpty()) // Was
 															// segments.lenght==0
@@ -91,7 +91,7 @@ public class MessageUrn {
 
 		// This might be a .Net name rather than a Java one so
 		// we must check cache before instantiating
-		Class messageType = _nameToClassCache.get(typeName);
+		Class<?> messageType = _nameToClassCache.get(typeName);
 		if (messageType == null) {
 
 			try {
@@ -111,7 +111,7 @@ public class MessageUrn {
 		return myUri.toString();
 	}
 
-	static String IsInCache(Class type) {
+	static String isInCache(Class<?> type) {
 
 		_log.trace("Getting type " + type + " from cache " + _typeToUrnCache);
 		String urn = _typeToUrnCache.get(type);
@@ -119,17 +119,17 @@ public class MessageUrn {
 
 			StringBuilder sb = new StringBuilder("urn:message:");
 
-			urn = GetMessageName(sb, type, true);
+			urn = getMessageName(sb, type, true);
 			_typeToUrnCache.put(type, urn);
 		}
 		return urn;
 	}
 
-	static String GetUrnForType(Class type) {
-		return IsInCache(type);
+	static String getUrnForType(Class<?> type) {
+		return isInCache(type);
 	}
 
-	static String GetMessageName(StringBuilder sb, Class type,
+	static String getMessageName(StringBuilder sb, Class<?> type,
 			boolean includeScope) {
 
 		// Crosstown does not support complex generated names since they won't

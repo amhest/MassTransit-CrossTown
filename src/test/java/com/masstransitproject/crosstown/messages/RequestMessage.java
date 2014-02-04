@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import com.masstransitproject.crosstown.ExternallyNamespaced;
+import com.masstransitproject.crosstown.context.Identifiable;
 
 // Copyright 2007-2008 The Apache Software Foundation.
 //  
@@ -19,12 +20,12 @@ import com.masstransitproject.crosstown.ExternallyNamespaced;
 // specific language governing permissions and limitations under the License.
 
 @SuppressWarnings("serial")
-public class RequestMessage implements Serializable, ExternallyNamespaced {
+public class RequestMessage implements Serializable, ExternallyNamespaced, Identifiable {
 	public RequestMessage() {
-		CorrelationId = UUID.randomUUID();
+		correlationId = UUID.randomUUID();
 	}
 
-	private UUID CorrelationId;
+	private UUID correlationId;
 
 	@Override
 	public String getExternalNamespace() {
@@ -32,11 +33,11 @@ public class RequestMessage implements Serializable, ExternallyNamespaced {
 	}
 
 	public UUID getCorrelationId() {
-		return CorrelationId;
+		return correlationId;
 	}
 
 	public void setCorrelationId(UUID correlationId) {
-		CorrelationId = correlationId;
+		this.correlationId = correlationId;
 	}
 
 	@Override
@@ -44,7 +45,7 @@ public class RequestMessage implements Serializable, ExternallyNamespaced {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((CorrelationId == null) ? 0 : CorrelationId.hashCode());
+				+ ((correlationId == null) ? 0 : correlationId.hashCode());
 		return result;
 	}
 
@@ -57,17 +58,28 @@ public class RequestMessage implements Serializable, ExternallyNamespaced {
 		if (getClass() != obj.getClass())
 			return false;
 		RequestMessage other = (RequestMessage) obj;
-		if (CorrelationId == null) {
-			if (other.CorrelationId != null)
+		if (correlationId == null) {
+			if (other.correlationId != null)
 				return false;
-		} else if (!CorrelationId.equals(other.CorrelationId))
+		} else if (!correlationId.equals(other.correlationId))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "RequestMessage [CorrelationId=" + CorrelationId + "]";
+		return "RequestMessage [CorrelationId=" + correlationId + "]";
+	}
+
+	@Override
+	public UUID getId() {
+		return getCorrelationId();
+	}
+
+	@Override
+	public void setId(UUID id) {
+		setCorrelationId(id);
+		
 	}
 
 }

@@ -16,11 +16,11 @@ import com.masstransitproject.crosstown.newid.INewIdParser;
 import com.masstransitproject.crosstown.newid.NewId;
 
 public class Base32Parser implements INewIdParser {
-	static final String ConvertChars = "abcdefghijklmnopqrstuvwxyz234567ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+	private static final String CONVERT_CHARS = "abcdefghijklmnopqrstuvwxyz234567ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
-	static final String HexChars = "0123456789ABCDEF";
+	private static final String HEX_CHARS = "0123456789ABCDEF";
 
-	final String _chars;
+	private final String _chars;
 
 	public Base32Parser(String chars) {
 		if (chars.length() % 32 != 0)
@@ -31,11 +31,11 @@ public class Base32Parser implements INewIdParser {
 	}
 
 	public Base32Parser() {
-		_chars = ConvertChars;
+		_chars = CONVERT_CHARS;
 	}
 
 	@Override
-	public NewId Parse(String text) {
+	public NewId parse(String text) {
 		if (text == null || text.isEmpty())
 			throw new IllegalArgumentException("The String was null or empty");
 
@@ -75,11 +75,11 @@ public class Base32Parser implements INewIdParser {
 		return new NewId(new String(buffer, 0, 32));
 	}
 
-	static void ConvertLongToBase16(char[] buffer, int offset, long value,
+	private static void ConvertLongToBase16(char[] buffer, int offset, long value,
 			int count) {
 		for (int i = count - 1; i >= 0; i--) {
 			int index = (int) (value % 16);
-			buffer[offset + i] = HexChars.charAt(index);
+			buffer[offset + i] = HEX_CHARS.charAt(index);
 			value /= 16;
 		}
 	}

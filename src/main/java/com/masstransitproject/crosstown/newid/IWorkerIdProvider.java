@@ -15,5 +15,5 @@ package com.masstransitproject.crosstown.newid;
 import java.io.IOException;
 
 public interface IWorkerIdProvider {
-	byte[] GetWorkerId(int index) throws IOException;
+	byte[] getWorkerId(int index) throws IOException;
 }

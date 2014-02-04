@@ -15,7 +15,7 @@ package com.masstransitproject.crosstown.newid.formatters;
 import com.masstransitproject.crosstown.newid.INewIdFormatter;
 
 public class HexFormatter implements INewIdFormatter {
-	final int _alpha;
+	private final int _alpha;
 
 	public HexFormatter() {
 		this(false);
@@ -26,7 +26,7 @@ public class HexFormatter implements INewIdFormatter {
 	}
 
 	@Override
-	public String Format(byte[] bytes) {
+	public String format(byte[] bytes) {
 		char[] result = new char[32];
 
 		int offset = 0;
@@ -39,7 +39,7 @@ public class HexFormatter implements INewIdFormatter {
 		return new String(result, 0, 32);
 	}
 
-	static char HexToChar(int value, int alpha) {
+	private static char HexToChar(int value, int alpha) {
 		value = value & 0xf;
 		return (char) ((value > 9) ? value - 10 + alpha : value + 0x30);
 	}

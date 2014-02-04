@@ -13,5 +13,5 @@
 package com.masstransitproject.crosstown.newid;
 
 public interface INewIdParser {
-	NewId Parse(String text);
+	NewId parse(String text);
 }

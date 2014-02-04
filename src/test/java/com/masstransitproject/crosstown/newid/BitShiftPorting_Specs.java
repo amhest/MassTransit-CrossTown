@@ -12,14 +12,14 @@ import org.junit.Test;
 public class BitShiftPorting_Specs {
 
 	@Test
-	public void TestRoundTripForNow() {
+	public void testRoundTripForNow() {
 	
 		doRoundTrip(System.currentTimeMillis());
 		
 	}
 
 	@Test
-	public void TestRoundTripForMaxLong() {
+	public void testRoundTripForMaxLong() {
 	
 		doRoundTrip(Long.MAX_VALUE);
 		doRoundTrip(Long.MAX_VALUE-1);
@@ -27,7 +27,7 @@ public class BitShiftPorting_Specs {
 		
 	}
 	@Test
-	public void TestRoundTripForMinLong() {
+	public void testRoundTripForMinLong() {
 	
 		doRoundTrip(Long.MIN_VALUE);
 		doRoundTrip(Long.MAX_VALUE+1);
@@ -36,7 +36,7 @@ public class BitShiftPorting_Specs {
 	}
 
 	@Test
-	public void TestTwiddleBits() {
+	public void testTwiddleBits() {
 	
 		long value =0;
 		//This is the same as MIN_LONG		
@@ -54,13 +54,13 @@ public class BitShiftPorting_Specs {
 	}
 	
 	@Test
-	public void TestRoundTripIntUpCast() {
+	public void testRoundTripIntUpCast() {
 	
 		doRoundTrip(Integer.MAX_VALUE);
 		
 	}
 	@Test
-	public void TestRoundTripForDoubleDownCast() {
+	public void testRoundTripForDoubleDownCast() {
 	
 		doRoundTrip((long) Double.MAX_VALUE);
 		
@@ -75,7 +75,7 @@ public class BitShiftPorting_Specs {
 		System.out.println("Input=" + ticks);
 		int _a = (int) (ticks >>> 32);
 		System.out.println("a=" +_a);
-		long _b = (long) (ticks & 0xFFFFFFFFl) ; 
+		long _b = ticks & 0xFFFFFFFFl ; 
 		System.out.println("b=" +_b);
 		long rebuilt = (((long)_a)  << 32) | (_b);
 
@@ -84,31 +84,7 @@ public class BitShiftPorting_Specs {
 	}
 	
 
-
-//	private byte[] ToByteArray(ABCD abcd) {
-//		byte[] bytes = new byte[16];
-//
-//		bytes[0] = (byte) (abcd.d);
-//		bytes[1] = (byte) (abcd.d >> 8);
-//		bytes[2] = (byte) (abcd.d >> 16);
-//		bytes[3] = (byte) (abcd.d >> 24);
-//		bytes[4] = (byte) (abcd.c);
-//		bytes[5] = (byte) (abcd.c >> 8);
-//		bytes[6] = (byte) (abcd.c >> 16);
-//		bytes[7] = (byte) (abcd.c >> 24);
-//		bytes[8] = (byte) (abcd.b >> 8);
-//		bytes[9] = (byte) (abcd.b);
-//		bytes[10] = (byte) (abcd.a >> 24);
-//		bytes[11] = (byte) (abcd.a >> 16);
-//		bytes[12] = (byte) (abcd.a >> 8);
-//		bytes[13] = (byte) (abcd.a);
-//		bytes[14] = (byte) (abcd.b >> 24);
-//		bytes[15] = (byte) (abcd.b >> 16);
-//
-//		return bytes;
-//	}
-
-    public byte[] ToByteArray(ABCD abcd) {
+    public byte[] toByteArray(ABCD abcd) {
 		
 	    ByteBuffer buffer = ByteBuffer.allocate(16);
 	    buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -142,7 +118,7 @@ public class BitShiftPorting_Specs {
 		}
 
 	}
-    ABCD FromByteArray(byte[] bytes) {
+    ABCD fromByteArray(byte[] bytes) {
 		ABCD holder = new ABCD();
 		holder.a = NewId.bytesToInt(bytes[10],bytes[11],bytes[12] ,bytes[13]);
 		holder.b = NewId.bytesToInt(bytes[14],bytes[15],bytes[8],bytes[9]);
@@ -152,17 +128,6 @@ public class BitShiftPorting_Specs {
 		return holder;
 	}
 	
-
-//	static ABCD FromByteArray(byte[] bytes) {
-//		ABCD holder = new ABCD();
-//		holder.a = bytes[10] << 24 | bytes[11] << 16 | bytes[12] << 8
-//				| bytes[13];
-//		holder.b = bytes[14] << 24 | bytes[15] << 16 | bytes[8] << 8 | bytes[9];
-//		holder.c = bytes[7] << 24 | bytes[6] << 16 | bytes[5] << 8 | bytes[4];
-//		holder.d = bytes[3] << 24 | bytes[2] << 16 | bytes[1] << 8 | bytes[0];
-//		
-//		return holder;
-//	}
 	
 	
 	@Test
@@ -178,8 +143,8 @@ public class BitShiftPorting_Specs {
 		for (int i = 0; i < byteArrays.length; i++) {
 			
 			byte[] testArr = byteArrays[i];
-			ABCD myLongs = FromByteArray(testArr);
-			byte[] resultArr = ToByteArray(myLongs);
+			ABCD myLongs = fromByteArray(testArr);
+			byte[] resultArr = toByteArray(myLongs);
 			System.out.println("test: " + Arrays.toString(testArr));
 			System.out.println("result: " + Arrays.toString(resultArr));
 			Assert.assertArrayEquals(testArr, resultArr);

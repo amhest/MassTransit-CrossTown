@@ -15,13 +15,14 @@ package com.masstransitproject.crosstown.newid.formatters;
 import com.masstransitproject.crosstown.newid.INewIdFormatter;
 
 public class Base32Formatter implements INewIdFormatter {
-	static final String LowerCaseChars = "abcdefghijklmnopqrstuvwxyz234567";
-	static final String UpperCaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+	private static final String LOWER_CASE_CHARS = "abcdefghijklmnopqrstuvwxyz234567";
+	
+	private static final String UPPER_CASE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
-	String _chars;
+	private String _chars;
 
 	public Base32Formatter(boolean upperCase) {
-		_chars = upperCase ? UpperCaseChars : LowerCaseChars;
+		_chars = upperCase ? UPPER_CASE_CHARS : LOWER_CASE_CHARS;
 	}
 
 	public Base32Formatter(String chars) {
@@ -33,7 +34,7 @@ public class Base32Formatter implements INewIdFormatter {
 	}
 
 	@Override
-	public String Format(byte[] bytes) {
+	public String format(byte[] bytes) {
 		char[] result = new char[26];
 
 		int offset = 0;
@@ -42,23 +43,23 @@ public class Base32Formatter implements INewIdFormatter {
 			int indexed = i * 5;
 			number = bytes[indexed] << 12 | bytes[indexed + 1] << 4
 					| bytes[indexed + 2] >> 4;
-			ConvertLongToBase32(result, offset, number, 4, _chars);
+			convertLongToBase32(result, offset, number, 4, _chars);
 
 			offset += 4;
 
 			number = (bytes[indexed + 2] & 0xf) << 16 | bytes[indexed + 3] << 8
 					| bytes[indexed + 4];
-			ConvertLongToBase32(result, offset, number, 4, _chars);
+			convertLongToBase32(result, offset, number, 4, _chars);
 
 			offset += 4;
 		}
 
-		ConvertLongToBase32(result, offset, bytes[15], 2, _chars);
+		convertLongToBase32(result, offset, bytes[15], 2, _chars);
 
 		return new String(result, 0, 26);
 	}
 
-	static void ConvertLongToBase32(char[] buffer, int offset, long value,
+	static void convertLongToBase32(char[] buffer, int offset, long value,
 			int count, String chars) {
 		for (int i = count - 1; i >= 0; i--) {
 			int index = (int) (value % 32);

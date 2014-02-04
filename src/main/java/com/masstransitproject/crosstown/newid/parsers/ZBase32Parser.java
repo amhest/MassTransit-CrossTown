@@ -13,17 +13,17 @@
 package com.masstransitproject.crosstown.newid.parsers;
 
 public class ZBase32Parser extends Base32Parser {
-	static final String ConvertChars = "ybndrfg8ejkmcpqxot1uwisza345h769YBNDRFG8EJKMCPQXOT1UWISZA345H769";
+	private static final String CONVERT_CHARS = "ybndrfg8ejkmcpqxot1uwisza345h769YBNDRFG8EJKMCPQXOT1UWISZA345H769";
 
-	static final String TransposeChars = "ybndrfg8ejkmcpqx0tlvwis2a345h769YBNDRFG8EJKMCPQX0TLVWIS2A345H769";
+	private static final String TRANSPOSE_CHARS = "ybndrfg8ejkmcpqx0tlvwis2a345h769YBNDRFG8EJKMCPQX0TLVWIS2A345H769";
 
 	public ZBase32Parser() {
 		this(false);
 	}
 
 	public ZBase32Parser(boolean handleTransposedCharacters) {
-		super(handleTransposedCharacters ? ConvertChars + TransposeChars
-				: ConvertChars);
+		super(handleTransposedCharacters ? CONVERT_CHARS + TRANSPOSE_CHARS
+				: CONVERT_CHARS);
 
 	}
 }

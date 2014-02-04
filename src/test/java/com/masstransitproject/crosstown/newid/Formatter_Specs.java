@@ -27,7 +27,7 @@ public class Formatter_Specs  // Using_the_newid_formatters
 {
 	@Test
 	@Ignore
-	public void Should_convert_back_using_parser() {
+	public void should_convert_back_using_parser() {
 		NewId n = new NewId("F6B27C7C-8AB8-4498-AC97-3A6107A21320");
 
 		INewIdFormatter formatter = new ZBase32Formatter(true);
@@ -35,14 +35,14 @@ public class Formatter_Specs  // Using_the_newid_formatters
 		String ns = n.toString(formatter, false);
 
 		INewIdParser parser = new ZBase32Parser();
-		NewId newId = parser.Parse(ns);
+		NewId newId = parser.parse(ns);
 
 		Assert.assertEquals(n, newId);
 	}
 
 	@Test
 	@Ignore
-	public void Should_convert_back_using_standard_parser() {
+	public void should_convert_back_using_standard_parser() {
 		NewId n = new NewId("F6B27C7C-8AB8-4498-AC97-3A6107A21320");
 
 		INewIdFormatter formatter = new Base32Formatter(true);
@@ -50,14 +50,14 @@ public class Formatter_Specs  // Using_the_newid_formatters
 		String ns = n.toString(formatter, false);
 
 		INewIdParser parser = new Base32Parser();
-		NewId newId = parser.Parse(ns);
+		NewId newId = parser.parse(ns);
 
 		Assert.assertEquals(n, newId);
 	}
 
 	@Test
 	@Ignore
-	public void Should_convert_using_custom_base32_formatting_characters() {
+	public void should_convert_using_custom_base32_formatting_characters() {
 		NewId n = new NewId("F6B27C7C-8AB8-4498-AC97-3A6107A21320");
 
 		INewIdFormatter formatter = new Base32Formatter(
@@ -70,7 +70,7 @@ public class Formatter_Specs  // Using_the_newid_formatters
 
 	@Test
 	@Ignore
-	public void Should_convert_using_standard_base32_formatting_characters() {
+	public void should_convert_using_standard_base32_formatting_characters() {
 		NewId n = new NewId("F6B27C7C-8AB8-4498-AC97-3A6107A21320");
 
 		INewIdFormatter formatter = new Base32Formatter(true);
@@ -82,7 +82,7 @@ public class Formatter_Specs  // Using_the_newid_formatters
 
 	@Test
 	@Ignore
-	public void Should_convert_using_the_optimized_human_readable_formatter() {
+	public void should_convert_using_the_optimized_human_readable_formatter() {
 		NewId n = new NewId("F6B27C7C-8AB8-4498-AC97-3A6107A21320");
 
 		INewIdFormatter formatter = new ZBase32Formatter(true);
@@ -94,13 +94,13 @@ public class Formatter_Specs  // Using_the_newid_formatters
 
 	@Test
 	@Ignore
-	public void Should_translate_often_transposed_characters_to_proper_values() {
+	public void should_translate_often_transposed_characters_to_proper_values() {
 		NewId n = new NewId("F6B27C7C-8AB8-4498-AC97-3A6107A21320");
 
 		String ns = "6438A9RK2BNJTMRZ8J0OXE0UBY";
 
 		INewIdParser parser = new ZBase32Parser(true);
-		NewId newId = parser.Parse(ns);
+		NewId newId = parser.parse(ns);
 
 		Assert.assertEquals(n, newId);
 	}

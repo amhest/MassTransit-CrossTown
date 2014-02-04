@@ -28,9 +28,9 @@ public class NewId_Specs  // Using_the_newid_generator
 	private Logger log = LogManager.getLogger(NewId_Specs.class);
 
 	@Test
-	public void Should_be_able_to_extract_timestamp() {
+	public void should_be_able_to_extract_timestamp() {
 		Calendar now = Calendar.getInstance();
-		NewId id = NewId.Next();
+		NewId id = NewId.next();
 
 		Date timestamp = id.getTimestamp();
 
@@ -43,15 +43,15 @@ public class NewId_Specs  // Using_the_newid_generator
 	}
 
 	@Test
-	public void Should_generate_sequential_ids_quickly() {
-		NewId.SetTickProvider(new StopwatchTickProvider());
-		NewId.Next();
+	public void should_generate_sequential_ids_quickly() {
+		NewId.setTickProvider(new StopwatchTickProvider());
+		NewId.next();
 
 		int limit = 10;
 
 		NewId[] ids = new NewId[limit];
 		for (int i = 0; i < limit; i++)
-			ids[i] = NewId.Next();
+			ids[i] = NewId.next();
 
 		for (int i = 0; i < limit - 1; i++) {
 			Assert.assertFalse(ids[i].equals(ids[i + 1]));
@@ -60,8 +60,8 @@ public class NewId_Specs  // Using_the_newid_generator
 	}
 
 	@Test
-	public void Should_generate_unique_identifiers_with_each_invocation() {
-		NewId.Next();
+	public void should_generate_unique_identifiers_with_each_invocation() {
+		NewId.next();
 
 		long start = System.currentTimeMillis();
 
@@ -69,7 +69,7 @@ public class NewId_Specs  // Using_the_newid_generator
 
 		NewId[] ids = new NewId[limit];
 		for (int i = 0; i < limit; i++)
-			ids[i] = NewId.Next();
+			ids[i] = NewId.next();
 
 		long stop = System.currentTimeMillis();
 
@@ -86,15 +86,15 @@ public class NewId_Specs  // Using_the_newid_generator
 	}
 
 	@Test
-	public void Should_generate_multiple_timestamps() {
-		NewId.Next();
+	public void should_generate_multiple_timestamps() {
+		NewId.next();
 		long start = System.currentTimeMillis();
 
 		int limit = 1024 * 1024;
 
 		NewId[] ids = new NewId[limit];
 		for (int i = 0; i < limit; i++) {
-			ids[i] = NewId.Next();
+			ids[i] = NewId.next();
 			
 			log.trace(ids[i].getTimestamp());
 				

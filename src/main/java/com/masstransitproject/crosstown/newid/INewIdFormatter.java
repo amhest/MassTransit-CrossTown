@@ -13,5 +13,5 @@
 package com.masstransitproject.crosstown.newid;
 
 public interface INewIdFormatter {
-	String Format(byte[] bytes);
+	String format(byte[] bytes);
 }

@@ -20,11 +20,11 @@ import com.masstransitproject.crosstown.newid.IWorkerIdProvider;
 
 public class NetworkAddressWorkerIdProvider implements IWorkerIdProvider {
 	@Override
-	public byte[] GetWorkerId(int index) throws IOException {
-		return GetNetworkAddress(index);
+	public byte[] getWorkerId(int index) throws IOException {
+		return getNetworkAddress(index);
 	}
 
-	static byte[] GetNetworkAddress(int index) throws IOException {
+	private static byte[] getNetworkAddress(int index) throws IOException {
 		Enumeration<NetworkInterface> interfaces = NetworkInterface
 				.getNetworkInterfaces();
 

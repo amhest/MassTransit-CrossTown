@@ -51,7 +51,7 @@ public interface IEndpoint<T extends Object> {
 	 *            ids, headers, and in-band data such as the actual data of the
 	 *            message to send.
 	 */
-	void Send(ISendContext<T> context);
+	void send(ISendContext<T> context);
 
 	/**
 	 * Receive from the endpoint by passing a function that can preview the
@@ -67,5 +67,5 @@ public interface IEndpoint<T extends Object> {
 	 * @param timeout
 	 *            ">The time to wait for a message to be available
 	 **/
-	void Receive(IReceiveHandler receiver, long timeout);
+	void receive(IReceiveHandler<T> receiver, long timeout);
 }

@@ -29,14 +29,14 @@ public class PingMessage implements Serializable, ExternallyNamespaced {
 		_id = id;
 	}
 
-	private UUID CorrelationId;
+	private UUID correlationId;
 
 	public UUID getCorrelationId() {
-		return CorrelationId;
+		return correlationId;
 	}
 
 	public void setCorrelationId(UUID correlationId) {
-		CorrelationId = correlationId;
+		this.correlationId = correlationId;
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class PingMessage implements Serializable, ExternallyNamespaced {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((CorrelationId == null) ? 0 : CorrelationId.hashCode());
+				+ ((correlationId == null) ? 0 : correlationId.hashCode());
 		result = prime * result + ((_id == null) ? 0 : _id.hashCode());
 		return result;
 	}
@@ -63,10 +63,10 @@ public class PingMessage implements Serializable, ExternallyNamespaced {
 		if (getClass() != obj.getClass())
 			return false;
 		PingMessage other = (PingMessage) obj;
-		if (CorrelationId == null) {
-			if (other.CorrelationId != null)
+		if (correlationId == null) {
+			if (other.correlationId != null)
 				return false;
-		} else if (!CorrelationId.equals(other.CorrelationId))
+		} else if (!correlationId.equals(other.correlationId))
 			return false;
 		if (_id == null) {
 			if (other._id != null)
@@ -78,7 +78,7 @@ public class PingMessage implements Serializable, ExternallyNamespaced {
 
 	@Override
 	public String toString() {
-		return "PingMessage [_id=" + _id + ", CorrelationId=" + CorrelationId
+		return "PingMessage [_id=" + _id + ", CorrelationId=" + correlationId
 				+ "]";
 	}
 

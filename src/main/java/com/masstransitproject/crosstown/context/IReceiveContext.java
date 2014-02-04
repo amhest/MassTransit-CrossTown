@@ -39,7 +39,7 @@ public interface IReceiveContext<T extends Object> extends IConsumeContext<T> {
 	 * True if the transport is transactional and will leave the message on the
 	 * queue if an exception is thrown
 	 */
-	boolean IsTransactional();
+	boolean isTransactional();
 
 	/**
 	 * The original message id that was consumed
@@ -51,39 +51,39 @@ public interface IReceiveContext<T extends Object> extends IConsumeContext<T> {
 	 * 
 	 * @param value
 	 */
-	void SetContentType(String value);
+	void setContentType(String value);
 
-	void SetMessageId(String value);
+	void setMessageId(String value);
 
-	void SetInputAddress(URI URI);
+	void setInputAddress(URI URI);
 
-	void SetEndpoint(IEndpoint<T> endpoint);
+	void setEndpoint(IEndpoint<T> endpoint);
 
-	void SetRequestId(String value);
+	void setRequestId(String value);
 
-	void SetConversationId(String value);
+	void setConversationId(String value);
 
-	void SetCorrelationId(String value);
+	void setCorrelationId(String value);
 
-	void SetOriginalMessageId(String value);
+	void setOriginalMessageId(String value);
 
-	void SetSourceAddress(URI URI);
+	void setSourceAddress(URI URI);
 
-	void SetDestinationAddress(URI URI);
+	void setDestinationAddress(URI URI);
 
-	void SetResponseAddress(URI URI);
+	void setResponseAddress(URI URI);
 
-	void SetFaultAddress(URI URI);
+	void setFaultAddress(URI URI);
 
-	void SetNetwork(String value);
+	void setNetwork(String value);
 
-	void SetRetryCount(int retryCount);
+	void setRetryCount(int retryCount);
 
-	void SetExpirationTime(Date value);
+	void setExpirationTime(Date value);
 
-	void SetMessageType(String messageType);
+	void setMessageType(String messageType);
 
-	void SetHeader(String key, String value);
+	void setHeader(String key, String value);
 
 	/**
 	 * Sets the context's body stream; useful for wrapped serializers such as
@@ -92,11 +92,12 @@ public interface IReceiveContext<T extends Object> extends IConsumeContext<T> {
 	 * @param stream
 	 *            Stream to replace the previous stream with
 	 **/
-	void SetBodyStream(InputStream stream);
+	void setBodyStream(InputStream stream);
+	
 
-	void CopyBodyTo(OutputStream stream);
+	void copyBodyTo(OutputStream stream);
 
-	void SetMessageTypeConverter(IMessageTypeConverter messageTypeConverter);
+	void setMessageTypeConverter(IMessageTypeConverter messageTypeConverter);
 	//
 	// /**
 	// * Notify that a fault needs to be sent, so that the endpoint can send it

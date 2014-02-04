@@ -41,7 +41,7 @@ public interface IMessageSerializer<T> {
 	 * @param context
 	 *            ">The context to send
 	 */
-	public void Serialize(OutputStream stream, T message, ISendContext<T> ctx)
+	public void serialize(OutputStream stream, T message, ISendContext<T> ctx)
 			throws IOException;
 
 	/**
@@ -60,5 +60,5 @@ public interface IMessageSerializer<T> {
 	 * @return
 	 * @throws IOException
 	 */
-	T Deserialize(InputStream stream) throws IOException;
+	T deserialize(InputStream stream) throws IOException;
 }

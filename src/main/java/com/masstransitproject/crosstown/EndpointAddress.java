@@ -23,14 +23,14 @@ import org.apache.http.client.utils.URLEncodedUtils;
 // specific language governing permissions and limitations under the License.
 
 public class EndpointAddress implements IEndpointAddress {
-	protected static final String LocalMachineName;
+	protected static final String LOCAL_MACHINE_NAME;
 	static {
 		String t = "localhost";
 		try {
 			t = InetAddress.getLocalHost().getHostName();
 		} catch (UnknownHostException e) {
 		}
-		LocalMachineName = t;
+		LOCAL_MACHINE_NAME = t;
 	}
 
 	private boolean _isTransactional;
@@ -43,7 +43,7 @@ public class EndpointAddress implements IEndpointAddress {
 		}
 		_uri = uri;
 
-		_isTransactional = CheckForTransactionalHint(uri, false);
+		_isTransactional = checkForTransactionalHint(uri, false);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class EndpointAddress implements IEndpointAddress {
 					+ uriString, ex);
 		}
 
-		_isTransactional = CheckForTransactionalHint(_uri, false);
+		_isTransactional = checkForTransactionalHint(_uri, false);
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public class EndpointAddress implements IEndpointAddress {
 
 	protected boolean isLocal(URI uri) {
 		String hostName = uri.getHost();
-		boolean local = (".".equals(hostName) || "localhost".equals(hostName) || LocalMachineName
+		boolean local = (".".equals(hostName) || "localhost".equals(hostName) || LOCAL_MACHINE_NAME
 				.equals(hostName));
 
 		return local;
@@ -115,7 +115,7 @@ public class EndpointAddress implements IEndpointAddress {
 	 * @param defaultTransactional
 	 * @return
 	 */
-	protected static boolean CheckForTransactionalHint(URI uri,
+	protected static boolean checkForTransactionalHint(URI uri,
 			boolean defaultTransactional) {
 
 		List<NameValuePair> params = URLEncodedUtils.parse(uri, null);

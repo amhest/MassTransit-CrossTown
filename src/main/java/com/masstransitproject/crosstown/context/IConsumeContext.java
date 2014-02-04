@@ -31,13 +31,13 @@ public interface IConsumeContext<T extends Object> extends IMessageContext<T> {
 	 * Send the message to the end of the input queue so that it can be
 	 * processed again later
 	 */
-	void RetryLater();
+	void retryLater();
 
 	/**
 	 * Generates a fault for this message, which will be published once the
 	 * message is moved
 	 */
-	void GenerateFault(Exception ex);
+	void generateFault(Exception ex);
 
 	/**
 	 * Gets the base context of this consume context.
@@ -55,7 +55,7 @@ public interface IConsumeContext<T extends Object> extends IMessageContext<T> {
 	 * 
 	 * @param <T>
 	 */
-	boolean IsContextAvailable(@SuppressWarnings("rawtypes") Class messageType);
+	boolean isContextAvailable(Class<T> messageType);
 
 	/**
 	 * Retrieves a specified message type from the consumer context, if
@@ -79,6 +79,6 @@ public interface IConsumeContext<T extends Object> extends IMessageContext<T> {
 	 *            ">The context action for specifying additional context
 	 *            information
 	 */
-	void Respond(T message, ISendHandler<T> contextCallback);
+	void respond(T message, ISendHandler<T> contextCallback);
 
 }

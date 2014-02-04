@@ -24,118 +24,118 @@ import com.masstransitproject.crosstown.ExternallyNamespaced;
 
 @SuppressWarnings("serial")
 public class PartialSerializationTestMessage implements Serializable, ExternallyNamespaced {
-	private UUID UUIDValue;
-	private boolean BoolValue;
-	private byte ByteValue;
-	private String StringValue;
-	private int IntValue;
-	private long LongValue;
-	private BigDecimal DecimalValue;
-	private double DoubleValue;
-	private Date DateTimeValue;
-	private BigDecimal MaybeMoney;
+	private UUID uuidValue;
+	private boolean boolValue;
+	private byte byteValue;
+	private String stringValue;
+	private int intValue;
+	private long longValue;
+	private BigDecimal decimalValue;
+	private double doubleValue;
+	private Date dateTimeValue;
+	private BigDecimal maybeMoney;
 
-	public UUID getUUIDValue() {
-		return UUIDValue;
+	public UUID getUuidValue() {
+		return uuidValue;
 	}
 
-	public void setUUIDValue(UUID uUIDValue) {
-		UUIDValue = uUIDValue;
+	public void setUuidValue(UUID uuidValue) {
+		this.uuidValue = uuidValue;
 	}
 
 	public boolean isBoolValue() {
-		return BoolValue;
+		return boolValue;
 	}
 
 	public void setBoolValue(boolean boolValue) {
-		BoolValue = boolValue;
+		this.boolValue = boolValue;
 	}
 
 	public byte getByteValue() {
-		return ByteValue;
+		return byteValue;
 	}
 
 	public void setByteValue(byte byteValue) {
-		ByteValue = byteValue;
+		this.byteValue = byteValue;
 	}
 
 	public String getStringValue() {
-		return StringValue;
+		return stringValue;
 	}
 
-	public void setStringValue(String StringValue) {
-		StringValue = StringValue;
+	public void setStringValue(String stringValue) {
+		this.stringValue = stringValue;
 	}
 
 	public int getIntValue() {
-		return IntValue;
+		return intValue;
 	}
 
 	public void setIntValue(int intValue) {
-		IntValue = intValue;
+		this.intValue = intValue;
 	}
 
 	public long getLongValue() {
-		return LongValue;
+		return longValue;
 	}
 
 	public void setLongValue(long longValue) {
-		LongValue = longValue;
+		this.longValue = longValue;
 	}
 
 	public BigDecimal getDecimalValue() {
-		return DecimalValue;
+		return decimalValue;
 	}
 
 	public void setDecimalValue(BigDecimal decimalValue) {
-		DecimalValue = decimalValue;
+		this.decimalValue = decimalValue;
 	}
 
 	public double getDoubleValue() {
-		return DoubleValue;
+		return doubleValue;
 	}
 
 	public void setDoubleValue(double doubleValue) {
-		DoubleValue = doubleValue;
+		this.doubleValue = doubleValue;
 	}
 
 	public Date getDateTimeValue() {
-		return DateTimeValue;
+		return dateTimeValue;
 	}
 
 	public void setDateTimeValue(Date dateTimeValue) {
-		DateTimeValue = dateTimeValue;
+		this.dateTimeValue = dateTimeValue;
 	}
 
 	public BigDecimal getMaybeMoney() {
-		return MaybeMoney;
+		return maybeMoney;
 	}
 
 	public void setMaybeMoney(BigDecimal maybeMoney) {
-		MaybeMoney = maybeMoney;
+		this.maybeMoney = maybeMoney;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (BoolValue ? 1231 : 1237);
-		result = prime * result + ByteValue;
+		result = prime * result + (boolValue ? 1231 : 1237);
+		result = prime * result + byteValue;
 		result = prime * result
-				+ ((DateTimeValue == null) ? 0 : DateTimeValue.hashCode());
+				+ ((dateTimeValue == null) ? 0 : dateTimeValue.hashCode());
 		result = prime * result
-				+ ((DecimalValue == null) ? 0 : DecimalValue.hashCode());
+				+ ((decimalValue == null) ? 0 : decimalValue.hashCode());
 		long temp;
-		temp = Double.doubleToLongBits(DoubleValue);
+		temp = Double.doubleToLongBits(doubleValue);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + IntValue;
-		result = prime * result + (int) (LongValue ^ (LongValue >>> 32));
+		result = prime * result + intValue;
+		result = prime * result + (int) (longValue ^ (longValue >>> 32));
 		result = prime * result
-				+ ((MaybeMoney == null) ? 0 : MaybeMoney.hashCode());
+				+ ((maybeMoney == null) ? 0 : maybeMoney.hashCode());
 		result = prime * result
-				+ ((StringValue == null) ? 0 : StringValue.hashCode());
+				+ ((stringValue == null) ? 0 : stringValue.hashCode());
 		result = prime * result
-				+ ((UUIDValue == null) ? 0 : UUIDValue.hashCode());
+				+ ((uuidValue == null) ? 0 : uuidValue.hashCode());
 		return result;
 	}
 
@@ -148,53 +148,53 @@ public class PartialSerializationTestMessage implements Serializable, Externally
 		if (getClass() != obj.getClass())
 			return false;
 		PartialSerializationTestMessage other = (PartialSerializationTestMessage) obj;
-		if (BoolValue != other.BoolValue)
+		if (boolValue != other.boolValue)
 			return false;
-		if (ByteValue != other.ByteValue)
+		if (byteValue != other.byteValue)
 			return false;
-		if (DateTimeValue == null) {
-			if (other.DateTimeValue != null)
+		if (dateTimeValue == null) {
+			if (other.dateTimeValue != null)
 				return false;
-		} else if (!DateTimeValue.equals(other.DateTimeValue))
+		} else if (!dateTimeValue.equals(other.dateTimeValue))
 			return false;
-		if (DecimalValue == null) {
-			if (other.DecimalValue != null)
+		if (decimalValue == null) {
+			if (other.decimalValue != null)
 				return false;
-		} else if (!DecimalValue.equals(other.DecimalValue))
+		} else if (!decimalValue.equals(other.decimalValue))
 			return false;
-		if (Double.doubleToLongBits(DoubleValue) != Double
-				.doubleToLongBits(other.DoubleValue))
+		if (Double.doubleToLongBits(doubleValue) != Double
+				.doubleToLongBits(other.doubleValue))
 			return false;
-		if (IntValue != other.IntValue)
+		if (intValue != other.intValue)
 			return false;
-		if (LongValue != other.LongValue)
+		if (longValue != other.longValue)
 			return false;
-		if (MaybeMoney == null) {
-			if (other.MaybeMoney != null)
+		if (maybeMoney == null) {
+			if (other.maybeMoney != null)
 				return false;
-		} else if (!MaybeMoney.equals(other.MaybeMoney))
+		} else if (!maybeMoney.equals(other.maybeMoney))
 			return false;
-		if (StringValue == null) {
-			if (other.StringValue != null)
+		if (stringValue == null) {
+			if (other.stringValue != null)
 				return false;
-		} else if (!StringValue.equals(other.StringValue))
+		} else if (!stringValue.equals(other.stringValue))
 			return false;
-		if (UUIDValue == null) {
-			if (other.UUIDValue != null)
+		if (uuidValue == null) {
+			if (other.uuidValue != null)
 				return false;
-		} else if (!UUIDValue.equals(other.UUIDValue))
+		} else if (!uuidValue.equals(other.uuidValue))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "PartialSerializationTestMessage [UUIDValue=" + UUIDValue
-				+ ", BoolValue=" + BoolValue + ", ByteValue=" + ByteValue
-				+ ", StringValue=" + StringValue + ", IntValue=" + IntValue
-				+ ", LongValue=" + LongValue + ", DecimalValue=" + DecimalValue
-				+ ", DoubleValue=" + DoubleValue + ", DateTimeValue="
-				+ DateTimeValue + ", MaybeMoney=" + MaybeMoney + "]";
+		return "PartialSerializationTestMessage [uuidValue=" + uuidValue
+				+ ", boolValue=" + boolValue + ", byteValue=" + byteValue
+				+ ", stringValue=" + stringValue + ", intValue=" + intValue
+				+ ", longValue=" + longValue + ", decimalValue=" + decimalValue
+				+ ", doubleValue=" + doubleValue + ", dateTimeValue="
+				+ dateTimeValue + ", maybeMoney=" + maybeMoney + "]";
 	}
 
 	@Override

@@ -28,23 +28,23 @@ import com.masstransitproject.crosstown.context.ISendContext;
 
 public class JsonMessageSerializer<T extends Object> implements
 		IMessageSerializer<T> {
-	private static final String ContentTypeHeaderValue = "application/vnd.masstransit+json";
+	private static final String CONTENT_TYPE_HEADER_VALUE = "application/vnd.masstransit+json";
 
 	@Override
 	public String getContentType() {
-		return ContentTypeHeaderValue;
+		return CONTENT_TYPE_HEADER_VALUE;
 	}
 
-	private static final Logger logger = LogManager
+	private static final Logger _log = LogManager
 			.getLogger(JsonMessageSerializer.class.getName());
 
 	@Override
-	public void Serialize(OutputStream stream, T message, ISendContext<T> ctx)
+	public void serialize(OutputStream stream, T message, ISendContext<T> ctx)
 			throws IOException {
 
-		logger.info("Serializing object " + message + "of type "
+		_log.info("Serializing object " + message + "of type "
 				+ message.getClass());
-		Envelope evp = new Envelope(message, ctx.GetMessageTypes());
+		Envelope evp = new Envelope(message, ctx.getMessageTypes());
 		evp.setMessageId(ctx.getMessageId());
 
 		ObjectMapper ObjectMapper = new ObjectMapper();
@@ -56,7 +56,8 @@ public class JsonMessageSerializer<T extends Object> implements
 	}
 
 	@Override
-	public T Deserialize(InputStream stream) throws IOException {
+	@SuppressWarnings("unchecked") 
+	public T deserialize(InputStream stream) throws IOException {
 
 		ObjectMapper ObjectMapper = new ObjectMapper();
 		Envelope evp = ObjectMapper.readValue(new InputStreamReader(stream),

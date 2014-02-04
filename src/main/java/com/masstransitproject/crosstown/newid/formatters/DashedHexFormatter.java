@@ -15,10 +15,10 @@ package com.masstransitproject.crosstown.newid.formatters;
 import com.masstransitproject.crosstown.newid.INewIdFormatter;
 
 public class DashedHexFormatter implements INewIdFormatter {
-	final int _alpha;
-	final char _prefix;
-	final char _suffix;
-	int _length;
+	private final int _alpha;
+	private final char _prefix;
+	private final char _suffix;
+	private int _length;
 
 	public DashedHexFormatter() {
 		this('\0', '\0', false);
@@ -40,7 +40,7 @@ public class DashedHexFormatter implements INewIdFormatter {
 	}
 
 	@Override
-	public String Format(byte[] bytes) {
+	public String format(byte[] bytes) {
 		char[] result = new char[_length];
 
 		int i = 0;
@@ -82,7 +82,7 @@ public class DashedHexFormatter implements INewIdFormatter {
 		return new String(result, 0, _length);
 	}
 
-	static char HexToChar(int value, int alpha) {
+	private static char HexToChar(int value, int alpha) {
 		value = value & 0xf;
 		return (char) ((value > 9) ? value - 10 + alpha : value + 0x30);
 	}

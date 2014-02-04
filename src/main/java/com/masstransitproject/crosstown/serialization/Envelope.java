@@ -32,23 +32,23 @@ import com.masstransitproject.crosstown.context.SendContext;
 public class Envelope {
 	private static final Logger _log = LogManager.getLogger(SendContext.class);
 
-	Envelope(Object message, List<Class> messageTypes) {
-		Headers = new HashMap<String, String>();
+	Envelope(Object message, List<Class<?>> messageTypes) {
+		headers = new HashMap<String, String>();
 		try {
-			MessageType = convertMessageTypeClassesToUrns(messageTypes);
+			messageType = convertMessageTypeClassesToUrns(messageTypes);
 		} catch (URISyntaxException e) {
 			throw new MassTransitException("Cannot create MessageUrn for "
 					+ messageTypes, e);
 		}
 
-		Message = message;
+		this.message = message;
 	}
 
 	private List<String> convertMessageTypeClassesToUrns(
-			List<Class> messageTypes) throws URISyntaxException {
+			List<Class<?>> messageTypes) throws URISyntaxException {
 
 		List<String> l = new ArrayList<String>();
-		for (Class c : messageTypes) {
+		for (Class<?> c : messageTypes) {
 			_log.debug("Creating urn for class " + c);
 			l.add(new MessageUrn(c).toString());
 		}
@@ -59,135 +59,135 @@ public class Envelope {
 	}
 
 	protected Envelope() {
-		Headers = new HashMap<String, String>();
-		MessageType = new ArrayList<String>();
+		headers = new HashMap<String, String>();
+		messageType = new ArrayList<String>();
 	}
 
-	private String RequestId;
-	private String ConversationId;
-	private String CorrelationId;
-	private String DestinationAddress;
-	private Date ExpirationTime;
-	private String FaultAddress;
-	private Map<String, String> Headers;
-	private Object Message;
-	private String MessageId;
-	private List<String> MessageType;
-	private String Network;
-	private String ResponseAddress;
-	private int RetryCount;
-	private String SourceAddress;
+	private String requestId;
+	private String conversationId;
+	private String correlationId;
+	private String destinationAddress;
+	private Date expirationTime;
+	private String faultAddress;
+	private Map<String, String> headers;
+	private Object message;
+	private String messageId;
+	private List<String> messageType;
+	private String network;
+	private String responseAddress;
+	private int retryCount;
+	private String sourceAddress;
 
 	public String getRequestId() {
-		return RequestId;
+		return requestId;
 	}
 
 	public void setRequestId(String requestId) {
-		RequestId = requestId;
+		this.requestId = requestId;
 	}
 
 	public String getConversationId() {
-		return ConversationId;
+		return conversationId;
 	}
 
 	public void setConversationId(String conversationId) {
-		ConversationId = conversationId;
+		this.conversationId = conversationId;
 	}
 
 	public String getCorrelationId() {
-		return CorrelationId;
+		return correlationId;
 	}
 
 	public void setCorrelationId(String correlationId) {
-		CorrelationId = correlationId;
+		this.correlationId = correlationId;
 	}
 
 	public String getDestinationAddress() {
-		return DestinationAddress;
+		return this.destinationAddress;
 	}
 
 	public void setDestinationAddress(String destinationAddress) {
-		DestinationAddress = destinationAddress;
+		this.destinationAddress = destinationAddress;
 	}
 
 	public Date getExpirationTime() {
-		return ExpirationTime;
+		return this.expirationTime;
 	}
 
 	public void setExpirationTime(Date expirationTime) {
-		ExpirationTime = expirationTime;
+		this.expirationTime = expirationTime;
 	}
 
 	public String getFaultAddress() {
-		return FaultAddress;
+		return this.faultAddress;
 	}
 
 	public void setFaultAddress(String faultAddress) {
-		FaultAddress = faultAddress;
+		this.faultAddress = faultAddress;
 	}
 
 	public Map<String, String> getHeaders() {
-		return Headers;
+		return this.headers;
 	}
 
 	public void setHeaders(Map<String, String> headers) {
-		Headers = headers;
+		this.headers = headers;
 	}
 
 	public Object getMessage() {
-		return Message;
+		return this.message;
 	}
 
 	public void setMessage(Object message) {
-		Message = message;
+		this.message = message;
 	}
 
 	public String getMessageId() {
-		return MessageId;
+		return this.messageId;
 	}
 
 	public void setMessageId(String messageId) {
-		MessageId = messageId;
+		this.messageId = messageId;
 	}
 
 	public List<String> getMessageType() {
-		return MessageType;
+		return this.messageType;
 	}
 
 	public void setMessageType(List<String> messageType) {
-		MessageType = messageType;
+		this.messageType = messageType;
 	}
 
 	public String getNetwork() {
-		return Network;
+		return this.network;
 	}
 
 	public void setNetwork(String network) {
-		Network = network;
+		this.network = network;
 	}
 
 	public String getResponseAddress() {
-		return ResponseAddress;
+		return this.responseAddress;
 	}
 
 	public void setResponseAddress(String responseAddress) {
-		ResponseAddress = responseAddress;
+		this.responseAddress = responseAddress;
 	}
 
 	public int getRetryCount() {
-		return RetryCount;
+		return this.retryCount;
 	}
 
 	public void setRetryCount(int retryCount) {
-		RetryCount = retryCount;
+		this.retryCount = retryCount;
 	}
 
 	public String getSourceAddress() {
-		return SourceAddress;
+		return this.sourceAddress;
 	}
 
 	public void setSourceAddress(String sourceAddress) {
-		SourceAddress = sourceAddress;
+		this.sourceAddress = sourceAddress;
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class Envelope {
 	 */
 	public static <T> Envelope Create(ISendContext<T> context) {
 		Envelope envelope = new Envelope(context.getMessage(),
-				context.GetMessageTypes());
+				context.getMessageTypes());
 		envelope.setRequestId(context.getRequestId());
 		envelope.setConversationId(context.getConversationId());
 		envelope.setCorrelationId(context.getCorrelationId());
@@ -218,22 +218,24 @@ public class Envelope {
 		envelope.setExpirationTime(context.getExpirationTime());
 
 		for (Entry<String, String> header : context.getHeaders().entrySet()) {
-			envelope.Headers.put(header.getKey(), header.getValue());
+			envelope.getHeaders().put(header.getKey(), header.getValue());
 		}
 		return envelope;
 	}
 
 	@Override
 	public String toString() {
-		return "Envelope [RequestId=" + RequestId + ", ConversationId="
-				+ ConversationId + ", CorrelationId=" + CorrelationId
-				+ ", DestinationAddress=" + DestinationAddress
-				+ ", ExpirationTime=" + ExpirationTime + ", FaultAddress="
-				+ FaultAddress + ", Headers=" + Headers + ", Message="
-				+ Message + ", MessageId=" + MessageId + ", MessageType="
-				+ MessageType + ", Network=" + Network + ", ResponseAddress="
-				+ ResponseAddress + ", RetryCount=" + RetryCount
-				+ ", SourceAddress=" + SourceAddress + "]";
+		return "Envelope [requestId=" + requestId + ", conversationId="
+				+ conversationId + ", correlationId=" + correlationId
+				+ ", destinationAddress=" + destinationAddress
+				+ ", expirationTime=" + expirationTime + ", faultAddress="
+				+ faultAddress + ", headers=" + headers + ", message="
+				+ message + ", messageId=" + messageId + ", messageType="
+				+ messageType + ", network=" + network + ", responseAddress="
+				+ responseAddress + ", retryCount=" + retryCount
+				+ ", sourceAddress=" + sourceAddress + "]";
 	}
+
+	
 
 }

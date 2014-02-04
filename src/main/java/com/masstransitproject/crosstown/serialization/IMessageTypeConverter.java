@@ -14,7 +14,7 @@ package com.masstransitproject.crosstown.serialization;
 // specific language governing permissions and limitations under the License.
 
 public interface IMessageTypeConverter {
-	boolean Contains(Class messageType);
+	boolean contains(Class<?> messageType);
 
 	<T> T convert();
 }

@@ -33,7 +33,8 @@ public class SendContext<T extends Object> implements ISendContext<T> {
 
 	private final MessageHeaders headers = new MessageHeaders();
 
-	private final UUID id;
+	private UUID id;
+
 
 	private URI inputAddress;
 
@@ -51,7 +52,7 @@ public class SendContext<T extends Object> implements ISendContext<T> {
 
 	private URI sourceAddress;
 
-	public SendContext(Class declaringMessageType) {
+	public SendContext(Class<T> declaringMessageType) {
 		this.declaringType = declaringMessageType;
 		try {
 			this.message = (T) declaringMessageType.newInstance();
@@ -60,7 +61,28 @@ public class SendContext<T extends Object> implements ISendContext<T> {
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
-		this.id = NewId.NextGuid();
+		this.id = NewId.nextGuid();
+
+		if (this.message instanceof Identifiable) {
+			((Identifiable) this.message).setId(this.id );
+		}
+		
+		_log.debug("Created new SendContext for " + this.declaringType);
+	}
+	
+
+	public SendContext(T message) {
+	
+		this.declaringType =  (Class<T>) message.getClass();;
+		this.message = message;
+		
+		if (this.message instanceof Identifiable) {
+			if (((Identifiable) this.message).getId() == null) {
+				throw new IllegalStateException("Message must have Id prior to construction of SendContext");
+			}
+			this.id = ((Identifiable) this.message).getId();
+		}
+		
 		_log.debug("Created new SendContext for " + this.declaringType);
 	}
 
@@ -110,8 +132,14 @@ public class SendContext<T extends Object> implements ISendContext<T> {
 
 	@Override
 	public UUID getId() {
-
 		return this.id;
+	}
+
+	public void setId(UUID id) {
+		if (this.id != null) {
+			throw new IllegalStateException("Cannot change id once it is set");
+		}
+		this.id = id;
 	}
 
 	@Override
@@ -137,9 +165,9 @@ public class SendContext<T extends Object> implements ISendContext<T> {
 	}
 
 	@Override
-	public List<Class> GetMessageTypes() {
+	public List<Class<?>> getMessageTypes() {
 
-		List<Class> l = new ArrayList<Class>();
+		List<Class<?>> l = new ArrayList<Class<?>>();
 		l.add(this.getDeclaringMessageType());
 		return l;
 	}
@@ -175,9 +203,9 @@ public class SendContext<T extends Object> implements ISendContext<T> {
 	}
 
 	@Override
-	public void SerializeTo(OutputStream stream) throws IOException {
+	public void serializeTo(OutputStream stream) throws IOException {
 		JsonMessageSerializer<T> s = new JsonMessageSerializer<T>();
-		s.Serialize(stream, getMessage(), this);
+		s.serialize(stream, getMessage(), this);
 
 	}
 
@@ -187,8 +215,12 @@ public class SendContext<T extends Object> implements ISendContext<T> {
 	}
 
 	@Override
-	public void SetReceiveContext(IReceiveContext<T> receiveContext) {
+	public void setReceiveContext(IReceiveContext<T> receiveContext) {
 		this.receiveContext = receiveContext;
+	}
+
+	public IReceiveContext<T> getReceiveContext() {
+		return receiveContext;
 	}
 
 	@Override

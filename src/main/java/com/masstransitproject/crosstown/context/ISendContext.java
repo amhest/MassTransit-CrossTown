@@ -26,14 +26,14 @@ public interface ISendContext<T extends Object> extends IMessageContext<T> {
 
 	public Class<T> getDeclaringMessageType();
 
-	public abstract void SerializeTo(OutputStream stream) throws IOException;
+	public abstract void serializeTo(OutputStream stream) throws IOException;
 
 	@Override
 	public abstract T getMessage();
 
-	public abstract List<Class> GetMessageTypes();
-
-	public void SetReceiveContext(IReceiveContext<T> receiveContext);
+	public abstract List<Class<?>> getMessageTypes();
+ 
+	public void setReceiveContext(IReceiveContext<T> receiveContext);
 
 	public abstract String getOriginalMessageId();
 

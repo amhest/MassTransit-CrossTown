@@ -34,7 +34,7 @@ public class TypeUtils {
 	 */
 	public static Class<?> getClass(Type type) {
 		if (type instanceof Class) {
-			return (Class) type;
+			return (Class<?>) type;
 		} else if (type instanceof ParameterizedType) {
 			return getClass(((ParameterizedType) type).getRawType());
 		} else if (type instanceof GenericArrayType) {
@@ -72,10 +72,10 @@ public class TypeUtils {
 			if (type instanceof Class) {
 				// there is no useful information for us in raw types, so just
 				// keep going.
-				type = ((Class) type).getGenericSuperclass();
+				type = ((Class<?>) type).getGenericSuperclass();
 			} else {
 				ParameterizedType parameterizedType = (ParameterizedType) type;
-				Class<?> rawType = (Class) parameterizedType.getRawType();
+				Class<?> rawType = (Class<?>) parameterizedType.getRawType();
 
 				Type[] actualTypeArguments = parameterizedType
 						.getActualTypeArguments();
@@ -96,7 +96,7 @@ public class TypeUtils {
 		// the raw class for that type argument.
 		Type[] actualTypeArguments;
 		if (type instanceof Class) {
-			actualTypeArguments = ((Class) type).getTypeParameters();
+			actualTypeArguments = ((Class<?>) type).getTypeParameters();
 		} else {
 			actualTypeArguments = ((ParameterizedType) type)
 					.getActualTypeArguments();
@@ -129,4 +129,6 @@ public class TypeUtils {
 
 		return getTypeArguments(Object.class, childClass);
 	}
+	
+ 
 }

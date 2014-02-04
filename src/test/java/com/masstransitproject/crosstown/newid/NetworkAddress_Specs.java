@@ -23,11 +23,11 @@ import com.masstransitproject.crosstown.newid.providers.NetworkAddressWorkerIdPr
 public class NetworkAddress_Specs  // When_getting_a_network_address_for_the_id_generator
 {
 	@Test
-	public void Should_pull_the_network_adapter_mac_address()
+	public void should_pull_the_network_adapter_mac_address()
 			throws IOException {
 		IWorkerIdProvider networkIdProvider = new NetworkAddressWorkerIdProvider();
 
-		byte[] networkId = networkIdProvider.GetWorkerId(0);
+		byte[] networkId = networkIdProvider.getWorkerId(0);
 
 		Assert.assertNotNull(networkId);
 		Assert.assertTrue(6==networkId.length || 8 == networkId.length);

@@ -35,23 +35,23 @@ public class LongTerm_Specs  // Generating_ids_over_time
 	
 
 	@Test
-	public void Should_keep_them_ordered_for_sql_server() throws IOException {
+	public void should_keep_them_ordered_for_sql_server() throws IOException {
 		NewIdGenerator generator = new NewIdGenerator(
 				new TimeLapseTickProvider(),
 				new NetworkAddressWorkerIdProvider());
-		generator.Next();
+		generator.next();
 
 		int limit = 1024;
 
 		NewId[] ids = new NewId[limit];
 		for (int i = 0; i < limit; i++)
-			ids[i] = generator.Next();
+			ids[i] = generator.next();
 
 		for (int i = 0; i < limit - 1; i++) {
 			Assert.assertFalse(ids[i].equals(ids[i + 1]));
 
-			UUID left = ids[i].ToSequentialGuid();
-			UUID right = ids[i + 1].ToSequentialGuid();
+			UUID left = ids[i].toSequentialGuid();
+			UUID right = ids[i + 1].toSequentialGuid();
 
 			Assert.assertTrue(ids[i].getTimestamp() + " timestamp should be smaller than " + ids[i+1].getTimestamp(),ids[i].getTimestamp().compareTo(ids[i+1].getTimestamp()) < 0);
 			Assert.assertTrue(ids[i] + " should be smaller than " + ids[i+1],ids[i].compareTo(ids[i+1]) < 0);
@@ -59,14 +59,14 @@ public class LongTerm_Specs  // Generating_ids_over_time
 			//Assert.assertTrue(left + " should be smaller than " + right,UUIDComparator.staticCompare(left,right) < 0);
 			if (i % 128 == 0)
 				log.trace(String.format("Normal: {0} Sql: {1}", new Object[] {
-						left, ids[i].ToSequentialGuid() }));
+						left, ids[i].toSequentialGuid() }));
 		}
 	}
 
 	class TimeLapseTickProvider implements ITickProvider {
 		// TimeSpan _interval = TimeSpan.FromSeconds(2);
-		int _interval = 2;
-		Calendar _previous = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		private int _interval = 2;
+		private Calendar _previous = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
 
 		@Override
 		//This must return a ticks value, not milliseconds

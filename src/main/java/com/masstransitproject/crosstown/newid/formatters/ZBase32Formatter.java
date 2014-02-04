@@ -15,11 +15,11 @@ package com.masstransitproject.crosstown.newid.formatters;
 public class ZBase32Formatter extends Base32Formatter {
 	// taken from analysis done at
 	// http://philzimmermann.com/docs/human-oriented-base-32-encoding.txt
-	static final String LowerCaseChars = "ybndrfg8ejkmcpqxot1uwisza345h769";
-	static final String UpperCaseChars = "YBNDRFG8EJKMCPQXOT1UWISZA345H769";
+	private static final String LOWER_CASE_CHARS = "ybndrfg8ejkmcpqxot1uwisza345h769";
+	private static final String UPPER_CASE_CHARS = "YBNDRFG8EJKMCPQXOT1UWISZA345H769";
 
 	public ZBase32Formatter(boolean upperCase) {
-		super(upperCase ? UpperCaseChars : LowerCaseChars);
+		super(upperCase ? UPPER_CASE_CHARS : LOWER_CASE_CHARS);
 
 	}
 }

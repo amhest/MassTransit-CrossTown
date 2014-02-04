@@ -21,14 +21,14 @@ import org.junit.Test;
 public class Usage_Specs  // Using_a_new_id
 {
 	@Test
-	public void Should_format_just_like_a_default_UUID_formatter() {
+	public void should_format_just_like_a_default_UUID_formatter() {
 		NewId newId = new NewId();
 
 		Assert.assertEquals("00000000-0000-0000-0000-000000000000", newId.toString());
 	}
 
 	@Test
-	public void Should_format_just_like_a_fancy_UUID_formatter() {
+	public void should_format_just_like_a_fancy_UUID_formatter() {
 		NewId newId = new NewId();
 
 		Assert.assertEquals("{00000000-0000-0000-0000-000000000000}",
@@ -36,14 +36,14 @@ public class Usage_Specs  // Using_a_new_id
 	}
 
 	@Test
-	public void Should_format_just_like_a_narrow_UUID_formatter() {
+	public void should_format_just_like_a_narrow_UUID_formatter() {
 		NewId newId = new NewId();
 
 		Assert.assertEquals("00000000000000000000000000000000", newId.toString("N"));
 	}
 
 	@Test
-	public void Should_format_just_like_a_parenthesis_UUID_formatter() {
+	public void should_format_just_like_a_parenthesis_UUID_formatter() {
 		NewId newId = new NewId();
 
 		Assert.assertEquals("(00000000-0000-0000-0000-000000000000)",
@@ -51,13 +51,13 @@ public class Usage_Specs  // Using_a_new_id
 	}
 
 	@Test
-	public void Should_work_from_UUID_to_newid_to_UUID() {
+	public void should_work_from_UUID_to_newid_to_UUID() {
 		UUID g = UUID.randomUUID();
 		
 		NewId n = new NewId(g);
 
 
-		Assert.assertEquals(g, n.ToGuid());
+		Assert.assertEquals(g, n.toGuid());
 	
 		
 	}

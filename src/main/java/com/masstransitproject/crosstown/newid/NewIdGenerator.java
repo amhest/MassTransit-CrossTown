@@ -15,18 +15,18 @@ package com.masstransitproject.crosstown.newid;
 import java.io.IOException;
 
 public class NewIdGenerator {
-	final long _c;
-	final long _d;
+	private final long _c;
+	private final long _d;
 
-	final Object _sync = new Object();
-	final ITickProvider _tickProvider;
-	final byte[] _workerId;
-	final int _workerIndex;
-	long _a;
-	long _b;
-	long _lastTick;
+	private final Object _sync = new Object();
+	private final ITickProvider _tickProvider;
+	private final byte[] _workerId;
+	private final int _workerIndex;
+	private long _a;
+	private long _b;
+	private long _lastTick;
 
-	int _sequence;
+	private int _sequence;
 
 	public NewIdGenerator(ITickProvider tickProvider,
 			IWorkerIdProvider workerIdProvider) throws IOException {
@@ -38,7 +38,7 @@ public class NewIdGenerator {
 			IWorkerIdProvider workerIdProvider, int workerIndex)
 			throws IOException {
 		_workerIndex = workerIndex;
-		_workerId = workerIdProvider.GetWorkerId(_workerIndex);
+		_workerId = workerIdProvider.getWorkerId(_workerIndex);
 		_tickProvider = tickProvider;
 
 		_c = _workerId[0] << 24 | _workerId[1] << 16 | _workerId[2] << 8
@@ -46,17 +46,17 @@ public class NewIdGenerator {
 		_d = _workerId[4] << 24 | _workerId[5] << 16;
 	}
 
-	public NewId Next() {
+	public NewId next() {
 		long sequence;
 
 		long ticks = _tickProvider.getTicks();
 		synchronized (_sync) {
 			if (ticks > _lastTick)
-				UpdateTimestamp(ticks);
+				updateTimestamp(ticks);
 
 			if (_sequence == 65535) // we are about to rollover, so we need to
 									// increment ticks
-				UpdateTimestamp(_lastTick + 1);
+				updateTimestamp(_lastTick + 1);
 
 			sequence = _sequence++;
 		}
@@ -64,7 +64,7 @@ public class NewIdGenerator {
 		return new NewId(_a, _b, _c, (_d | sequence));
 	}
 
-	void UpdateTimestamp(long tick) {
+	private void updateTimestamp(long tick) {
 
 		// ByteBuffer buffer = ByteBuffer.allocate(8);
 		// buffer.putLong(tick);

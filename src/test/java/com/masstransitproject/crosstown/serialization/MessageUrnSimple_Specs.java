@@ -9,7 +9,7 @@ import com.masstransitproject.crosstown.messages.PingMessage;
 public class MessageUrnSimple_Specs {
 
 	@Test
-	public void TestSimpleMessage() throws Exception{
+	public void testSimpleMessage() throws Exception{
 		MessageUrn urn = new MessageUrn( PingMessage.class);
 		Assert.assertEquals(urn.toString(),
 				"urn:message:MassTransit.TestFramework.Examples.Messages:PingMessage");

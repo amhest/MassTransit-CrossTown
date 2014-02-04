@@ -8,11 +8,11 @@ import com.masstransitproject.crosstown.ExternallyNamespaced;
 public class ClientMessage implements Serializable, ExternallyNamespaced {
 	private String _name;
 
-	public String get_name() {
+	public String getName() {
 		return _name;
 	}
 
-	public void set_name(String _name) {
+	public void setName(String _name) {
 		this._name = _name;
 	}
 

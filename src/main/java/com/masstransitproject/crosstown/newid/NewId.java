@@ -34,18 +34,18 @@ import com.masstransitproject.crosstown.util.FineGrainTimestamp;
 public class NewId extends Object implements
 
 Comparable<NewId> {
-	public static final NewId Empty = new NewId(0, 0, 0, 0);
-	static INewIdFormatter _braceFormatter = new DashedHexFormatter('{', '}',
+	public static final NewId EMPTY = new NewId(0, 0, 0, 0);
+	private static INewIdFormatter _braceFormatter = new DashedHexFormatter('{', '}',
 			false);
-	static INewIdFormatter _dashedHexFormatter = new DashedHexFormatter();
+	private static INewIdFormatter _dashedHexFormatter = new DashedHexFormatter();
 
-	static NewIdGenerator _generator;
+	private static NewIdGenerator _generator;
 
-	static INewIdFormatter _hexFormatter = new HexFormatter();
-	static INewIdFormatter _parenFormatter = new DashedHexFormatter('(', ')',
+	private static INewIdFormatter _hexFormatter = new HexFormatter();
+	private static INewIdFormatter _parenFormatter = new DashedHexFormatter('(', ')',
 			false);
-	static ITickProvider _tickProvider;
-	static IWorkerIdProvider _workerIdProvider;
+	private static ITickProvider _tickProvider;
+	private static IWorkerIdProvider _workerIdProvider;
 
 	private final long _a;
 	private final long _b;
@@ -62,7 +62,7 @@ Comparable<NewId> {
 			throw new IllegalArgumentException("bytes are null");
 		if (bytes.length != 16)
 			throw new IllegalArgumentException("Exactly 16 bytes expected");
-		ABCD holder = FromByteArray(bytes);
+		ABCD holder = fromByteArray(bytes);
 		_a = holder.a;
 		_b = holder.b;
 		_c = holder.c;
@@ -81,7 +81,7 @@ Comparable<NewId> {
 
 		byte[] bytes = convertToNewIdBytes(guid);
 
-		ABCD holder = FromByteArray(bytes);
+		ABCD holder = fromByteArray(bytes);
 		_a = holder.a;
 		_b = holder.b;
 		_c = holder.c;
@@ -96,9 +96,7 @@ Comparable<NewId> {
 		byte[] guidBytes = bb.array();
 		byte[] newIdBytes = Arrays.copyOf(guidBytes, guidBytes.length);
 
-		//
-		// if (uuid.variant() == 2)
-		{
+		
 			// Reverse part a
 			newIdBytes[0] = guidBytes[3];
 			newIdBytes[1] = guidBytes[2];
@@ -110,7 +108,7 @@ Comparable<NewId> {
 			newIdBytes[5] = guidBytes[4];
 			newIdBytes[6] = guidBytes[7];
 			newIdBytes[7] = guidBytes[6];
-		}
+		
 		return newIdBytes;
 	}
 
@@ -121,15 +119,8 @@ Comparable<NewId> {
 		_d = d;
 	}
 
-	// public NewId(int a, short b, short c, byte d, byte e, byte f, byte g,
-	// byte h, byte i, byte j, byte k) {
-	// _a = (f << 24) | (g << 16) | (h << 8) | i;
-	// _b = (j << 24) | (k << 16) | (d << 8) | e;
-	// _c = (c << 16) | b;
-	// _d = (int) a;
-	// }
-
-	static NewIdGenerator getGenerator() {
+	
+	private static NewIdGenerator getGenerator() {
 		if (_generator == null) {
 			try {
 				_generator = new NewIdGenerator(getTickProvider(),
@@ -143,14 +134,14 @@ Comparable<NewId> {
 		return _generator;
 	}
 
-	static IWorkerIdProvider getWorkerIdProvider() {
+	private static IWorkerIdProvider getWorkerIdProvider() {
 		if (_workerIdProvider == null) {
 			_workerIdProvider = new NetworkAddressWorkerIdProvider();
 		}
 		return _workerIdProvider;
 	}
 
-	static ITickProvider getTickProvider() {
+	private static ITickProvider getTickProvider() {
 		if (_tickProvider == null) {
 			_tickProvider = new StopwatchTickProvider();
 		}
@@ -164,15 +155,6 @@ Comparable<NewId> {
 
 	}
 
-	// public int compareTo(Object obj)
-	// {
-	// if (obj == null)
-	// return 1;
-	// if (!(obj instanceof NewId))
-	// throw new IllegalArgumentException("Argument must be a NewId");
-	//
-	// return compareTo((NewId)obj);
-	// }
 
 	@Override
 	public int compareTo(NewId other) {
@@ -215,29 +197,29 @@ Comparable<NewId> {
 					"The format String must be exactly one character or null");
 
 		char formatCh = format.charAt(0);
-		byte[] bytes = sequential ? GetSequentialFormatteryArray()
-				: GetFormatteryArray();
+		byte[] bytes = sequential ? getSequentialFormatteryArray()
+				: getFormatteryArray();
 
 		if (formatCh == 'B' || formatCh == 'b')
-			return _braceFormatter.Format(bytes);
+			return _braceFormatter.format(bytes);
 		if (formatCh == 'P' || formatCh == 'p')
-			return _parenFormatter.Format(bytes);
+			return _parenFormatter.format(bytes);
 		if (formatCh == 'D' || formatCh == 'd')
-			return _dashedHexFormatter.Format(bytes);
+			return _dashedHexFormatter.format(bytes);
 		if (formatCh == 'N' || formatCh == 'n')
-			return _hexFormatter.Format(bytes);
+			return _hexFormatter.format(bytes);
 
 		throw new RuntimeException("The format String was not valid");
 	}
 
 	public String toString(INewIdFormatter formatter, boolean sequential) {
-		byte[] bytes = sequential ? GetSequentialFormatteryArray()
-				: GetFormatteryArray();
+		byte[] bytes = sequential ? getSequentialFormatteryArray()
+				: getFormatteryArray();
 
-		return formatter.Format(bytes);
+		return formatter.format(bytes);
 	}
 
-	byte[] GetFormatteryArray() {
+	private byte[] getFormatteryArray() {
 		byte[] bytes = new byte[16];
 		bytes[0] = (byte) (_d >> 24);
 		bytes[1] = (byte) (_d >> 16);
@@ -259,7 +241,7 @@ Comparable<NewId> {
 		return bytes;
 	}
 
-	byte[] GetSequentialFormatteryArray() {
+	private byte[] getSequentialFormatteryArray() {
 		byte[] bytes = new byte[16];
 		bytes[0] = (byte) (_a >> 24);
 		bytes[1] = (byte) (_a >> 16);
@@ -281,7 +263,7 @@ Comparable<NewId> {
 		return bytes;
 	}
 
-	public UUID ToGuid() {
+	public UUID toGuid() {
 		ByteBuffer bb = ByteBuffer.allocate(16);
 		bb.putInt((int) _d);
 		bb.putShort((short) _c);
@@ -302,7 +284,7 @@ Comparable<NewId> {
 		return new UUID(bb.getLong(), bb.getLong());
 	}
 
-	public UUID ToSequentialGuid() {
+	public UUID toSequentialGuid() {
 		ByteBuffer bb = ByteBuffer.allocate(16);
 		bb.putInt((int) _a);
 		bb.putShort((short) (_b >> 16));
@@ -323,30 +305,8 @@ Comparable<NewId> {
 		return new UUID(bb.getLong(), bb.getLong());
 	}
 
-	// private byte[] ToByteArray(ABCD abcd) {
-	// byte[] bytes = new byte[16];
-	//
-	// bytes[0] = (byte) (abcd.d);
-	// bytes[1] = (byte) (abcd.d >> 8);
-	// bytes[2] = (byte) (abcd.d >> 16);
-	// bytes[3] = (byte) (abcd.d >> 24);
-	// bytes[4] = (byte) (abcd.c);
-	// bytes[5] = (byte) (abcd.c >> 8);
-	// bytes[6] = (byte) (abcd.c >> 16);
-	// bytes[7] = (byte) (abcd.c >> 24);
-	// bytes[8] = (byte) (abcd.b >> 8);
-	// bytes[9] = (byte) (abcd.b);
-	// bytes[10] = (byte) (abcd.a >> 24);
-	// bytes[11] = (byte) (abcd.a >> 16);
-	// bytes[12] = (byte) (abcd.a >> 8);
-	// bytes[13] = (byte) (abcd.a);
-	// bytes[14] = (byte) (abcd.b >> 24);
-	// bytes[15] = (byte) (abcd.b >> 16);
-	//
-	// return bytes;
-	// }
 
-	public byte[] ToByteArray() {
+	public byte[] toByteArray() {
 
 		ByteBuffer buffer = ByteBuffer.allocate(16);
 		buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -387,38 +347,28 @@ Comparable<NewId> {
 		return result;
 	}
 
-	public static void SetGenerator(NewIdGenerator generator) {
+	public static void setGenerator(NewIdGenerator generator) {
 		_generator = generator;
 	}
 
-	public static void SetWorkerIdProvider(IWorkerIdProvider provider) {
+	public static void setWorkerIdProvider(IWorkerIdProvider provider) {
 		_workerIdProvider = provider;
 	}
 
-	public static void SetTickProvider(ITickProvider provider) {
+	public static void setTickProvider(ITickProvider provider) {
 		_tickProvider = provider;
 	}
 
-	public static NewId Next() {
-		return getGenerator().Next();
+	public static NewId next() {
+		return getGenerator().next();
 	}
 
-	public static UUID NextGuid() {
-		return getGenerator().Next().ToGuid();
+	public static UUID nextGuid() {
+		return getGenerator().next().toGuid();
 	}
 
-	// static ABCD FromByteArray(byte[] bytes) {
-	// ABCD holder = new ABCD();
-	// holder.a = bytes[10] << 24 | bytes[11] << 16 | bytes[12] << 8
-	// | bytes[13];
-	// holder.b = bytes[14] << 24 | bytes[15] << 16 | bytes[8] << 8 | bytes[9];
-	// holder.c = bytes[7] << 24 | bytes[6] << 16 | bytes[5] << 8 | bytes[4];
-	// holder.d = bytes[3] << 24 | bytes[2] << 16 | bytes[1] << 8 | bytes[0];
-	//
-	// return holder;
-	// }
 
-	static ABCD FromByteArray(byte[] bytes) {
+	private static ABCD fromByteArray(byte[] bytes) {
 		ABCD holder = new ABCD();
 		holder.a = bytesToInt(bytes[10], bytes[11], bytes[12], bytes[13]);
 		holder.b = bytesToInt(bytes[14], bytes[15], bytes[8], bytes[9]);
@@ -428,7 +378,7 @@ Comparable<NewId> {
 		return holder;
 	}
 
-	static int bytesToInt(byte f, byte g, byte h, byte i) {
+    static int bytesToInt(byte f, byte g, byte h, byte i) {
 		ByteBuffer buffer = ByteBuffer.allocate(4);
 		buffer.put(f);
 		buffer.put(g);
