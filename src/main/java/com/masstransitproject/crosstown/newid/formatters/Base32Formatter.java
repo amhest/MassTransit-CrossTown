@@ -12,9 +12,9 @@
 // specific language governing permissions and limitations under the License.
 package com.masstransitproject.crosstown.newid.formatters;
 
-import com.masstransitproject.crosstown.newid.INewIdFormatter;
+import com.masstransitproject.crosstown.newid.NewIdFormatter;
 
-public class Base32Formatter implements INewIdFormatter {
+public class Base32Formatter implements NewIdFormatter {
 	private static final String LOWER_CASE_CHARS = "abcdefghijklmnopqrstuvwxyz234567";
 	
 	private static final String UPPER_CASE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";

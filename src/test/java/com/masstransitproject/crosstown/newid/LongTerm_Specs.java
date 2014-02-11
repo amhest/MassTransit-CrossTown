@@ -63,7 +63,7 @@ public class LongTerm_Specs  // Generating_ids_over_time
 		}
 	}
 
-	class TimeLapseTickProvider implements ITickProvider {
+	class TimeLapseTickProvider implements TickProvider {
 		// TimeSpan _interval = TimeSpan.FromSeconds(2);
 		private int _interval = 2;
 		private Calendar _previous = Calendar.getInstance(TimeZone.getTimeZone("UTC"));

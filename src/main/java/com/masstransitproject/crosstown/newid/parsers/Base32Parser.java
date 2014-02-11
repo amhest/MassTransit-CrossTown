@@ -12,10 +12,10 @@
 // specific language governing permissions and limitations under the License.
 package com.masstransitproject.crosstown.newid.parsers;
 
-import com.masstransitproject.crosstown.newid.INewIdParser;
+import com.masstransitproject.crosstown.newid.NewIdParser;
 import com.masstransitproject.crosstown.newid.NewId;
 
-public class Base32Parser implements INewIdParser {
+public class Base32Parser implements NewIdParser {
 	private static final String CONVERT_CHARS = "abcdefghijklmnopqrstuvwxyz234567ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
 	private static final String HEX_CHARS = "0123456789ABCDEF";
@@ -55,7 +55,7 @@ public class Base32Parser implements INewIdParser {
 				number = number * 32 + (index % 32);
 			}
 
-			ConvertLongToBase16(buffer, bufferOffset, number, 5);
+			convertLongToBase16(buffer, bufferOffset, number, 5);
 
 			offset += 4;
 			bufferOffset += 5;
@@ -70,12 +70,12 @@ public class Base32Parser implements INewIdParser {
 
 			number = number * 32 + (index % 32);
 		}
-		ConvertLongToBase16(buffer, bufferOffset, number, 2);
+		convertLongToBase16(buffer, bufferOffset, number, 2);
 
 		return new NewId(new String(buffer, 0, 32));
 	}
 
-	private static void ConvertLongToBase16(char[] buffer, int offset, long value,
+	private static void convertLongToBase16(char[] buffer, int offset, long value,
 			int count) {
 		for (int i = count - 1; i >= 0; i--) {
 			int index = (int) (value % 16);

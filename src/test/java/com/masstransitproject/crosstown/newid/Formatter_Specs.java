@@ -30,11 +30,11 @@ public class Formatter_Specs  // Using_the_newid_formatters
 	public void should_convert_back_using_parser() {
 		NewId n = new NewId("F6B27C7C-8AB8-4498-AC97-3A6107A21320");
 
-		INewIdFormatter formatter = new ZBase32Formatter(true);
+		NewIdFormatter formatter = new ZBase32Formatter(true);
 
 		String ns = n.toString(formatter, false);
 
-		INewIdParser parser = new ZBase32Parser();
+		NewIdParser parser = new ZBase32Parser();
 		NewId newId = parser.parse(ns);
 
 		Assert.assertEquals(n, newId);
@@ -45,11 +45,11 @@ public class Formatter_Specs  // Using_the_newid_formatters
 	public void should_convert_back_using_standard_parser() {
 		NewId n = new NewId("F6B27C7C-8AB8-4498-AC97-3A6107A21320");
 
-		INewIdFormatter formatter = new Base32Formatter(true);
+		NewIdFormatter formatter = new Base32Formatter(true);
 
 		String ns = n.toString(formatter, false);
 
-		INewIdParser parser = new Base32Parser();
+		NewIdParser parser = new Base32Parser();
 		NewId newId = parser.parse(ns);
 
 		Assert.assertEquals(n, newId);
@@ -60,7 +60,7 @@ public class Formatter_Specs  // Using_the_newid_formatters
 	public void should_convert_using_custom_base32_formatting_characters() {
 		NewId n = new NewId("F6B27C7C-8AB8-4498-AC97-3A6107A21320");
 
-		INewIdFormatter formatter = new Base32Formatter(
+		NewIdFormatter formatter = new Base32Formatter(
 				"0123456789ABCDEFGHIJKLMNOPQRSTUV");
 
 		String ns = n.toString(formatter, false);
@@ -73,7 +73,7 @@ public class Formatter_Specs  // Using_the_newid_formatters
 	public void should_convert_using_standard_base32_formatting_characters() {
 		NewId n = new NewId("F6B27C7C-8AB8-4498-AC97-3A6107A21320");
 
-		INewIdFormatter formatter = new Base32Formatter(true);
+		NewIdFormatter formatter = new Base32Formatter(true);
 
 		String ns = n.toString(formatter, false);
 
@@ -85,7 +85,7 @@ public class Formatter_Specs  // Using_the_newid_formatters
 	public void should_convert_using_the_optimized_human_readable_formatter() {
 		NewId n = new NewId("F6B27C7C-8AB8-4498-AC97-3A6107A21320");
 
-		INewIdFormatter formatter = new ZBase32Formatter(true);
+		NewIdFormatter formatter = new ZBase32Formatter(true);
 
 		String ns = n.toString(formatter, false);
 
@@ -99,7 +99,7 @@ public class Formatter_Specs  // Using_the_newid_formatters
 
 		String ns = "6438A9RK2BNJTMRZ8J0OXE0UBY";
 
-		INewIdParser parser = new ZBase32Parser(true);
+		NewIdParser parser = new ZBase32Parser(true);
 		NewId newId = parser.parse(ns);
 
 		Assert.assertEquals(n, newId);

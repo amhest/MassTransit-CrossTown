@@ -12,9 +12,9 @@
 // specific language governing permissions and limitations under the License.
 package com.masstransitproject.crosstown.newid.formatters;
 
-import com.masstransitproject.crosstown.newid.INewIdFormatter;
+import com.masstransitproject.crosstown.newid.NewIdFormatter;
 
-public class DashedHexFormatter implements INewIdFormatter {
+public class DashedHexFormatter implements NewIdFormatter {
 	private final int _alpha;
 	private final char _prefix;
 	private final char _suffix;
@@ -49,32 +49,32 @@ public class DashedHexFormatter implements INewIdFormatter {
 			result[offset++] = _prefix;
 		for (; i < 4; i++) {
 			int value = bytes[i];
-			result[offset++] = HexToChar(value >> 4, _alpha);
-			result[offset++] = HexToChar(value, _alpha);
+			result[offset++] = hexToChar(value >> 4, _alpha);
+			result[offset++] = hexToChar(value, _alpha);
 		}
 		result[offset++] = '-';
 		for (; i < 6; i++) {
 			int value = bytes[i];
-			result[offset++] = HexToChar(value >> 4, _alpha);
-			result[offset++] = HexToChar(value, _alpha);
+			result[offset++] = hexToChar(value >> 4, _alpha);
+			result[offset++] = hexToChar(value, _alpha);
 		}
 		result[offset++] = '-';
 		for (; i < 8; i++) {
 			int value = bytes[i];
-			result[offset++] = HexToChar(value >> 4, _alpha);
-			result[offset++] = HexToChar(value, _alpha);
+			result[offset++] = hexToChar(value >> 4, _alpha);
+			result[offset++] = hexToChar(value, _alpha);
 		}
 		result[offset++] = '-';
 		for (; i < 10; i++) {
 			int value = bytes[i];
-			result[offset++] = HexToChar(value >> 4, _alpha);
-			result[offset++] = HexToChar(value, _alpha);
+			result[offset++] = hexToChar(value >> 4, _alpha);
+			result[offset++] = hexToChar(value, _alpha);
 		}
 		result[offset++] = '-';
 		for (; i < 16; i++) {
 			int value = bytes[i];
-			result[offset++] = HexToChar(value >> 4, _alpha);
-			result[offset++] = HexToChar(value, _alpha);
+			result[offset++] = hexToChar(value >> 4, _alpha);
+			result[offset++] = hexToChar(value, _alpha);
 		}
 		if (_suffix != '\0')
 			result[offset++] = _suffix;
@@ -82,7 +82,7 @@ public class DashedHexFormatter implements INewIdFormatter {
 		return new String(result, 0, _length);
 	}
 
-	private static char HexToChar(int value, int alpha) {
+	private static char hexToChar(int value, int alpha) {
 		value = value & 0xf;
 		return (char) ((value > 9) ? value - 10 + alpha : value + 0x30);
 	}

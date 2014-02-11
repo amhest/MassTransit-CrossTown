@@ -24,10 +24,10 @@ import org.apache.logging.log4j.Logger;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.masstransitproject.crosstown.context.ISendContext;
+import com.masstransitproject.crosstown.context.SendContext;
 
 public class JsonMessageSerializer<T extends Object> implements
-		IMessageSerializer<T> {
+		MessageSerializer<T> {
 	private static final String CONTENT_TYPE_HEADER_VALUE = "application/vnd.masstransit+json";
 
 	@Override
@@ -39,7 +39,7 @@ public class JsonMessageSerializer<T extends Object> implements
 			.getLogger(JsonMessageSerializer.class.getName());
 
 	@Override
-	public void serialize(OutputStream stream, T message, ISendContext<T> ctx)
+	public void serialize(OutputStream stream, T message, SendContext<T> ctx)
 			throws IOException {
 
 		_log.info("Serializing object " + message + "of type "

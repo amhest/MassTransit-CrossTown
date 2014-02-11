@@ -19,7 +19,7 @@ public class NewIdGenerator {
 	private final long _d;
 
 	private final Object _sync = new Object();
-	private final ITickProvider _tickProvider;
+	private final TickProvider _tickProvider;
 	private final byte[] _workerId;
 	private final int _workerIndex;
 	private long _a;
@@ -28,14 +28,14 @@ public class NewIdGenerator {
 
 	private int _sequence;
 
-	public NewIdGenerator(ITickProvider tickProvider,
-			IWorkerIdProvider workerIdProvider) throws IOException {
+	public NewIdGenerator(TickProvider tickProvider,
+			WorkerIdProvider workerIdProvider) throws IOException {
 		this(tickProvider, workerIdProvider, 0);
 
 	}
 
-	public NewIdGenerator(ITickProvider tickProvider,
-			IWorkerIdProvider workerIdProvider, int workerIndex)
+	public NewIdGenerator(TickProvider tickProvider,
+			WorkerIdProvider workerIdProvider, int workerIndex)
 			throws IOException {
 		_workerIndex = workerIndex;
 		_workerId = workerIdProvider.getWorkerId(_workerIndex);

@@ -16,9 +16,9 @@ import java.io.IOException;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
-import com.masstransitproject.crosstown.newid.IWorkerIdProvider;
+import com.masstransitproject.crosstown.newid.WorkerIdProvider;
 
-public class NetworkAddressWorkerIdProvider implements IWorkerIdProvider {
+public class NetworkAddressWorkerIdProvider implements WorkerIdProvider {
 	@Override
 	public byte[] getWorkerId(int index) throws IOException {
 		return getNetworkAddress(index);

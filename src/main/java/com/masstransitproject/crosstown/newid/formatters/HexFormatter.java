@@ -12,9 +12,9 @@
 // specific language governing permissions and limitations under the License.
 package com.masstransitproject.crosstown.newid.formatters;
 
-import com.masstransitproject.crosstown.newid.INewIdFormatter;
+import com.masstransitproject.crosstown.newid.NewIdFormatter;
 
-public class HexFormatter implements INewIdFormatter {
+public class HexFormatter implements NewIdFormatter {
 	private final int _alpha;
 
 	public HexFormatter() {
@@ -32,14 +32,14 @@ public class HexFormatter implements INewIdFormatter {
 		int offset = 0;
 		for (int i = 0; i < 16; i++) {
 			byte value = bytes[i];
-			result[offset++] = HexToChar(value >> 4, _alpha);
-			result[offset++] = HexToChar(value, _alpha);
+			result[offset++] = hexToChar(value >> 4, _alpha);
+			result[offset++] = hexToChar(value, _alpha);
 		}
 
 		return new String(result, 0, 32);
 	}
 
-	private static char HexToChar(int value, int alpha) {
+	private static char hexToChar(int value, int alpha) {
 		value = value & 0xf;
 		return (char) ((value > 9) ? value - 10 + alpha : value + 0x30);
 	}

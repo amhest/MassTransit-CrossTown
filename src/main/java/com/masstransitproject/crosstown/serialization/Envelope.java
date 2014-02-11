@@ -22,15 +22,15 @@ import org.apache.logging.log4j.Logger;
 
 import com.masstransitproject.crosstown.MassTransitException;
 import com.masstransitproject.crosstown.MessageUrn;
-import com.masstransitproject.crosstown.context.ISendContext;
 import com.masstransitproject.crosstown.context.SendContext;
+import com.masstransitproject.crosstown.context.SendContextImpl;
 
 /**
  * The envelope in use for storing meta-data/out-of-band data and message object
  * data.
  */
 public class Envelope {
-	private static final Logger _log = LogManager.getLogger(SendContext.class);
+	private static final Logger _log = LogManager.getLogger(SendContextImpl.class);
 
 	Envelope(Object message, List<Class<?>> messageTypes) {
 		headers = new HashMap<String, String>();
@@ -199,7 +199,7 @@ public class Envelope {
 	 *            Context to write to the envelope
 	 * @return The constructed envelope
 	 */
-	public static <T> Envelope Create(ISendContext<T> context) {
+	public static <T> Envelope create(SendContext<T> context) {
 		Envelope envelope = new Envelope(context.getMessage(),
 				context.getMessageTypes());
 		envelope.setRequestId(context.getRequestId());

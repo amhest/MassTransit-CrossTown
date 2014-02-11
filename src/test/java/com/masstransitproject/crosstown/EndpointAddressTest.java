@@ -13,20 +13,20 @@ public class EndpointAddressTest {
 	@Test(expected=IllegalArgumentException.class)
 	public void should_throw_on_null_uri() {
 		URI uri = null;
-		new EndpointAddress(uri);
+		new EndpointAddressImpl(uri);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void should_throw_on_empty_string() {
 		
-		new EndpointAddress("");
+		new EndpointAddressImpl("");
 	}
 
 
 	@Test
 	public void good_uri_string() {
 		
-		EndpointAddress ea = new EndpointAddress(URI_STRING);
+		EndpointAddressImpl ea = new EndpointAddressImpl(URI_STRING);
 		
 		assertEquals(URI_STRING,ea.getUri().toString());
 	}
@@ -35,7 +35,7 @@ public class EndpointAddressTest {
 	@Test
 	public void good_uri() {
 		URI uri = URI.create(URI_STRING);
-		EndpointAddress ea = new EndpointAddress(uri);
+		EndpointAddressImpl ea = new EndpointAddressImpl(uri);
 		
 		assertEquals(uri,ea.getUri());
 	}
@@ -44,7 +44,7 @@ public class EndpointAddressTest {
 	@Test
 	public void testGetPath() {
 		URI uri = URI.create(URI_STRING);
-		EndpointAddress ea = new EndpointAddress(uri);
+		EndpointAddressImpl ea = new EndpointAddressImpl(uri);
 		
 		assertEquals("vhost",ea.getPath());
 	}
@@ -52,25 +52,25 @@ public class EndpointAddressTest {
 	@Test
 	public void is_not_transactional() {
 		URI uri = URI.create(URI_STRING);
-		EndpointAddress ea = new EndpointAddress(uri);
+		EndpointAddressImpl ea = new EndpointAddressImpl(uri);
 		assertFalse(ea.isTransactional());
 	}
 	@Test
 	public void is_transactional() {
 		URI uri = URI.create(URI_STRING+"?tx=true");
-		EndpointAddress ea = new EndpointAddress(uri);
+		EndpointAddressImpl ea = new EndpointAddressImpl(uri);
 		assertTrue(ea.isTransactional());
 	}
 
 	@Test
 	public void is_not_local() {
-		EndpointAddress ea = new EndpointAddress(URI_STRING);
+		EndpointAddressImpl ea = new EndpointAddressImpl(URI_STRING);
 		assertFalse(ea.isLocal());
 	}
 
 	@Test
 	public void is_local() {
-		EndpointAddress ea = new EndpointAddress("amqp://user:pass@localhost:5672/vhost");
+		EndpointAddressImpl ea = new EndpointAddressImpl("amqp://user:pass@localhost:5672/vhost");
 		assertTrue(ea.isLocal());
 	}
 

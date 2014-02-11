@@ -35,17 +35,17 @@ public class NewId extends Object implements
 
 Comparable<NewId> {
 	public static final NewId EMPTY = new NewId(0, 0, 0, 0);
-	private static INewIdFormatter _braceFormatter = new DashedHexFormatter('{', '}',
+	private static NewIdFormatter _braceFormatter = new DashedHexFormatter('{', '}',
 			false);
-	private static INewIdFormatter _dashedHexFormatter = new DashedHexFormatter();
+	private static NewIdFormatter _dashedHexFormatter = new DashedHexFormatter();
 
 	private static NewIdGenerator _generator;
 
-	private static INewIdFormatter _hexFormatter = new HexFormatter();
-	private static INewIdFormatter _parenFormatter = new DashedHexFormatter('(', ')',
+	private static NewIdFormatter _hexFormatter = new HexFormatter();
+	private static NewIdFormatter _parenFormatter = new DashedHexFormatter('(', ')',
 			false);
-	private static ITickProvider _tickProvider;
-	private static IWorkerIdProvider _workerIdProvider;
+	private static TickProvider _tickProvider;
+	private static WorkerIdProvider _workerIdProvider;
 
 	private final long _a;
 	private final long _b;
@@ -134,14 +134,14 @@ Comparable<NewId> {
 		return _generator;
 	}
 
-	private static IWorkerIdProvider getWorkerIdProvider() {
+	private static WorkerIdProvider getWorkerIdProvider() {
 		if (_workerIdProvider == null) {
 			_workerIdProvider = new NetworkAddressWorkerIdProvider();
 		}
 		return _workerIdProvider;
 	}
 
-	private static ITickProvider getTickProvider() {
+	private static TickProvider getTickProvider() {
 		if (_tickProvider == null) {
 			_tickProvider = new StopwatchTickProvider();
 		}
@@ -212,7 +212,7 @@ Comparable<NewId> {
 		throw new RuntimeException("The format String was not valid");
 	}
 
-	public String toString(INewIdFormatter formatter, boolean sequential) {
+	public String toString(NewIdFormatter formatter, boolean sequential) {
 		byte[] bytes = sequential ? getSequentialFormatteryArray()
 				: getFormatteryArray();
 
@@ -351,11 +351,11 @@ Comparable<NewId> {
 		_generator = generator;
 	}
 
-	public static void setWorkerIdProvider(IWorkerIdProvider provider) {
+	public static void setWorkerIdProvider(WorkerIdProvider provider) {
 		_workerIdProvider = provider;
 	}
 
-	public static void setTickProvider(ITickProvider provider) {
+	public static void setTickProvider(TickProvider provider) {
 		_tickProvider = provider;
 	}
 

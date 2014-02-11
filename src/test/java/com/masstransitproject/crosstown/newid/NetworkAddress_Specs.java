@@ -25,7 +25,7 @@ public class NetworkAddress_Specs  // When_getting_a_network_address_for_the_id_
 	@Test
 	public void should_pull_the_network_adapter_mac_address()
 			throws IOException {
-		IWorkerIdProvider networkIdProvider = new NetworkAddressWorkerIdProvider();
+		WorkerIdProvider networkIdProvider = new NetworkAddressWorkerIdProvider();
 
 		byte[] networkId = networkIdProvider.getWorkerId(0);
 

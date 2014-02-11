@@ -12,10 +12,10 @@
 // specific language governing permissions and limitations under the License.
 package com.masstransitproject.crosstown.newid.providers;
 
-import com.masstransitproject.crosstown.newid.ITickProvider;
+import com.masstransitproject.crosstown.newid.TickProvider;
 import com.masstransitproject.crosstown.util.FineGrainTimestamp;
 
-public class StopwatchTickProvider implements ITickProvider {
+public class StopwatchTickProvider implements TickProvider {
 
 	@Override
 	public long getTicks() {

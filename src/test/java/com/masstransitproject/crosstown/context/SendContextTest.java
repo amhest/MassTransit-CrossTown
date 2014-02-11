@@ -18,18 +18,18 @@ public class SendContextTest {
 	@Test
 	public void can_create_with_identifiable_class() throws Exception{
 		
-		SendContext<RequestMessage> sc = new SendContext<RequestMessage>(RequestMessage.class);
+		SendContextImpl<RequestMessage> sc = new SendContextImpl<RequestMessage>(RequestMessage.class);
 	}
 	@Test
 	public void can_create_without_identifiable_class() throws Exception{
 		
 		assertFalse(Identifiable.class.isAssignableFrom(ResponseMessage.class));
-		SendContext<ResponseMessage> sc = new SendContext<ResponseMessage>(ResponseMessage.class);
+		SendContextImpl<ResponseMessage> sc = new SendContextImpl<ResponseMessage>(ResponseMessage.class);
 	}
 	@Test
 	public void can_create_with_identifiable_class_and_id_is_set() throws Exception{
 		
-		SendContext<RequestMessage> sc = new SendContext<RequestMessage>(RequestMessage.class);
+		SendContextImpl<RequestMessage> sc = new SendContextImpl<RequestMessage>(RequestMessage.class);
 		assertNotNull(sc.getMessage());
 		assertNotNull(sc.getId());
 		assertEquals(sc.getId(), sc.getMessage().getId());
@@ -39,7 +39,7 @@ public class SendContextTest {
 		
 		RequestMessage msg = new RequestMessage();
 		msg.setId(NewId.nextGuid());
-		SendContext<RequestMessage> sc = new SendContext<RequestMessage>(msg);
+		SendContextImpl<RequestMessage> sc = new SendContextImpl<RequestMessage>(msg);
 		assertNotNull(sc.getMessage());
 		assertNotNull(sc.getId());
 		assertEquals(sc.getId(), msg.getId());
@@ -51,17 +51,17 @@ public class SendContextTest {
 		RequestMessage msg = new RequestMessage();
 		//Not set msg.setId(NewId.nextGuid());
 		msg.setId(null);  //Clear this out to mimic not being set
-		SendContext<RequestMessage> sc = new SendContext<RequestMessage>(msg);
+		SendContextImpl<RequestMessage> sc = new SendContextImpl<RequestMessage>(msg);
 	}
 	@Test
 	public void can_create() throws Exception{
 		
-		new SendContext<RequestMessage>(RequestMessage.class);
+		new SendContextImpl<RequestMessage>(RequestMessage.class);
 	}
 
 	@Test
 	public void can_serialize_to() throws Exception {
-		SendContext<RequestMessage> ctx = new SendContext<RequestMessage>(RequestMessage.class);
+		SendContextImpl<RequestMessage> ctx = new SendContextImpl<RequestMessage>(RequestMessage.class);
 		UUID random = UUID.randomUUID();
 		ctx.getMessage().setCorrelationId(random);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
