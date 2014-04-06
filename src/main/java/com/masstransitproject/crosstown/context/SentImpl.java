@@ -1,5 +1,7 @@
 package com.masstransitproject.crosstown.context;
 
+import com.masstransitproject.crosstown.EndpointAddress;
+
 // Copyright 2007-2011 Chris Patterson, Dru Sellers, Travis Smith, et. al.
 //  
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
@@ -13,12 +15,36 @@ package com.masstransitproject.crosstown.context;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-public interface Received<T> {
-	String getMessageType();
+public class SentImpl<T> implements Sent<T> {
+	EndpointAddress address;
 
-	String getReceiverType();
+	SendContext<T> context;
 
-	long getTimestamp();
+	long timestamp;
 
-	String getCorrelationId();
+	
+	
+	public SentImpl(SendContext<T> context,EndpointAddress address, 
+			long timestamp) {
+		super();
+		this.address = address;
+		this.context = context;
+		this.timestamp = timestamp;
+	}
+
+
+	public EndpointAddress getAddress() {
+		return address;
+	}
+
+
+	public SendContext<T> getContext() {
+		return context;
+	}
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	
 }

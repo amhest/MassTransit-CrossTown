@@ -1,6 +1,5 @@
 package com.masstransitproject.crosstown;
 
-import com.masstransitproject.crosstown.context.ReceiveContext;
 
 /**
  * In .Net RecieveContexts leverage lambdas. Without function pointers in JDK
@@ -9,8 +8,8 @@ import com.masstransitproject.crosstown.context.ReceiveContext;
  * 
  * @param <T>
  */
-public interface ReceiveHandler<T> {
+public interface FaultAction<T> {
 
 	// Needs an onMessage method
-	public ReceiveAction<T> lookupAction(ReceiveContext<T> context);
+	public void doAction();
 }

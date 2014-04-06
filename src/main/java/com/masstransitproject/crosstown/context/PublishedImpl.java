@@ -13,12 +13,23 @@ package com.masstransitproject.crosstown.context;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-public interface Received<T> {
-	String getMessageType();
+public class PublishedImpl<T extends Object> implements Published<T>{
 
-	String getReceiverType();
+	PublishContext<T> context;
 
-	long getTimestamp();
+	long timestamp;
 
-	String getCorrelationId();
+	public PublishedImpl(PublishContext<T> context, long timestamp) {
+		super();
+		this.context = context;
+		this.timestamp = timestamp;
+	}
+
+	public PublishContext<T> getContext() {
+		return context;
+	}
+
+	public long getTimestamp() {
+		return timestamp;
+	}
 }

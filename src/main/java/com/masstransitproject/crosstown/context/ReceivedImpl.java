@@ -13,12 +13,41 @@ package com.masstransitproject.crosstown.context;
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
 
-public interface Received<T> {
-	String getMessageType();
+public class ReceivedImpl<T> implements Received<T> {
+	
+	ConsumeContext<T> _consumeContext;
+	String receiverType;
 
-	String getReceiverType();
+	long timestamp;
 
-	long getTimestamp();
 
-	String getCorrelationId();
+	public ReceivedImpl(ConsumeContext<T> consumeContext, String receiverType,
+			long timestamp) {
+		super();
+		this._consumeContext = consumeContext;
+		this.receiverType = receiverType;
+		this.timestamp = timestamp;
+	}
+
+
+	public String getMessageType() {
+		return _consumeContext.getMessageType();
+	}
+
+
+	public String getReceiverType() {
+		return receiverType;
+	}
+
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+
+	public String getCorrelationId() {
+		return _consumeContext.getCorrelationId();
+	}
+
+	
 }

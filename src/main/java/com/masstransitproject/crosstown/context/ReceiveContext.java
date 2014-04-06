@@ -1,13 +1,16 @@
 package com.masstransitproject.crosstown.context;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.UUID;
 
 import com.masstransitproject.crosstown.Endpoint;
+import com.masstransitproject.crosstown.EndpointAddress;
+import com.masstransitproject.crosstown.FaultAction;
 import com.masstransitproject.crosstown.serialization.MessageTypeConverter;
 
 // Copyright 2007-2012 Chris Patterson, Dru Sellers, Travis Smith, et. al.
@@ -29,9 +32,9 @@ import com.masstransitproject.crosstown.serialization.MessageTypeConverter;
 public interface ReceiveContext<T extends Object> extends ConsumeContext<T> {
 	InputStream getBodyStream();
 
-	Collection<Sent<T>> getSent();
+	Iterator<Sent<T>> getSent();
 
-	Collection<Received> getReceived();
+	Iterator<Received<T>> getReceived();
 
 	UUID getId();
 
@@ -95,67 +98,39 @@ public interface ReceiveContext<T extends Object> extends ConsumeContext<T> {
 	void setBodyStream(InputStream stream);
 	
 
-	void copyBodyTo(OutputStream stream);
+	void copyBodyTo(OutputStream stream) throws IOException;
 
 	void setMessageTypeConverter(MessageTypeConverter messageTypeConverter);
-	//
-	// /**
-	// * Notify that a fault needs to be sent, so that the endpoint can send it
-	// when
-	// * appropriate.
-	// *
-	// * @param faultAction
-	// */
-	// void NotifyFault(FaultSender<T> faultAction);
-	//
-	// void NotifySend(ISendContext<T> context, IEndpointAddress address);
-	//
-	//
-	// void NotifyPublish(IPublishContext<T> publishContext);
-	//
-	// void NotifyConsume(IConsumeContext<T> consumeContext, String
-	// consumerType, String correlationId);
-	//
-	// /**
-	// * Publish any pending faults for the context
-	// *
-	// void ExecuteFaultActions(Collection<FaultSender> faultActions);
-	//
-	// /**
-	// * Returns the fault actions that were added to the context dURIng message
-	// processing
-	// *
-	// * @return
-	// Collection<FaultSender<T>> GetFaultActions();
-	//
-	// /**
-	// * Sets the contextual data based on what was found in the envelope. Used
-	// by the inbound
-	// * transports as the receive context needs to be hydrated from the actual
-	// data that was
-	// * transferred through the transport as payload.
-	// *
-	// * @param context">The context to write data to, from the envelope
-	// * @param envelope">The envelope that contains the data to read into the
-	// context
-	// public static void SetUsingEnvelope(this IReceiveContext context,
-	// Envelope envelope);
-	// {
-	// context.SetRequestId(envelope.RequestId);
-	// context.SetConversationId(envelope.ConversationId);
-	// context.SetCorrelationId(envelope.CorrelationId);
-	// context.SetSourceAddress(envelope.SourceAddress.ToURIOrNull());
-	// context.SetDestinationAddress(envelope.DestinationAddress.ToURIOrNull());
-	// context.SetResponseAddress(envelope.ResponseAddress.ToURIOrNull());
-	// context.SetFaultAddress(envelope.FaultAddress.ToURIOrNull());
-	// context.SetNetwork(envelope.Network);
-	// context.SetRetryCount(envelope.RetryCount);
-	// if (envelope.ExpirationTime.HasValue)
-	// context.SetExpirationTime(envelope.ExpirationTime.Value);
-	//
-	// foreach (var header in envelope.Headers)
-	// {
-	// context.SetHeader(header.Key, header.Value);
-	// }
-	// }
+
+ /**
+ * Notify that a fault needs to be sent, so that the endpoint can send it
+ when
+ * appropriate.
+ *
+ * @param faultAction
+ */
+ void notifyFault(FaultAction<T> faultAction);
+
+ void notifySend(SendContext<T> context, EndpointAddress address);
+
+
+ void notifyPublish(PublishContext<T> publishContext);
+
+ void notifyConsume(ConsumeContext<T> consumeContext, String
+ consumerType, String correlationId);
+
+ /**
+ * Publish any pending faults for the context
+ */
+ public void ExecuteFaultActions(Iterator<FaultAction<T>> faultActions);
+
+ /**
+ * Returns the fault actions that were added to the context dURIng message
+ processing
+ *
+ * @return
+ */ 
+ public Iterator<FaultAction<T>> getFaultActions();
+
+
 }
